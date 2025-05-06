@@ -1,0 +1,137 @@
+<!-- prettier-ignore -->
+{%if g.theme_id == 0%}
+{% extends "site_layout.html" %}
+{%else%}
+{% extends "layout.html" %}
+{%endif%}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div>
+        <h2 class="text-center mb-4">User Profile</h2>
+    </div>
+    <hr class="my-3" />
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 mb-4">
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='img/' ~ user.avatar if user.avatar != 'default.png' else 'img/default.png') }}" alt="Avatar" class="rounded-circle" style="width: 150px; height: 150px" />
+                </div>
+
+                <!-- Updated Table Styling -->
+                <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th colspan="2" class="text-center" style="background-color: #343a40; color: white">User Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Username</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Email</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">First Name</th>
+                            <td>{{ user.first_name or 'Not provided' }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Last Name</th>
+                            <td>{{ user.last_name or 'Not provided' }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Description</th>
+                            <td>{{ user.description or 'Not provided' }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Site Role</th>
+                            <td>{% if session.user.role == 'siteadmin' %} Site Admin {% else %} Voter {% endif %}</td>
+                        </tr>
+
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Competition Roles</th>
+                            <td>
+                                {% if user.theme_role_mapping %} {% for theme_info, role in user.theme_role_mapping.items() %}
+                                <div>{{ theme_info[1] | capitalize }} - {{ role.name | capitalize }}</div>
+                                {% endfor %} {% else %} No competition roles assigned. {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Community Roles</th>
+                            <td>
+                                {% if user.community_role_mapping %} {% for theme_info, role in user.community_role_mapping.items() %}
+                                <div>{{ theme_info[1] | capitalize }} - {{ role.name | capitalize }}</div>
+                                {% endfor %} {% else %} No community roles assigned. {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width: 35%; background-color: #f8f9fa">Location</th>
+                            <td>
+                                <div id="map" style="height: 300px; width: 100%; margin-top: 10px"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-grid mt-4">
+                    <!-- Dark Gray Button -->
+                    <a href="{{ url_for('update_profile',theme_id=g.theme_id) }}" class="btn btn-dark">Update Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet.js Map Integration -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var defaultLat = -40.9006;
+        var defaultLon = 174.886;
+        var defaultZoom = 5;
+        var locationString = "{{ user.location }}";
+        console.log("Location String: ", locationString);
+        function decodeHTMLEntities(str) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = str;
+            return txt.value;
+        }
+        var decodedLocationString = decodeHTMLEntities(locationString);
+        console.log("Decoded Location String: ", decodedLocationString);
+        try {
+            var locationObj = JSON.parse(decodedLocationString);
+            var lat = locationObj.lat;
+            var lon = locationObj.lon;
+            console.log("Parsed Lat:", lat, "Parsed Lon:", lon);
+            var map = L.map("map").setView([defaultLat, defaultLon], defaultZoom);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "© OpenStreetMap",
+            }).addTo(map);
+            if (lat && lon) {
+                L.marker([lat, lon]).addTo(map).openPopup();
+                map.setView([lat, lon], 4);
+            }
+            map.scrollWheelZoom.disable();
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.boxZoom.disable();
+            map.keyboard.disable();
+        } catch (error) {
+            console.error("Error parsing location string:", error);
+        }
+    });
+</script>
+<style>
+    #map {
+        position: relative;
+        z-index: 1;
+    }
+</style>
+{% endblock %}

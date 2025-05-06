@@ -1,0 +1,231 @@
+{% extends "layout.html" %}
+
+{% block title %}List of Votes{% endblock%}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card p-4 shadow-sm" style="background-color: #f8f9fa; border-radius: 8px;">
+        <h2 class="text-center mb-3">List of Votes</h2>
+
+        <form id="submitform" method="POST">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label" for="competition_name">Event:</label>
+                    <select class="form-select" name="competition_id">
+                        <option value="">all</option>
+                        {% for competition in competition_list %}
+                        <option value="{{ competition.id }}" {% if competition.id == competition_id %} selected {% endif %}>[{{ competition.competition_status }}] {{ competition.competition_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="ip">Voter IP Address:</label>
+                    <input class="form-control" type="text" name="ip" value="{{ ip }}">
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button type="button" class="btn btn-dark" id="searchBtn">Search</button>
+                {% if flag == 'list' and message != 'initial_entry' and message != 'no_data' %}
+                <button type="button" class="btn btn-danger" id="makeAllInvalid">Mark All as Invalid</button>
+                {% endif %}
+            </div>
+        </form>
+
+        <ul class="nav nav-tabs mt-4" id="voteTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link {% if flag == 'list' %}active{% endif %}" id="list-tab" data-bs-toggle="tab" href="#list">List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if flag == 'group_by_ip' %}active{% endif %}" id="group-by-ip-tab" data-bs-toggle="tab" href="#group-by-ip">Group by IP</a>
+            </li>
+        </ul>
+
+        {% if flag == 'list' %}
+        <div class="tab-pane fade show active mt-4" id="list">
+            {% if message == "initial_entry" %}
+            <div class="text-center">
+                <p class="lead">Please enter your search criteria above and click the "Search" button to begin.</p>
+            </div>
+            {% elif message == "no_data" %}
+            <div class="text-center">
+                <p class="lead">Sorry, no results found.</p>
+            </div>
+            {% else %}
+            <div class="table-responsive mt-3">
+                <table class="table table-striped table-bordered text-center" id="myTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Status</th>
+                            <th>Event</th>
+                            <th>Competitor</th>
+                            <th>Voter</th>
+                            <th>Voting Time</th>
+                            <th>Voting IP</th>
+                            <th>Vote Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vote in votes %}
+                        <tr data-id="{{vote.vote_id}}">
+                            <td>{{ vote.status }}</td>
+                            <td>{{ vote.competition_name }}</td>
+                            <td>{{ vote.competitor_name }}</td>
+                            <td>{{ vote.voter }}</td>
+                            <td>{{ vote.voting_time }}</td>
+                            <td>{{ vote.voting_ip }}</td>
+                            <td>{{ vote.vote_status }}</td>
+                            <td>
+                                {% if vote.vote_status == 'valid' %}
+                                <a href="#" class="invalidate_btn btn btn-dark">Invalidate</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if flag == 'group_by_ip' %}
+        <div class="table-responsive mt-4">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Voting IP</th>
+                        <th>Number of Votes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if votes_by_ip %}
+                    {% for ip_vote in votes_by_ip %}
+                    <tr>
+                        <td>{{ ip_vote.voting_ip }}</td>
+                        <td>{{ ip_vote.vote_count }}</td>
+                        <td><a href="#list" class="details-link" data-ip="{{ ip_vote.voting_ip }}">Details</a></td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No data available</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+    $("#searchBtn").on("click", function(event) {
+        let targetAction = "";
+
+        $("#voteTabs li a").each(function() {
+            if ($(this).hasClass('active')) {
+                var nameAttr = $(this).attr("id");
+
+                // List tab active
+                if (nameAttr === "list-tab") {
+                    targetAction = "{{ url_for('unusual_votes', theme_id=g.theme_id) }}";
+                }
+
+                // Group by IP tab active
+                else if (nameAttr === "group-by-ip-tab") {
+                    targetAction = "{{ url_for('unusual_votes_by_ip', theme_id=g.theme_id) }}";
+                }
+            }
+        });
+
+        // Set form action and submit
+        $("#submitform").attr("action", targetAction);
+        $("#submitform").submit();
+    });
+
+    // Handle "Details" link click
+    $(".details-link").on("click", function(event) {
+        event.preventDefault(); // Prevent default anchor behavior
+
+        // Get the selected IP address from the data attribute
+        var selectedIp = $(this).data("ip");
+
+        // Set the IP address in the input field of the List tab
+        $("input[name='ip']").val(selectedIp);
+
+        // Switch to the List tab
+        $("#list-tab").tab("show");
+
+        // Automatically submit the form to fetch the data for the selected IP
+        $("#submitform").attr("action", "{{url_for('unusual_votes', theme_id=g.theme_id)}}");
+        $("#submitform").submit();
+    });
+
+    // Handle tab switch (optional if you want to handle manual tab switches)
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+        var target = $(e.target).attr("href"); // Get the target tab
+
+        // Redirect or load the correct data based on the tab
+        if (target === "#group-by-ip") {
+            // Redirect to the Group by IP route to fetch the correct data
+            window.location.href = "{{ url_for('unusual_votes_by_ip', theme_id=g.theme_id) }}";
+        } else if (target === "#list") {
+            // Redirect to the List route to fetch the correct data
+            window.location.href = "{{ url_for('unusual_votes', theme_id=g.theme_id) }}";
+        }
+    });
+
+    // Handle invalidation of specific votes
+    $(".invalidate_btn").click(function() {        
+        var rowId = $(this).closest("tr").data("id");  // Get vote ID
+        sendAjaxRequest([rowId]);  // Invalidate this specific vote
+    });
+
+    // Handle invalidation of all votes
+    $("#makeAllInvalid").click(function() {
+        var allIds = [];
+        $("#myTable tr").each(function() {
+            var rowId = $(this).data("id");
+            if (rowId) {
+                allIds.push(rowId);
+            }
+        });
+        sendAjaxRequest(allIds);
+    });
+
+    // Send AJAX request to invalidate votes
+    function sendAjaxRequest(ids) {
+        var isConfirmed = confirm('Are you sure you want to invalidate these votes?');
+        if (isConfirmed) {
+            var scrollTop = $(window).scrollTop(); 
+            $.ajax({
+                url: "{{url_for('invalidate', theme_id=g.theme_id)}}",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify({"ids": ids}),
+                success: function(response) {
+                    ids.forEach(element => {
+                        var $td1 = $('tr[data-id="'+element+'"] td').eq(6);
+                        var $td2 = $('tr[data-id="'+element+'"] td').eq(7);
+                        $td1.text("invalid");
+                        $td2.text("");  // Clear action button for invalidated votes
+                    });
+                    $(window).scrollTop(scrollTop);
+                },
+                error: function(xhr, status, error) {
+                    alert('Request failed: ' + error);
+                }
+            });
+        }
+    }
+    });
+</script>
+
+{% endblock %}

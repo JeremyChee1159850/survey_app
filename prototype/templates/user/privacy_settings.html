@@ -1,0 +1,81 @@
+<!-- prettier-ignore -->
+{%if g.theme_id == 0%}
+{% extends "site_layout.html" %}
+{%else%}
+{% extends "layout.html" %}
+{%endif%}
+
+{% block title %}Privacy Settings{% endblock %} {% block content %}
+<div class="container mt-5">
+    <div>
+        <h2 class="text-center mb-4">Instance Message Privacy Settings</h2>
+    </div>
+    <hr class="my-3" />
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-info mt-3">{{ message }}</div>
+    {% endfor %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 mb-4">
+                <form method="POST" action="{{ url_for('privacy_settings',theme_id=g.theme_id) }}">
+                    <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white">Privacy Preferences</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Email</th>
+                                <td><input type="checkbox" name="show_email" {{ 'checked' if privacy_settings.show_email else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected First Name</th>
+                                <td><input type="checkbox" name="show_first_name" {{ 'checked' if privacy_settings.show_first_name else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Last Name</th>
+                                <td><input type="checkbox" name="show_last_name" {{ 'checked' if privacy_settings.show_last_name else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Location</th>
+                                <td><input type="checkbox" name="show_location" {{ 'checked' if privacy_settings.show_location else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Description</th>
+                                <td><input type="checkbox" name="show_description" {{ 'checked' if privacy_settings.show_description else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Avatar</th>
+                                <td><input type="checkbox" name="show_avatar" {{ 'checked' if privacy_settings.show_avatar else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Recent Post</th>
+                                <td><input type="checkbox" name="show_recent_post" {{ 'checked' if privacy_settings.show_recent_post else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Recent Vote</th>
+                                <td><input type="checkbox" name="show_recent_vote" {{ 'checked' if privacy_settings.show_recent_vote else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Privacy-Protected Recent Donation</th>
+                                <td><input type="checkbox" name="show_recent_donation" {{ 'checked' if privacy_settings.show_recent_donation else '' }}></td>
+                            </tr>
+                            <tr>
+                                <th style="width: 75%; background-color: #f8f9fa">Do not display in Chat User List</th>
+                                <td><input type="checkbox" name="show_in_user_list" {{ 'checked' if privacy_settings.show_in_user_list else '' }}></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-grid mt-4">
+                        <p class="text-muted text-center">The information you ticked will not be visible to others.</p>
+                        <button type="submit" class="btn btn-dark">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

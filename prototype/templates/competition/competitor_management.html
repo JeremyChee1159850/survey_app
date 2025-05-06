@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}Competitor Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flashes">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} w-50 mx-auto">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="card p-4 shadow-sm" style="background-color: #f8f9fa; border-radius: 8px;">
+        <h2 class="text-center mb-4">Competitor Management</h2>
+
+        <!-- Add New Competitor Button -->
+        <div class="text-end mb-4">
+            <a href="{{ url_for('add_competitor', theme_id=g.theme_id) }}" class="btn btn-dark">Add a new Competitor</a>
+        </div>
+
+        <!-- Search Bar -->
+        <form class="d-flex mb-4" method="get" action="{{ url_for('list_competitors', theme_id=g.theme_id) }}">
+            <input class="form-control me-2" type="search" name="search" placeholder="Search Competitors" aria-label="Search">
+            <button class="btn btn-dark" type="submit">Search</button>
+        </form>
+
+        <!-- Competitors Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th style="width: 40%;">Description</th>
+                        <th>Image</th>
+                        <th style="width: 20%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for competitor in competitors %}
+                    <tr>
+                        <td>{{ competitor.name }}</td>
+                        <td>{{ competitor.description }}</td>
+                        <td><img src="{{ url_for('static', filename='img/' + competitor.image) }}" alt="{{ competitor.name }}" width="60" height="60" style="object-fit: cover; border-radius: 8px;"></td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a href="{{ url_for('edit_competitor', theme_id=g.theme_id, id=competitor.id) }}" class="btn btn-dark btn-sm me-2">Edit</a>
+                                <form action="{{ url_for('delete_competitor', theme_id=g.theme_id, id=competitor.id) }}" method="post" style="display:inline;" class="delete-form">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Delete Confirmation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForms = document.querySelectorAll('.delete-form');
+        
+        deleteForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                const confirmed = confirm('Are you sure you want to delete this Competitor?');
+                if (confirmed) {
+                    form.submit(); 
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

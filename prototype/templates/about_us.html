@@ -1,0 +1,47 @@
+{% extends "site_layout.html" %} 
+{% block title %}Home Page{% endblock %} 
+{% block content %}
+
+<div class="container mt-3">
+    <div class="p-3 mb-3 bg-light rounded-3">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 text-center">About ConserveConnect</h1>
+            <p class="lead text-center">Where Conservation Meets Community and Action</p>
+            <div class="d-flex justify-content-center">
+                <img src="{{ url_for('static', filename='img/cclogo.png') }}" alt="Logo" style="height: 200px;">
+            </div>
+            <hr class="my-3">
+            <p class="mb-3">
+                At ConserveConnect, we believe in the power of collective action to protect and preserve our natural world. Our platform empowers conservation groups, charities, and passionate individuals to create and participate in engaging competitions that raise awareness for vital environmental causes.
+            </p>
+            <ul class="list-unstyled">
+                <li class="mb-2"><strong>Compete:</strong> Join or host conservation competitions such as “Tree of the Year” or “Coastline of the Year,” and rally support for the natural causes you care about.</li>
+                <li class="mb-2"><strong>Connect:</strong> Build a community around your cause by engaging with other users, sharing ideas, and fostering collaboration for conservation efforts.</li>
+                <li><strong>Donate:</strong> Support your favorite causes directly through donations, helping fund crucial conservation projects and initiatives.</li>
+            </ul>
+            <p class="lead text-center">Join us in conserving today for a better tomorrow!</p>
+        </div>
+    </div>
+
+    <div class="p-3 mb-3 bg-light rounded-3">
+        <div class="container-fluid py-3">
+            <h2 class="display-6 text-center">Contact Us</h2>
+            <hr class="my-3">
+            <p class="mb-3 text-center">We’d love to hear from you! Feel free to reach out to us for any inquiries, feedback, or support.</p>
+            <ul class="list-unstyled text-center">
+                <li class="mb-2"><strong>Email:</strong> support@conserveconnect.com</li>
+                <li class="mb-2"><strong>Phone:</strong> +64 9 123 4567</li>
+                <li class="mb-2"><strong>Address:</strong> 123 Green Street, Conservation City, Earth 10101</li>
+            </ul>
+            <p class="lead text-center">Follow us on social media for updates and news:</p>
+            <div class="d-flex justify-content-center">
+                <a href="#" class="btn btn-dark btn-sm mx-2">Facebook</a>
+                <a href="#" class="btn btn-dark btn-sm mx-2">Twitter</a>
+                <a href="#" class="btn btn-dark btn-sm mx-2">Instagram</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

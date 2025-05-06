@@ -1,0 +1,136 @@
+{% extends "site_layout.html" %}
+{% block title %}Voting Integrity Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center my-4">Voting Integrity Dashboard</h1>
+
+    <div class="p-4 bg-light rounded-3 shadow-sm">
+        {% if banned_users %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mx-auto" style="max-width: 80%; border-radius: 8px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Ban Count</th>
+                            <th class="text-center">Site-Wide Voting Permission</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in banned_users %}
+                        <tr>
+                            <td class="text-center">{{ user.username }}</td>
+                            <td class="text-center"><a href="#" onclick="showBanDetails('{{ user.user_id }}', '{{ user.username }}')" data-bs-toggle="modal" data-bs-target="#banDetailsModal">{{ user.ban_count }}</a></td>
+                            <td class="text-center">
+                                <span class="{% if user.voting_permission == 'banned' %}text-danger
+                                             {% else %}text-success
+                                             {% endif %}">
+                                             {{ user.voting_permission | capitalize }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-dark"
+                                        id="ban-button-{{ user.user_id }}"
+                                        onclick="banUser('{{ user.user_id }}', '{{ user.username }}')"
+                                        {% if user.voting_permission == 'banned' %}disabled{% endif %}>
+                                    Site-Wide Ban
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center lead">No Users are Currently Banned</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal for Showing Ban Details -->
+<div class="modal fade" id="banDetailsModal" tabindex="-1" aria-labelledby="banDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="banDetailsModalLabel"><span id="ban-username"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="ban-themes-list" class="list-group"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showBanDetails(userId, username) {
+        // Set the modal title to the username
+        document.getElementById("ban-username").textContent = username;
+        const themesList = document.getElementById("ban-themes-list");
+        themesList.innerHTML = ''; // Clear the list before adding new items
+
+         // Fetch the banned themes for the specific user
+        fetch(`/siteadmin/banned_themes/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    // Populate the modal with the list of banned themes
+                    data.forEach(theme => {
+                        const li = document.createElement("li");
+                        li.className = "list-group-item text-center";
+                        li.style.cursor = "default";
+                        li.textContent = `Banned From: ${theme.theme_name} Competition`;
+                        themesList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item text-muted";
+                    li.style.cursor = "default";
+                    li.textContent = "No specific themes found.";
+                    themesList.appendChild(li);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching banned themes:', error);
+                alert('An error occurred while fetching banned themes.');
+            });
+    }
+
+    function banUser(userId, username) {
+        if (confirm(`Are you sure you want to issue a site-wide ban for ${username}?`)) {
+            fetch("{{ url_for('site_wide_ban') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ voter_id: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);  // Notify the user of the result
+                
+                // Disable the button to prevent further bans
+                const banButton = document.getElementById(`ban-button-${userId}`);
+                if (banButton) {
+                    banButton.disabled = true;
+                }
+
+                // Update the voting permission in the UI to reflect the ban
+                const votingPermissionField = document.querySelector(`#ban-button-${userId}`).closest('tr').querySelector('td:nth-child(3) span');
+                if (votingPermissionField) {
+                    votingPermissionField.textContent = 'Banned';
+                    votingPermissionField.className = 'text-danger';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    }
+</script>
+{% endblock %}

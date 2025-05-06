@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block title %}Appeal Requests{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center my-4">Appeal Requests</h1>
+
+    <!-- Status Filter Dropdown -->
+    <div class="d-flex justify-content-start mb-3">
+        <form id="statusFilterForm" method="GET" action="{{ url_for('view_appeals', theme_id=g.theme_id) }}">
+            <label for="status" class="me-2">Filter by Status:</label>
+            <select name="status" id="status" class="form-select" onchange="document.getElementById('statusFilterForm').submit();">
+                <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All</option>
+                <option value="pending" {% if selected_status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="upheld" {% if selected_status == 'upheld' %}selected{% endif %}>Upheld</option>
+                <option value="revoked" {% if selected_status == 'revoked' %}selected{% endif %}>Revoked</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="p-4 bg-light rounded-3 shadow-sm">
+        {% if appeals %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mx-auto" style="max-width: 100%; border-radius: 8px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Reason</th>
+                            <th class="text-center">Appeal Time</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appeal in appeals %}
+                        <tr>
+                            <td class="text-center">
+                                <!-- Color-coded status -->
+                                <span class="{% if appeal.status == 'pending' %}text-primary
+                                             {% elif appeal.status == 'upheld' %}text-danger
+                                             {% elif appeal.status == 'revoked' %}text-success
+                                             {% endif %}">
+                                    {{ appeal.status.capitalize() }}
+                                </span>
+                            </td>
+                            <td class="text-center">{{ appeal.appealer }}</td>
+                            <td class="text-center text-wrap" style="max-width: 200px; word-wrap: break-word;">
+                                {{ appeal.appeal_reason }}
+                            </td>
+                            <td class="text-center">{{ appeal.appeal_time }}</td>
+                            <td class="text-center">
+                                {% if appeal.status in ['pending'] %}
+                                <form action="{{ url_for('uphold_appeal', appeal_id=appeal.id, theme_id=g.theme_id) }}" method="POST" class="uphold-form d-inline">
+                                    <input type="text" name="upholding_reason" placeholder="Upholding Reason (Optional)" class="form-control d-inline" style="width: 250px;">
+                                    <button type="submit" class="btn btn-danger">Uphold</button>
+                                </form>
+                                <form action="{{ url_for('revoke_appeal', appeal_id=appeal.id, theme_id=g.theme_id) }}" method="POST" class="revoke-form d-inline">
+                                    <button type="submit" class="btn btn-success">Revoke</button>
+                                </form>
+                            {% else %}
+                                <button type="button" class="btn btn-secondary" disabled>Uphold</button>
+                                <button type="button" class="btn btn-secondary" disabled>Revoke</button>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center lead">There Are Currently No Appeal Requests</p>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $(".revoke-form").submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var row = form.closest("tr");
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                success: function(response) {
+                    alert("Appeal revoked, voter unbanned, and votes validated.");
+                    // Update the status cell
+                    row.find("span").removeClass("text-primary text-danger").addClass("text-success").text("Revoked");
+                    
+                    // Disable the buttons
+                    row.find(".btn").prop("disabled", true).removeClass("btn-danger btn-success").addClass("btn-secondary");
+                },
+                error: function(xhr, status, error) {
+                    $("#confirmation-message").text('Error: ' + error).addClass('alert-danger').show();
+                }
+            });
+        });
+
+        $(".uphold-form").submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var row = form.closest("tr");
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: form.serialize(),
+                success: function(response) {
+                    alert("Appeal upheld, voter remains banned.");
+                    // Update the status cell
+                    row.find("span").removeClass("text-primary text-success").addClass("text-danger").text("Upheld");
+
+                    // Disable the buttons
+                    row.find(".btn").prop("disabled", true).removeClass("btn-danger btn-success").addClass("btn-secondary");
+                },
+                error: function(xhr, status, error) {
+                    $("#confirmation-message").text('Error: ' + error).addClass('alert-danger').show();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

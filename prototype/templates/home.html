@@ -1,0 +1,249 @@
+{% extends "layout.html" %} {% block title %}{{ theme_info.name }} {% endblock %} {% block content %}
+
+<style>
+    .custom-modal-dialog {
+        max-width: 100%;
+        width: 1500px;
+        margin: 1.75rem auto;
+    }
+
+    .custom-modal-dialog .modal-content {
+        height: 60vh;
+    }
+
+    .custom-modal-dialog .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .modal-sections {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .modal-left,
+    .modal-right {
+        width: 48%; /* Divides the modal into 2 parts */
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .modal-left h5,
+    .modal-right h5 {
+        margin-top: 0;
+        font-size: 1.2em;
+    }
+
+    /* Competition Box */
+    .highlight-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        color: #343a40;
+        padding: 30px;
+        font-size: 2.5rem;
+        font-weight: bold;
+        border-radius: 15px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s ease;
+        width: 100%;
+        text-align: center;
+    }
+
+    .highlight-box:hover {
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7);
+    }
+
+    .highlight-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .highlight-text {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+
+    /* Proudly Announced Countdown Timer Styling */
+    .countdown-wrapper-sm {
+        background-color: #e0e0e0;
+        padding: 10px;
+        border-radius: 10px;
+        width: fit-content;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .countdown-title-sm {
+        color: #343a40;
+        letter-spacing: 1px;
+        font-weight: normal;
+        font-size: 1rem;
+    }
+
+    .countdown-box-sm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        color: #343a40;
+        padding: 10px;
+        font-size: 1.5rem;
+        font-weight: normal;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s ease;
+        width: 250px;
+        text-align: center;
+    }
+    .img-fluid {
+        filter: sepia(1) saturate(10000%) hue-rotate(90deg) brightness(0.8);
+    }
+</style>
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+<div class="flashes">
+    {% for category, message in messages %}
+    <div class="alert alert-info mt-3">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %} {% endwith %}
+
+<div class="container mt-3">
+    <!-- Hero Section -->
+    <div class="p-3 mb-3 bg-light rounded-3">
+        <div class="container-fluid py-3 text-center">
+            <h1 class="display-4">{{ theme_info.name | title }}</h1>
+            <div class="row mt-3">
+                <div class="d-flex flex-column align-items-center">
+                    <div class="lead m-0 text-center">{{ theme_info.description }}</div>
+                    <div class="mt-3 text-center">
+                        {% if session.user %} {% if session.user.role == 'siteadmin' or g.theme_role.value == "admin" %}
+                        <hr class="my-3" style="width: 100%" />
+                        {% if (theme_donate_result == 'disabled') and (donation_status_result != 'pending') %}
+                        <p>As a competition admin, you have the permission to create donation information for this competition.</p>
+                        <a class="btn text-primary fw-bold text-decoration-underline" id="Donation-btn" href="{{ url_for('donation_theme_home', theme_id=g.theme_id) }}">Create Donation</a>
+                        {% elif (theme_donate_result == 'disabled') and (donation_status_result == 'pending') %}
+                        <p>Donation information is currently under review.</p>
+                        {% endif %} {% endif %} {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div>
+                {% if (theme_donate_result == 'enabled') %}
+                <a href="{{ url_for('donation_theme_home', theme_id=g.theme_id) }}">
+                    <img src="{{ url_for('static', filename='img/DC.png') }}" alt="Donation Certified" class="img-fluid mb-3" />
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr class="my-3" />
+
+        <!-- Ongoing Competition -->
+        <div class="alert text-center" style="background-color: #343a40; color: white; padding: 30px; border-radius: 5px">
+            <h2 class="display-5 text-center">Open Event</h2>
+            {% if ongoing_competition_name %}
+            <p style="color: #e0e0e0">Please cast your vote, you can vote once per event.</p>
+            <br />
+
+            <!-- Highlighted Competition Section -->
+            <div class="highlight-box d-flex justify-content-center align-items-center mt-4">
+                <a href="{{ url_for('current_voting', theme_id=g.theme_id) }}" class="highlight-link">
+                    <div class="highlight-container text-center">
+                        <p class="highlight-text">{{ ongoing_competition_name }}</p>
+                    </div>
+                </a>
+            </div>
+
+            <p style="color: #cccccc; margin-top: 20px">Voting period:</p>
+            <p style="color: #cccccc">{{ ongoing_voting_start_date }} to {{ ongoing_voting_end_date }}</p>
+
+            <!-- Countdown Section -->
+            <div class="countdown-wrapper-sm d-flex justify-content-center mt-4">
+                <div class="countdown-container">
+                    <h6 class="countdown-title-sm mb-2 text-center text-uppercase">Time Left to Vote</h6>
+                    <div class="countdown-box-sm d-flex justify-content-center align-items-center">
+                        <p id="countdown" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p>No open event available at the moment.</p>
+            {% endif %}
+        </div>
+
+        <!-- Published Competitions Section -->
+        <div class="container text-center mt-5">
+            <h3 class="display-5">Published Events</h3>
+            <p class="text-muted">
+                Thank you for participating in past competitions! View
+                <a href="{{ url_for('competition_results', theme_id=g.theme_id) }}">results</a>
+                here.
+            </p>
+            <div class="row text-center">
+                {% if published_competitions %} {% for competition in published_competitions %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ competition.name }}</h5>
+                            <p class="card-text">{{ competition.voting_start_date.strftime('%d %b %Y') }} to {{ competition.voting_end_date.strftime('%d %b %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %} {% else %}
+                <p>No published events available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Ended Competitions Section -->
+        <div class="container text-center mt-5">
+            <h3 class="display-5">Ended Events</h3>
+            <p class="text-muted">Voting is locked, results will be announced soon.</p>
+            <div class="row text-center">
+                {% if ended_competitions %} {% for competition in ended_competitions %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ competition.name }}</h5>
+                            <p class="card-text">{{ competition.voting_start_date.strftime('%d %b %Y') }} to {{ competition.voting_end_date.strftime('%d %b %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %} {% else %}
+                <p>No ended events at the moment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Countdown Timer Script -->
+    {% if ongoing_competition_name %}
+    <script>
+        const countdownElement = document.getElementById("countdown");
+        const endDate = new Date("{{ ongoing_voting_end_date_2 }}").getTime();
+
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = "Voting has ended!";
+            }
+        }, 1000);
+    </script>
+    {% endif %} {% endblock %}
+</div>

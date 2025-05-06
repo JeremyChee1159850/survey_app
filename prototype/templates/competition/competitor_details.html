@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+
+{% block title %}Competitor Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center my-4">Competitor Details</h1>
+    <hr class="my-3">
+    <!-- Row to align Image and Map side by side -->
+    <div class="row">
+        <!-- Competitor Image Section (Left) -->
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/' ~ competitor.image) }}" 
+                 alt="{{ competitor.name }}" 
+                 class="img-fluid mb-4" 
+                 style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+        </div>
+
+        <!-- Competitor Map Section (Right) -->
+        <div class="col-md-6">
+            <div id="competitorMap" style="height: 400px;" class="mb-5"></div>
+        </div>
+    </div>
+
+    <!-- Row for Name, Distance and Description below Image and Map -->
+    <div class="row">
+        <div class="col-12 text-center mt-4">
+            <h2 style="color: #343a40;">{{ competitor.name }}{% if voted_name == competitor.name %}<span style="color: green;"> @ My Vote</span>{% endif %}</h2>
+            <p id="distance" class="lead" style="color: #6c757d;"></p>
+            <p class="lead" style="color: #6c757d;">{{ competitor.description }}</p>
+        </div>
+    </div>
+
+    <!-- Vote Section -->
+    {% if is_site_wide_banned %}
+    <div class="alert alert-danger text-center" role="alert" style="font-size: 1.5rem;">
+        You Are Currently Under a Site-Wide Ban!
+    </div>
+    {% else %}
+        {% if is_banned %}
+        <div class="alert alert-danger text-center" role="alert" style="font-size: 1.5rem;">
+            You Are Banned from Voting In This Competition!
+        </div>
+        {% elif not has_voted %}
+        <div class="text-center">
+            <button type="button" class="btn btn-success btn-lg" style="border-radius: 8px; padding: 8px 30px; text-decoration: none;" data-bs-toggle="modal" data-bs-target="#voteConfirmModal">
+                Vote for it
+            </button>
+        </div>
+        {% else %}
+        <div class="text-center">
+            Thank you for casting your vote!
+            <hr>
+            If you’d like to take your support one step further, consider making a donation to help us protect and preserve the environment. Every contribution, big or small, makes a difference. Together, we can create a better future for our planet!
+            <br>
+            <a class="btn btn-success mt-3" href="{{url_for ('donation_theme_home',theme_id=g.theme_id)}}">Donate</a>
+            <hr>
+        </div>
+        {% endif %}
+    {% endif %}    
+    <br>
+    <div class="text-center">
+      <a href="{{ url_for('current_voting', theme_id=g.theme_id) }}" class="btn btn-secondary mt-3">Back</a>
+    </div>  
+</div>
+
+<!-- Vote Confirmation Modal -->
+<div class="modal fade" id="voteConfirmModal" tabindex="-1" aria-labelledby="voteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header justify-content-center">
+        <h5 class="modal-title text-center" id="voteConfirmModalLabel">Confirm Your Vote</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        Are you sure you want to vote for <strong>{{ competitor.name }}</strong>?
+        <p class="text-muted small mt-2">(You can only vote for one competitor.)</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" style="width: 200px;" data-bs-dismiss="modal">Cancel</button>
+        <form action="{{ url_for('vote', theme_id=g.theme_id) }}" method="POST" id="voteForm">
+            <button type="submit" class="btn btn-dark" style="width: 200px;">Confirm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Initialize the Leaflet map
+    var map = L.map('competitorMap', {
+        scrollWheelZoom: false
+    }).setView([{{ competitor.location.lat }}, {{ competitor.location.lon }}], 7);
+    map.scrollWheelZoom.disable();
+    // Load map tiles from OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Add a marker for the competitor's location
+    var marker = L.marker([{{ competitor.location.lat }}, {{ competitor.location.lon }}]).addTo(map)
+        .bindPopup('<strong>{{ competitor.name }}</strong><br>{{ competitor.description }}');
+
+    // calculate the distance
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; 
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; 
+        return Math.round(distance); 
+    }
+    const userLocation = {{ g.user.location | safe }};
+    const competitorLocation = {
+        lat: {{ competitor.location.lat }},
+        lon: {{ competitor.location.lon }}
+    };
+    const distanceInKm = calculateDistance(userLocation.lat, userLocation.lon, competitorLocation.lat, competitorLocation.lon);
+    document.getElementById('distance').innerHTML = `Distance: ${distanceInKm} km`;
+</script>
+
+<style>
+    #competitorMap {
+    position: relative;
+    z-index: 1; 
+    }
+</style>
+{% endblock %}

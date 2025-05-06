@@ -1,0 +1,22 @@
+<table class="table table-striped table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Competition</th>
+            <th>Event</th>
+            <th>Chosen Competitor</th>
+            <th>Voting Time</th>
+            <th>IP Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detail in details %}
+        <tr>
+            <td>{{ detail.theme_name }}</td>
+            <td>{{ detail.competition_name }}</td>
+            <td>{{ detail.competitor_name }}</td>
+            <td>{{ detail.voting_time }}</td>
+            <td>{{ detail.voting_ip }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
