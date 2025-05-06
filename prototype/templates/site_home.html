@@ -1,0 +1,128 @@
+{% extends "site_layout.html" %} {% block title %}Home Page{% endblock %} {% block content %} {% with messages = get_flashed_messages(with_categories=True) %} {% if messages %}
+<div class="alert alert-dismissible fade show" role="alert">
+    {% for category, message in messages %}
+    <div class="alert alert-info mt-3">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %} {% endwith %}
+
+<div class="container mt-3">
+    <div class="p-3 mb-3 bg-light rounded-3">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 text-center">Welcome to ConserveConnect</h1>
+            <p class="lead text-center" style="font-size: 30px">Where Conservation Meets Community and Action</p>
+            <hr class="my-3" />
+        </div>
+    </div>
+</div>
+
+<!-- Title for Themes Section -->
+<div class="container text-center mt-5">
+    <h3>We currently have the following competitions available</h3>
+    <p class="text-muted">Explore and participate in conservation competitions that matter to you.</p>
+    <!-- Themes Section with Cards -->
+    <div class="container mt-5">
+        <div class="row text-center">
+            {% for theme in themes %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm h-100 d-flex flex-column">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title fw-bold">{{ theme.name|title }}</h4>
+                        <p class="card-text flex-grow-1">{{ theme.description }}</p>
+                        <a href="{{ url_for('home', theme_id=theme.id) }}" class="btn btn-dark mt-auto">Explore</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {%if not session.user|default('') %} {%else%}
+    <h5 class="text-muted">
+        Can't find a competition you like? No worries—you can create your own. Let's
+        <a href="#" id="CreateCompetition" data-bs-toggle="modal" data-bs-target="#CreatModal" class="text-decoration-underline">create</a>
+        a New Zealand Competition!
+    </h5>
+    {%endif%}
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="CreatModal" tabindex="-1" aria-labelledby="CreatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreatModalLabel">Create Competition</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Validation message placeholder -->
+            <div id="validationMessage" class="alert alert-warning d-none"></div>
+
+            <div class="modal-body">
+                <form id="CreateForm" onsubmit="submitForm(event)">
+                    <!-- Prevent default submit -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Competition Name</label>
+                        <textarea class="form-control" id="category" name="category" maxlength="50" placeholder="Enter Competition Name" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" maxlength="255" placeholder="Enter Description" required></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-dark" onclick="submitForm(event)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript function to handle form submission
+    function submitForm(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = document.getElementById("CreateForm");
+        const formData = new FormData(form);
+
+        // Use fetch API for asynchronous form submission
+        fetch("/voter/theme_create", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((data) => {
+                        throw new Error(data.message); // Catch error and handle it
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Hide modal and reset form on successful submission
+                const modal = bootstrap.Modal.getInstance(document.getElementById("CreatModal"));
+                modal.hide();
+                form.reset();
+                alert(data.message); // Optionally show a success message
+                document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+            })
+            .catch((error) => {
+                // Display validation message on error
+                const validationMessage = document.getElementById("validationMessage");
+                validationMessage.textContent = error.message;
+                validationMessage.classList.remove("d-none"); // Show the error message
+            });
+    }
+</script>
+
+<div class="container text-center mt-5 mb-4">
+    <a href="{{ url_for('survey') }}" class="btn btn-success btn-lg">
+        🌿 Click here to take the Green or Mean Survey
+    </a>
+</div>
+
+{%endblock%}

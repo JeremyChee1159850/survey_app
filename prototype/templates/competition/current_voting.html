@@ -1,0 +1,383 @@
+{% extends "layout.html" %}
+
+{% block title %}Open Event{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h1 class="text-center my-4" id="openCompetition">Open Event</h1>
+    <hr class="my-3">
+    {% if competitions|length == 0 %}
+    <p class="text-center lead">No Open Event Available</p>
+    {% endif %}
+    {% for competition in competitions %}
+    <div class="competition mb-5 shadow-sm p-4" style="background-color: #f8f9fa; border-radius: 8px;">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2>{{ competition.name }}</h2>
+                <br>
+                <p><strong>Start Date:</strong> {{ competition.formatted_start_date }}</p>
+                <p><strong>End Date:</strong> {{ competition.formatted_end_date }}</p>
+            </div>
+
+            <!-- Map section (only show if user is logged in) -->
+            {% if g.user %}
+            <h3 class="text-center mt-3" id="mapView">Map View</h3>
+
+            <div id="competitorMap" style="height: 500px;" class="mb-5 position-relative">
+                <button id="toggleHeatmap" class="btn btn-sm btn-light position-absolute" 
+                    style="bottom: 90px; left: 16px; z-index: 1000;" title="Enable/Disable Voter Heatmap">
+                    <i class="fas fa-fire-alt"></i>
+                </button>
+            </div>
+            {% endif %}
+
+            <div class="col-12" id="competitorListSection">
+                <h3 class="text-center mt-3">List of Competitors</h3>
+                {% if g.user %}
+                <div class="col-12 text-center mb-4">
+                    <label for="sortOrder" class="mr-2">Sort by:</label>
+                    <select id="sortOrder" class="custom-select w-auto" onchange="sortCompetitors()">
+                        <option value="asc" selected>Name: A to Z</option>
+                        <option value="desc">Name: Z to A</option>
+                        {% if g.user %}
+                        <option value="distance_asc">Distance: Closest</option>
+                        <option value="distance_desc">Distance: Farthest</option>
+                        {% endif %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div id="competitorList" class="row">
+                    {% for competitor in competition.competitors %}
+                    <div class="col-md-4 col-sm-6 my-3 competitor" data-lat="{{ competitor.location.lat }}" data-lon="{{ competitor.location.lon }}">
+                        <div class="card h-100 text-center shadow-sm" style="border-radius: 8px;">
+                            <a href="{{ url_for('competitor_details', theme_id=theme_id, competition_id=competition.id, competitor_id=competitor.id) }}" style="text-decoration: none;">
+                                <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; overflow: hidden;">
+                                    <img src="{{ url_for('static', filename='img/' ~ competitor.image) }}" 
+                                         class="img-fluid" 
+                                         style="width: 100%; height: 200px; object-fit: cover;" 
+                                         alt="{{ competitor.name }}">
+                                </div>
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{{ url_for('competitor_details', theme_id=theme_id, competition_id=competition.id, competitor_id=competitor.id) }}" style="text-decoration: none; color: #343a40;">
+                                        {{ competitor.name }}
+                                        {% if voted_competitors[competition.id] == competitor.name %}<span style="color: green;"> @ My Vote</span>{% endif %}
+                                    </a>
+                                </h5>
+                                <p class="competitor-distance"></p>
+                            </div>
+                        </div>
+                    </div>                    
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent voters section -->
+        {% if g.user %}
+        <div class="recent-voters mt-5" id="recentVoters">
+            <h4 class="text-center">Recent 10 Voters</h4>
+            <div class="d-flex flex-wrap justify-content-center">
+                <div class="row justify-content-center">
+                    {% for voter in recent_voters[competition.id] %}
+                    <div class="col-6 col-md-2 d-flex justify-content-center align-items-center">
+                        <div class="voter-card text-center m-3">
+                            <img src="{{ url_for('static', filename='img/' ~ voter[0]) }}" 
+                                 class="img-fluid rounded-circle mb-2" 
+                                 style="width: 70px; height: 70px; object-fit: cover;" 
+                                 alt="{{ voter[1] }}">
+                            <p class="small mb-0"><strong>{{ voter[1] }}</strong></p>
+                            <p class="small">{{ voter[2] }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>  
+        {% endif %}           
+    </div>
+    {% endfor %}
+
+    <!-- Fancy bookmark -->
+    {% if g.user %}
+    <div class="bookmark-nav" id="bookmarkNav">
+        <ul>
+            <li><a href="#openCompetition"> Open Event</a></li>
+            <li><a href="#mapView"> Map View</a></li>
+            <li><a href="#competitorListSection"> List of Competitors</a></li>
+            <li><a href="#recentVoters"> Recent 10 Voters</a></li>
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+
+{% if g.user %}
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.heat/dist/leaflet-heat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script>
+    var heatLayer;
+    var heatmapPoints = [];
+
+    // Initialize the map
+    var map = L.map('competitorMap', {
+        scrollWheelZoom: false, 
+        zoomControl: false
+    }).setView([-40.9006, 174.8860], 5);
+
+    L.control.zoom({
+        position: 'bottomleft' 
+    }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Crown
+    function createCrownIcon(color) {
+        return L.divIcon({
+            className: 'crown-div-icon',
+            html: `<div style="color: ${color}; font-size: 24px;">
+                    <i class="fas fa-crown"></i>
+                </div>`,
+            iconSize: [40, 40],  
+            iconAnchor: [20, 60] 
+        });
+    }
+
+    // Distance
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; 
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return Math.round(distance); 
+    }
+
+    const userLocation = {{ g.user.location | safe }};  
+    function displayDistances() {
+        document.querySelectorAll('.competitor').forEach(function(competitorCard) {
+            const lat = parseFloat(competitorCard.getAttribute('data-lat'));
+            const lon = parseFloat(competitorCard.getAttribute('data-lon'));
+            const distance = calculateDistance(userLocation.lat, userLocation.lon, lat, lon);
+            const distanceElement = competitorCard.querySelector('.competitor-distance');
+            distanceElement.innerHTML = `Distance: ${distance} km`; 
+        });
+    }
+
+    function sortCompetitors() {
+        let competitorList = document.getElementById('competitorList');
+        let sortOrder = document.getElementById('sortOrder').value;
+        let competitors = Array.from(competitorList.getElementsByClassName('competitor'));
+
+        competitors.sort(function (a, b) {
+            let nameA = a.querySelector('.card-title a').innerText.toUpperCase();
+            let nameB = b.querySelector('.card-title a').innerText.toUpperCase();
+
+            if (sortOrder === 'asc' || sortOrder === 'desc') {
+                if (nameA < nameB) {
+                    return sortOrder === 'asc' ? -1 : 1;
+                }
+                if (nameA > nameB) {
+                    return sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            }
+
+            if (sortOrder === 'distance_asc' || sortOrder === 'distance_desc') {
+                const latA = parseFloat(a.getAttribute('data-lat'));
+                const lonA = parseFloat(a.getAttribute('data-lon'));
+                const latB = parseFloat(b.getAttribute('data-lat'));
+                const lonB = parseFloat(b.getAttribute('data-lon'));
+                const distanceA = calculateDistance(userLocation.lat, userLocation.lon, latA, lonA);
+                const distanceB = calculateDistance(userLocation.lat, userLocation.lon, latB, lonB);
+                if (distanceA < distanceB) {
+                    return sortOrder === 'distance_asc' ? -1 : 1;
+                }
+                if (distanceA > distanceB) {
+                    return sortOrder === 'distance_asc' ? 1 : -1;
+                }
+                return 0;
+            }
+        });
+
+        competitors.forEach(competitor => {
+            competitorList.appendChild(competitor);
+        });
+    }
+
+    document.querySelectorAll('.bookmark-nav a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            const offset = 80; 
+            const topPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: topPosition,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    window.onload = function() {
+        displayDistances(); 
+        sortCompetitors(); 
+    };
+
+    // User's location marker
+    if (userLocation) {
+        var userIcon = L.divIcon({
+            className: 'user-div-icon',
+            html: `<div style="color: green; font-size: 36px;">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>`,
+            iconSize: [50, 50],
+            iconAnchor: [25, 50],
+            popupAnchor: [-10, -40]
+        });
+
+        var userMarker = L.marker([userLocation.lat, userLocation.lon], { icon: userIcon })
+            .addTo(map)
+            .bindPopup('<strong>Your Location</strong>');
+    }
+
+    {% for competition in competitions %}
+        {% for competitor in competition.competitors %}
+            var marker = L.marker([{{ competitor.location.lat }}, {{ competitor.location.lon }}])
+                .addTo(map)
+                .bindPopup('<strong>{{ competitor.name }}</strong><br><a href="{{ url_for('competitor_details', theme_id=theme_id, competition_id=competition.id, competitor_id=competitor.id) }}">View Details</a>');
+        {% endfor %}
+    {% endfor %}
+
+
+    {% for competition in competitions %}
+        {% for voter in voter_locations[competition.id] %}
+            heatmapPoints.push([{{ voter.location_lat }}, {{ voter.location_lon }}]);
+        {% endfor %}
+    {% endfor %}
+
+    console.log("Heatmap Points:", heatmapPoints);
+    const weightedPoints = heatmapPoints.map(point => [point[0], point[1], 1.0]);
+    heatLayer = L.heatLayer(heatmapPoints, {
+        radius: 20, 
+        blur: 1,     
+        maxZoom: 17,
+        gradient: {
+            0.2: 'red',
+            0.4: 'orange',
+            0.6: 'yellow',
+            0.8: 'gold',
+            1.0: 'white'
+        }
+    });
+
+    document.getElementById('toggleHeatmap').addEventListener('click', function() {
+        if (map.hasLayer(heatLayer)) {
+            map.removeLayer(heatLayer);
+            console.log("Heatmap removed");
+        } else {
+            heatLayer.addTo(map);
+            console.log("Heatmap added");
+        }
+    });
+</script>
+
+<style>
+    .crown-div-icon {
+        text-align: center;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    #toggleHeatmap {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    #toggleHeatmap i {
+        color: #e12424; 
+    }
+
+    .bookmark-nav {
+        position: fixed;
+        bottom: 30px;
+        left: 30px; 
+        z-index: 1000;
+        background-color: #e8e8e8;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        width: 170px;
+        transform: translateX(-115%);
+        transition: transform 0.3s ease;
+    }
+
+    .bookmark-nav:hover {
+        transform: translateX(-15%); 
+    }
+
+    .bookmark-nav::before {
+        content: "Bookmark";
+        position: absolute;
+        right: -60px; 
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg); 
+        background-color: #343a40;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 8px 8px 0 0;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .bookmark-nav ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .bookmark-nav ul li {
+        margin-bottom: 10px;
+    }
+
+    .bookmark-nav ul li a {
+        color: #343a40;
+        text-decoration: none;
+    }
+
+    .bookmark-nav ul li a:hover {
+        color: #1c9a37;
+    }
+
+    .bookmark-nav:hover .bookmark-icon {
+        display: none;
+    }
+
+    .bookmark-nav::before:hover {
+        background-color: #1c9a37; 
+    }
+
+    #competitorMap {
+        position: relative;
+        z-index: 1; 
+    }
+</style>
+{% endif %}
+
+{% endblock %}

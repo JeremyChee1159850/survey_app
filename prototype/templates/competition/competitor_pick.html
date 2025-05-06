@@ -1,0 +1,105 @@
+{% extends "layout.html" %} {% block title %}Competitor Pickup{% endblock %} {% block content %}
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">
+            Competitor Pickup for
+            <span id="competition_name">{{ competition_name }}</span>
+        </h2>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-info mt-3">{{ message }}</div>
+        {% endfor %} {% if competition_status == 'pending' %}
+        <!-- Competitors Table -->
+        <form method="post" action="{{ url_for('competitor_pick', theme_id=g.theme_id, competition_name=competition_name) }}">
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-dark mx-2">Save</button>
+                <a href="{{ url_for('competition_setup', theme_id=g.theme_id) }}" class="btn btn-secondary mx-2">Back to Search</a>
+                <a href="#" class="btn btn-secondary mx-2" onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Scroll to Bottom</a>
+            </div>            
+            <div class="table-responsive mt-3">
+                <table class="table table-striped table-bordered table-hover text-center mx-auto" style="max-width: 100%;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Competitor Name</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>Selection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for competitor in competitors %}
+                        <tr>
+                            <td>{{ competitor.name }}</td>
+                            <td>{{ competitor.description }}</td>
+                            <td><img src="{{ url_for('static', filename='img/' + competitor.image) }}" alt="{{ competitor.name }}" width="40" style="border-radius: 5px;" /></td>
+                            <td class="text-center">
+                                <!-- Show Remove button if the competitor is already in the competition -->
+                                <button type="button" class="btn btn-danger {{ 'd-none' if competitor.id not in existing_competitor_ids else '' }}" onclick="toggleSelection(this, '{{ competitor.id }}', 'remove')" data-selected="true">Remove</button>
+            
+                                <!-- Show Select button if the competitor is not in the competition -->
+                                <button type="button" class="btn btn-dark {{ '' if competitor.id not in existing_competitor_ids else 'd-none' }}" onclick="toggleSelection(this, '{{ competitor.id }}', 'add')" data-selected="false">Select</button>
+            
+                                <input type="hidden" name="selected_competitor_ids[]" value="" id="competitor-id-{{ competitor.id }}" />
+                                <input type="hidden" name="action_{{ competitor.id }}" value="" id="action-id-{{ competitor.id }}" />
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>            
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-dark mx-2">Save</button>
+                <a href="{{ url_for('competition_setup', theme_id=g.theme_id) }}" class="btn btn-secondary mx-2">Back to Search</a>
+                <a href="#" class="btn btn-secondary mx-2" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">Back to Top</a>
+            </div>            
+        </form>
+        {% else %}
+        <!-- Display existing competitors only if not 'pending' -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Competitor Name</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for competitor in competitors %} {% if competitor.id in existing_competitor_ids %}
+                <tr>
+                    <td>{{ competitor.name }}</td>
+                    <td>{{ competitor.description }}</td>
+                    <td><img src="{{ url_for('static', filename='img/' + competitor.image) }}" alt="{{ competitor.name }}" width="40" /></td>
+                </tr>
+                {% endif %} {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleSelection(element, competitorId, action) {
+            const competitorIdInput = document.getElementById("competitor-id-" + competitorId);
+            const actionInput = document.getElementById("action-id-" + competitorId);
+
+            // Find the buttons within the same td
+            const selectButton = element.closest("td").querySelector(".btn-dark");
+            const removeButton = element.closest("td").querySelector(".btn-danger");
+
+            if (action === "add") {
+                // Hide Select button, show Remove button
+                selectButton.classList.add("d-none");
+                removeButton.classList.remove("d-none");
+                competitorIdInput.value = competitorId;
+                actionInput.value = "add";
+            } else {
+                // Hide Remove button, show Select button
+                removeButton.classList.add("d-none");
+                selectButton.classList.remove("d-none");
+                competitorIdInput.value = competitorId;
+                actionInput.value = "remove";
+            }
+        }
+
+    </script>
+
+</body>
+{% endblock %}

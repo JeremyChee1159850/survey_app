@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+
+{% block title %}Change Role{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Change Role for {{ user[0] }}</h2>
+    <hr class="my-3">
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='img/' ~ user[6]) }}" class="rounded-circle" width="150" height="150" alt="User Avatar">
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 mb-4">
+                <form method="POST" action="{{ url_for('change_role', theme_id=g.theme_id, user_id=user_id) }}" class="text-left">
+                    <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">User Information</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Username</th>
+                                <td>{{ user[0] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Email</th>
+                                <td>{{ user[1] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">First Name</th>
+                                <td>{{ user[2] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Last Name</th>
+                                <td>{{ user[3] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Location</th>
+                                <td>
+                                    <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Description</th>
+                                <td>{{ user[5] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Role in Competition</th>
+                                <td>
+                                    <select class="form-control" id="role" name="role" style="text-align-last: center;">
+                                        <option value="voter" {% if current_role == 'voter' %}selected{% endif %}>Voter</option>
+                                        <option value="scrutineer" {% if current_role == 'scrutineer' %}selected{% endif %}>Scrutineer</option>
+                                        <option value="admin" {% if current_role == 'admin' %}selected{% endif %}>Admin</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Role in Community</th>
+                                <td>
+                                    <select class="form-control" id="community_role" name="community_role" style="text-align-last: center;">
+                                        <option value="voter" {% if current_community_role == 'voter' %}selected{% endif %}>Voter</option>
+                                        <option value="moderator" {% if current_community_role == 'moderator' %}selected{% endif %}>Moderator</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark">Update Role</button>
+                        <a href="{{ url_for('promotion', theme_id=g.theme_id) }}" class="btn btn-secondary mt-3">Back to Search</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if success %}
+<script>
+    alert("Role updated successfully!");
+    window.location.href = "{{ url_for('promotion', theme_id=theme_id, username=username_query, email=email_query, first_name=first_name_query, last_name=last_name_query) }}";
+</script>
+{% endif %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultLat = -40.9006;
+        var defaultLon = 174.8860;
+        var defaultZoom = 5; 
+        var locationString = " {{ user[4] }}";
+        
+        function decodeHTMLEntities(str) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = str;
+            return txt.value;
+        }
+        
+        var decodedLocationString = decodeHTMLEntities(locationString);
+        
+        try {
+            var locationObj = JSON.parse(decodedLocationString);
+            var lat = locationObj.lat;
+            var lon = locationObj.lon;
+            var map = L.map('map').setView([defaultLat, defaultLon], defaultZoom); 
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            
+            if (lat && lon) {
+                L.marker([lat, lon]).addTo(map)
+                    .openPopup();
+                map.setView([lat, lon], 4);
+            }
+            
+            map.scrollWheelZoom.disable();
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.boxZoom.disable();
+            map.keyboard.disable();
+        } catch (error) {
+            console.error("Error parsing location string:", error);
+        }
+    });
+</script>
+<style>
+    #map {
+    position: relative;
+    z-index: 1; 
+    }
+</style>
+{% endblock %}

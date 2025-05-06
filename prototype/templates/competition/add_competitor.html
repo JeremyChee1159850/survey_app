@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Competitor{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Add Competitor</h2>
+    <hr class="my-3">
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for category, message in messages %}
+        <p class="mb-0">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form id="uploadForm" method="POST" action="{{ url_for('add_competitor') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <!-- Competitor Details Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm p-4 mb-4">
+                    <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Competitor Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Competitor Image Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Image</th>
+                                <td class="text-center">
+                                    <div class="mb-3">
+                                        <img src="{{ url_for('static', filename='img/default.png') }}" alt="Avatar" class="rounded" style="height: 300px; width: 100%; margin-top: 10px;" id="image-preview">
+                                    </div>
+                                    <input type="file" class="form-control-file" name="image" id="image-upload" accept="image/*">
+                                </td>
+                            </tr>
+                            <!-- Name Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Name<span style="color: red;">*</span></th>
+                                <td><input type="text" class="form-control" name="name" required></td>
+                            </tr>
+                            <!-- Description Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Description<span style="color: red;">*</span></th>
+                                <td><textarea class="form-control" name="description" rows="5" maxlength="255" required></textarea></td>
+                            </tr>
+                            <!-- Invasiveness Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Invasiveness<span style="color: red;">*</span></th>
+                                <td>
+                                    <select class="form-select" name="invasiveness" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="invasive">Invasive</option>
+                                        <option value="non-invasive">Non-Invasive</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <!-- Location Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Location
+                                    <br>
+                                    <small class="form-text text-muted">Location will appear on the map after you select from the suggestions; or select directly from the map.</small>
+                                </th>
+                                <td>
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter a location">
+                                    <ul id="address-suggestions" class="list-group"></ul>
+                                </td>
+                            </tr>
+                            <!-- Map View Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Map View<span style="color: red;">*</span>
+                                    <br>
+                                    <small class="form-text text-muted">Please ensure the location shows on the map.</small>
+                                </th>
+                                <td>
+                                    <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
+                                    <input type="hidden" id="lat" name="lat">
+                                    <input type="hidden" id="lon" name="lon">
+                                    <div id="location-error" style="color: red; display: none;">Please ensure your location show on the map.</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Submit button at the bottom -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-dark">Add Competitor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Leaflet.js and Country Selector Integration -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    // Initialize map
+    var map = L.map('map', { zoomControl: false }).setView([-40.9006, 174.8860], 5); // Default to New Zealand
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var marker;
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lon = e.latlng.lng;
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lon]).addTo(map);
+
+        // Update hidden form fields with selected lat and lon
+        document.getElementById('lat').value = lat;
+        document.getElementById('lon').value = lon;
+        document.getElementById('location-error').style.display = 'none';
+    });
+
+    // Geocoding for address input
+    document.getElementById('address').addEventListener('input', function() {
+        var query = this.value;
+        if (query.length > 2) {
+            // Restrict geocoding search to New Zealand
+            var geocodeUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query) + "&countrycodes=nz&addressdetails=1&limit=5";
+            fetch(geocodeUrl).then(response => response.json()).then(data => {
+                var suggestions = document.getElementById('address-suggestions');
+                suggestions.innerHTML = '';
+                data.forEach(location => {
+                    var suggestionItem = document.createElement('li');
+                    suggestionItem.classList.add('list-group-item');
+                    suggestionItem.innerText = location.display_name;
+                    suggestionItem.onclick = function() {
+                        document.getElementById('lat').value = location.lat;
+                        document.getElementById('lon').value = location.lon;
+                        map.setView([location.lat, location.lon], 15);
+                        if (marker) {
+                            marker.setLatLng([location.lat, location.lon]);
+                        } else {
+                            marker = L.marker([location.lat, location.lon]).addTo(map);
+                        }
+                        suggestions.innerHTML = '';
+                        document.getElementById('address').value = location.display_name;
+                        document.getElementById('location-error').style.display = 'none';
+                    };
+                    suggestions.appendChild(suggestionItem);
+                });
+            });
+        }
+    });
+
+    // Form validation
+    function validateForm() {
+        var lat = document.getElementById('lat').value;
+        var lon = document.getElementById('lon').value;
+
+        // Check if lat and lon are empty
+        if (!lat || !lon) {
+            document.getElementById('location-error').style.display = 'block';
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+
+    // Simplified image upload preview functionality
+    document.getElementById('image-upload').addEventListener('change', function() {
+        var fileInput = this;
+        var preview = document.getElementById('image-preview');
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+            preview.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "{{ url_for('static', filename='img/default.png') }}";
+        }
+    });
+</script>
+<style>
+    #map {
+    position: relative;
+    z-index: 1; 
+    }
+</style>
+{% endblock %}

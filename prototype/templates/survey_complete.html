@@ -1,0 +1,27 @@
+{% extends "site_layout.html" %}
+{% block title %}Survey Complete{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="p-5 bg-light rounded-3 shadow-sm">
+        <h1 class="display-4 text-success">Thank You!</h1>
+        <p class="lead mt-3">You've successfully completed the Green or Mean survey.</p>
+        <hr class="my-4">
+        <p class="mb-4">Your preferences have been recorded. We appreciate your time and input!</p>
+
+        <!-- Show percentage breakdown -->
+        <div class="mt-4">
+            <h5>Your Selection Summary:</h5>
+            <p>Non-Invasive Plants Chosen: <strong>{{ non_invasive_percent }}%</strong></p>
+            <p>Invasive Plants Chosen: <strong>{{ invasive_percent }}%</strong></p>
+        </div>
+
+        <!-- Show feedback message -->
+        <div class="alert alert-info mt-4">
+            {{ message }}
+        </div>
+
+        <a href="{{ url_for('site_home') }}" class="btn btn-primary btn-lg">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

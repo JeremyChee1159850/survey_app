@@ -1,0 +1,37 @@
+{% extends "site_layout.html" %}
+{% block title %}Survey Final Question{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center">Final Question</h2>
+    <p class="text-center">What characteristics made you prefer certain plants over others?</p>
+
+    <form method="POST" action="{{ url_for('survey_questionnaire') }}">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reasoning" value="Color" required>
+            <label class="form-check-label">Color</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reasoning" value="Shape">
+            <label class="form-check-label">Shape</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reasoning" value="Familiarity">
+            <label class="form-check-label">Familiarity</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reasoning" value="Beauty">
+            <label class="form-check-label">Novelty</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reasoning" value="Beauty">
+            <label class="form-check-label">General Plant Form</label>
+        </div>
+
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

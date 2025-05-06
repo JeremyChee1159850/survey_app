@@ -1,0 +1,32 @@
+{% extends "site_layout.html" %}
+{% block title %}Green or Mean Survey{% endblock %}
+{% block content %}
+
+<div class="container mt-3">
+    <div class="p-3 mb-3 bg-light rounded-3">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 text-center">Green or Mean Prototype Survey</h1>
+            <p class="lead text-center">Which of these two plants would you prefer in your garden?</p>
+            <p class="text-center fw-bold">Question {{ question_number }} of 10</p>
+            <hr class="my-3">
+
+            {% if pair|length == 2 %}
+            <form method="POST" action="{{ url_for('survey_next') }}">
+                <div class="row justify-content-center">
+                    {% for comp in pair %}
+                    <div class="col-md-5 m-2 text-center border rounded p-3 bg-white">
+                        <button type="submit" name="selected_id" value="{{ comp.id }}" class="btn btn-link text-decoration-none">
+                            <img src="{{ url_for('static', filename='img/' ~ comp.image) }}" alt="{{ comp.name }}" class="img-fluid mb-2" style="width: 300px; height: 300px; object-fit: cover;" />
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </form>
+            {% else %}
+            <p class="text-danger text-center">Not enough competitors to show a pair.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

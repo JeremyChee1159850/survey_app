@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <style>
+            .dropdown-menu .dropdown-item.active,
+            .dropdown-menu .dropdown-item:focus {
+                background-color: #1c9a37 !important;
+                color: white !important;
+            }
+            .dropdown-menu .dropdown-item.active:hover {
+                background-color: #1c9a37 !important;
+                color: white !important;
+            }
+        </style>
+    </head>
+
+    <body class="d-flex flex-column min-vh-100" style="background-color: #f8f9fa; color: #333">
+        <nav class="navbar navbar-expand-sm navbar-dark" style="position: fixed; top: 0; width: 100%; z-index: 1000; background-color: #343a40; padding-top: 5px; padding-bottom: 5px">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url_for('site_home') }}">
+                    <img src="{{ url_for('static', filename='img/cclogo.png') }}" alt="Logo" style="height: 40px" />
+                    <span class="ms-2">ConserveConnect</span>
+                </a>
+
+                <ul class="navbar-nav align-items-center ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.active_page == 'site_home' %}active{% endif %}" href="{{ url_for('site_home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.active_page == 'about_us' %}active{% endif %}" href="{{ url_for('about_us') }}">About Us</a>
+                    </li>
+                    {%if not session.user|default('') %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if session.active_page == 'login' %}active{% endif %}" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    {% else %}
+
+                    <!-- prettier-ignore -->
+                    {% if session.user.role == 'siteadmin' %}
+                    <!-- Site Management -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if session.active_page in ['managing_voter', 'managing_competition_application', 'managing_donation_application', 'voting_integrity', 'sitewide_appeal_requests'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">
+                            Site Management
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'managing_voter' %}active{% endif %}" href="{{ url_for('managing_voter') }}">Managing User</a>
+                            </li>
+                            <hr />
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'managing_competition_application' %}active{% endif %}" href="{{ url_for('theme_review') }}">Managing Competition Application</a>
+                            </li>
+                            <hr />
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'voting_integrity' %}active{% endif %}" href="{{ url_for('voting_integrity') }}">Voting Integrity</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'sitewide_appeal_requests' %}active{% endif %}" href="{{ url_for('sitewide_appeals') }}">
+                                    Site-Wide Appeal Requests
+                                    <span id="sitewide-appeal-notification" class="badge bg-danger ms-2" style="display: none">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="{{ url_for('static', filename='img/' ~ session.user.avatar) }}" alt="Avatar" class="rounded-circle" width="40" height="40" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'user_profile' %}active{% endif %}" href="{{ url_for('profile',theme_id=0) }}">User Profile</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'privacy_settings' %}active{% endif %}" href="{{ url_for('privacy_settings',theme_id=0) }}">Privacy Settings</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'change_password' %}active{% endif %}" href="{{ url_for('change_password',theme_id=0) }}">Change Password</a>
+                            </li>
+                            <hr />
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'my_competition_application' %}active{% endif %}" href="{{ url_for('theme_list',theme_id=0) }}">My Competition Application</a>
+                            </li>
+                            <hr />
+                            <li>
+                                <a class="dropdown-item {% if session.active_page == 'my_ban' %}active{% endif %}" href="{{ url_for('banned_competitions',theme_id=0) }}">
+                                    My Ban
+                                    <span id="appeal-notification" class="badge bg-danger ms-2" style="display: none">0</span>
+                                </a>
+                            </li>
+                            <hr />
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}" onclick="confirmLogout(event)">Log Out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <script type="text/javascript">
+                        function confirmLogout(event) {
+                            event.preventDefault();
+                            if (confirm("Are you sure you want to log out?")) {
+                                window.location.href = event.target.href;
+                            }
+                        }
+                    </script>
+                    {%endif%}
+                </ul>
+            </div>
+        </nav>
+
+        <div style="height: 60px"></div>
+
+        <main class="flex-grow-1 container-fluid py-4" style="background-color: #fff; color: #333">{% block content %}{% endblock %}</main>
+
+        <footer class="text-white text-center py-3 d-flex align-items-center justify-content-center" style="background-color: #343a40">
+            <img src="{{ url_for('static', filename='img/grouplogo.jpg') }}" alt="Footer Image" class="img-fluid me-2" style="max-height: 30px" />
+            <p class="mb-0">COMP639S2_project_2_Beta</p>
+        </footer>
+
+        {% if session.user|default('') %}
+        <script type="text/javascript">
+            let role = "{{session.user.role}}";
+
+            document.addEventListener("DOMContentLoaded", function () {
+                fetchBanCount();
+                if (role == "siteadmin") {
+                    fetchSitewideAppealCount();
+                }
+            });
+
+            function fetchBanCount() {
+                fetch("/voter/ban_count")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const badge = document.getElementById("appeal-notification");
+                        if (data.count > 0) {
+                            badge.textContent = data.count;
+                            badge.style.display = "inline-block";
+                        } else {
+                            badge.style.display = "none";
+                        }
+                    })
+                    .catch((error) => console.error("Error fetching ban count:", error));
+            }
+
+            function fetchSitewideAppealCount() {
+                fetch("/siteadmin/sw_appeal_count")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const sitewideBadge = document.getElementById("sitewide-appeal-notification");
+                        if (data.count > 0) {
+                            sitewideBadge.textContent = data.count;
+                            sitewideBadge.style.display = "inline-block";
+                        } else {
+                            sitewideBadge.style.display = "none";
+                        }
+                    })
+                    .catch((error) => console.error("Error fetching site-wide appeal count:", error));
+            }
+        </script>
+        {% endif%}
+    </body>
+</html>

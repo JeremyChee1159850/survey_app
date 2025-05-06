@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Competitor{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Edit Competitor</h2>
+    <hr class="my-3">
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for category, message in messages %}
+        <p class="mb-0">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form id="uploadForm" method="POST" action="{{ url_for('edit_competitor', theme_id=g.theme_id, id=competitor.id) }}" enctype="multipart/form-data">
+        <!-- Competitor Details Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm p-4 mb-4">
+                    <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Competitor Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Competitor Image Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Image</th>
+                                <td class="text-center">
+                                    <div class="mb-3">
+                                        <img src="{{ url_for('static', filename='img/' + competitor.image) }}" alt="Avatar" class="rounded" style="height: 300px; width: 100%; margin-top: 10px;" id="image-preview">
+                                    </div>
+                                    <input type="file" class="form-control-file" name="image" id="image-upload" accept="image/*">
+                                </td>
+                            </tr>
+                            <!-- Name Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Name<span style="color: red;">*</span></th>
+                                <td><input type="text" class="form-control" name="name" value="{{ competitor.name }}" required></td>
+                            </tr>
+                            <!-- Description Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Description<span style="color: red;">*</span></th>
+                                <td><textarea class="form-control" name="description" rows="5" maxlength="255" required>{{ competitor.description }}</textarea></td>
+                            </tr>
+                            <!-- Location Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Location
+                                    <br>
+                                    <small class="form-text text-muted">Location will appear on the map after you select from the suggestions.</small></th>
+                                <td>
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter a location" value="">
+                                    <ul id="address-suggestions" class="list-group"></ul>
+                                </td>
+                            </tr>
+                            <!-- Map View Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Map View<span style="color: red;">*</span>
+                                    <br>
+                                    <small class="form-text text-muted">You can click on the map to update the location.</small>
+                                </th>
+                                <td>
+                                    <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
+                                    <input type="hidden" id="lat" name="lat" value="{{ competitor.location.lat if competitor.location }}">
+                                    <input type="hidden" id="lon" name="lon" value="{{ competitor.location.lon if competitor.location }}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Submit button at the bottom -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-dark">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Leaflet.js and Geocoding Integration -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var lat = {{ competitor.location['lat'] }};
+    var lon = {{ competitor.location['lon'] }};
+    var map = L.map('map', { zoomControl: false }).setView([lat, lon], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
+    var marker = L.marker([lat, lon], { draggable: false }).addTo(map)
+        .bindPopup('Click to change location')
+        .openPopup();
+    map.on('click', function(e) {
+        var clickedLat = e.latlng.lat;
+        var clickedLon = e.latlng.lng;
+        marker.setLatLng([clickedLat, clickedLon])
+            .bindPopup('New location')
+            .openPopup();
+        document.getElementById('lat').value = clickedLat;
+        document.getElementById('lon').value = clickedLon;
+    });
+    document.getElementById('address').addEventListener('input', function() {
+        var query = this.value;
+        if (query.length > 2) {
+            var geocodeUrl = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query) + "&countrycodes=nz&addressdetails=1&limit=5";
+            fetch(geocodeUrl).then(response => response.json()).then(data => {
+                var suggestions = document.getElementById('address-suggestions');
+                suggestions.innerHTML = '';
+                data.forEach(location => {
+                    var suggestionItem = document.createElement('li');
+                    suggestionItem.classList.add('list-group-item');
+                    suggestionItem.innerText = location.display_name;
+                    suggestionItem.onclick = function() {
+                        var lat = location.lat;
+                        var lon = location.lon;
+                        document.getElementById('lat').value = lat;
+                        document.getElementById('lon').value = lon;
+                        map.setView([lat, lon], 15);
+                        marker.setLatLng([lat, lon])
+                            .bindPopup('New location')
+                            .openPopup();
+                        suggestions.innerHTML = '';
+                        document.getElementById('address').value = location.display_name;
+                    };
+                    suggestions.appendChild(suggestionItem);
+                });
+            });
+        }
+    });
+});
+
+    // Simplified image upload preview functionality
+    document.getElementById('image-upload').addEventListener('change', function() {
+        var fileInput = this;
+        var preview = document.getElementById('image-preview');
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+            preview.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "{{ url_for('static', filename='img/default.png') }}";
+        }
+    });
+</script>
+<style>
+    #map {
+    position: relative;
+    z-index: 1; 
+    }
+</style>
+{% endblock %}
