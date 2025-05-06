@@ -3,11 +3,11 @@ from datetime import datetime
 import platform
 from flask import session
 
-from prototype.controller import app
-from prototype.dao.competition_dao import CompetitionDao
-from prototype.utils.session_manager import SessionManager
-from prototype.model.user import User
-from prototype.dao.theme_dao import ThemeDao
+from project693.controller import app
+from project693.dao.competition_dao import CompetitionDao
+from project693.utils.session_manager import SessionManager
+from project693.model.user import User
+from project693.dao.theme_dao import ThemeDao
 
 
 def format_date(date_obj):

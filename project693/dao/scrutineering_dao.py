@@ -1,4 +1,4 @@
-from prototype.dao.base_dao import BaseDAO
+from project693.dao.base_dao import BaseDAO
 from typing import Tuple, List
 from datetime import datetime, timedelta
 

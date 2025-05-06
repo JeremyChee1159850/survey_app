@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, session, request, jsonify, flash
-from prototype.dao.theme_dao import ThemeDao
-from prototype.dao.user_dao import UserDao
-from prototype.controller import app
-from prototype.utils.session_manager import SessionManager
+from project693.dao.theme_dao import ThemeDao
+from project693.dao.user_dao import UserDao
+from project693.controller import app
+from project693.utils.session_manager import SessionManager
 from datetime import datetime
 import mysql.connector
 

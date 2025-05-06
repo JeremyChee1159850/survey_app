@@ -4,13 +4,13 @@ from flask import session
 from flask import url_for
 from flask import flash
 from flask import jsonify
-from prototype.controller import app
-from prototype.dao.competition_dao import CompetitionDao
-from prototype.dao.competitor_dao import CompetitorDAO
-from prototype.utils.session_manager import SessionManager
+from project693.controller import app
+from project693.dao.competition_dao import CompetitionDao
+from project693.dao.competitor_dao import CompetitorDAO
+from project693.utils.session_manager import SessionManager
 from flask import request
 from datetime import datetime
-from prototype.dao.theme_dao import ThemeDao
+from project693.dao.theme_dao import ThemeDao
 
 # list of finalized competitions
 @app.route("/theme/<int:theme_id>/competition_results/", methods=["GET"])

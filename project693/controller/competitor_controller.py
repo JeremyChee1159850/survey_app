@@ -1,9 +1,9 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
-from prototype.controller import app
+from project693.controller import app
 from werkzeug.utils import secure_filename
-from prototype.dao.competitor_dao import CompetitorDAO
-from prototype.dao.competition_dao import CompetitionDao
-from prototype.utils.session_manager import SessionManager
+from project693.dao.competitor_dao import CompetitorDAO
+from project693.dao.competition_dao import CompetitionDao
+from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
 

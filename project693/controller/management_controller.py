@@ -4,13 +4,13 @@ from flask import session
 from flask import url_for
 from flask import flash
 from flask import jsonify
-from prototype.controller import app
-from prototype.model import User
-from prototype.dao.user_dao import UserDao
-from prototype.utils.session_manager import SessionManager
+from project693.controller import app
+from project693.model import User
+from project693.dao.user_dao import UserDao
+from project693.utils.session_manager import SessionManager
 from flask import request
 from datetime import datetime
-from prototype.model.enums import Role, Status
+from project693.model.enums import Role, Status
 
 
 @app.route("/backend_user_management/", methods=["GET", "POST"])

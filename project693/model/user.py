@@ -1,4 +1,4 @@
-from prototype.model.enums import (
+from project693.model.enums import (
     Role,
     Status,
     VotingPermission,

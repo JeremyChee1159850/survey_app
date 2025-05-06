@@ -1,8 +1,8 @@
 from flask import Flask
 from flask import render_template
 from datetime import datetime
-from prototype.utils.session_manager import SessionManager
-from prototype.controller import app
+from project693.utils.session_manager import SessionManager
+from project693.controller import app
 
 
 @app.route("/home/", methods=["GET"])

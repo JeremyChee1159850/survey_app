@@ -5,14 +5,14 @@ from flask import redirect
 from flask import url_for
 from flask import session
 from flask import flash, abort
-from prototype.controller import app
-from prototype.dao.user_dao import UserDao
-from prototype.dao.theme_dao import ThemeDao
-from prototype.model import User
+from project693.controller import app
+from project693.dao.user_dao import UserDao
+from project693.dao.theme_dao import ThemeDao
+from project693.model import User
 from datetime import datetime
-from prototype.utils.hash_utils import get_password_hash
-from prototype.model import enums
-from prototype.utils.session_manager import SessionManager
+from project693.utils.hash_utils import get_password_hash
+from project693.model import enums
+from project693.utils.session_manager import SessionManager
 import re
 import json
 

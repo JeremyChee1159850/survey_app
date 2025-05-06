@@ -1,5 +1,5 @@
-from prototype.model.enums import CompetitionStatus
-from prototype.model.competitor import Competitor
+from project693.model.enums import CompetitionStatus
+from project693.model.competitor import Competitor
 
 class Competition:
     def __init__(

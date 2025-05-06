@@ -1,6 +1,6 @@
-from prototype.dao.base_dao import BaseDAO
-from prototype.model.vote import Vote
-from prototype.model.enums import VoteStatus
+from project693.dao.base_dao import BaseDAO
+from project693.model.vote import Vote
+from project693.model.enums import VoteStatus
 from datetime import datetime
 import json
 

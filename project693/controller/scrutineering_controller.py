@@ -4,13 +4,13 @@ from flask import session
 from flask import url_for
 from flask import flash
 from flask import jsonify
-from prototype.controller import app
-from prototype.dao.competition_dao import CompetitionDao
-from prototype.dao.competitor_dao import CompetitorDAO
-from prototype.dao.scrutineering_dao import ScrutineeringDAO
-from prototype.dao.user_dao import UserDao
-from prototype.utils.session_manager import SessionManager
-from prototype.model.competition import Competition
+from project693.controller import app
+from project693.dao.competition_dao import CompetitionDao
+from project693.dao.competitor_dao import CompetitorDAO
+from project693.dao.scrutineering_dao import ScrutineeringDAO
+from project693.dao.user_dao import UserDao
+from project693.utils.session_manager import SessionManager
+from project693.model.competition import Competition
 from flask import request
 from datetime import datetime
 

@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from prototype.dao.user_dao import UserDao
-from prototype.dao.base_dao import BaseDAO
-from prototype.model import User
-from prototype.utils.session_manager import SessionManager
-from prototype.model.enums import Role, Status
-from prototype.controller import app
+from project693.dao.user_dao import UserDao
+from project693.dao.base_dao import BaseDAO
+from project693.model import User
+from project693.utils.session_manager import SessionManager
+from project693.model.enums import Role, Status
+from project693.controller import app
 
 user_dao = UserDao()
 

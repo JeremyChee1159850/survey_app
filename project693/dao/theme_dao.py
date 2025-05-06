@@ -1,5 +1,5 @@
-from prototype.dao.base_dao import BaseDAO
-from prototype.model.theme import Theme
+from project693.dao.base_dao import BaseDAO
+from project693.model.theme import Theme
 from datetime import datetime
 
 

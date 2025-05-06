@@ -1,4 +1,4 @@
-from prototype.model.enums import VoteStatus
+from project693.model.enums import VoteStatus
 
 class Vote:
     def __init__(

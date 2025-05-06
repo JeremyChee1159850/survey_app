@@ -1,11 +1,11 @@
 from flask import request, render_template, redirect, url_for, flash, session
-from prototype.controller import app
-from prototype.dao.user_dao import UserDao
-from prototype.model import User
-from prototype.model.privacy_settings import UserPrivacySettings
+from project693.controller import app
+from project693.dao.user_dao import UserDao
+from project693.model import User
+from project693.model.privacy_settings import UserPrivacySettings
 from werkzeug.utils import secure_filename
-from prototype.utils.hash_utils import get_password_hash, check_password_hash
-from prototype.utils.session_manager import SessionManager
+from project693.utils.hash_utils import get_password_hash, check_password_hash
+from project693.utils.session_manager import SessionManager
 from flask import jsonify
 import os
 import json

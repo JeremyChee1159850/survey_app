@@ -1,9 +1,9 @@
 from flask import render_template, session, redirect, url_for, flash, request
-from prototype.dao.competition_dao import CompetitionDao
-from prototype.dao.vote_dao import VoteDao
-from prototype.dao.user_dao import UserDao
-from prototype.controller import app
-from prototype.utils.session_manager import SessionManager
+from project693.dao.competition_dao import CompetitionDao
+from project693.dao.vote_dao import VoteDao
+from project693.dao.user_dao import UserDao
+from project693.controller import app
+from project693.utils.session_manager import SessionManager
 
 competition_dao = CompetitionDao()
 vote_dao = VoteDao()

@@ -1,12 +1,12 @@
-from prototype.dao.base_dao import BaseDAO
-from prototype.model.competition import CompetitionResult
-from prototype.model.competition import Competition
-from prototype.model.competitor import Competitor
-from prototype.model.competitor import CompetitionCompetitor
+from project693.dao.base_dao import BaseDAO
+from project693.model.competition import CompetitionResult
+from project693.model.competition import Competition
+from project693.model.competitor import Competitor
+from project693.model.competitor import CompetitionCompetitor
 from typing import Tuple, Optional, List
 from datetime import datetime
-from prototype.dao.theme_dao import ThemeDao
-from prototype.model.theme import Theme
+from project693.dao.theme_dao import ThemeDao
+from project693.model.theme import Theme
 import json
 
 

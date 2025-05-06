@@ -1,5 +1,5 @@
 from flask import render_template
-from prototype.controller import app
+from project693.controller import app
 
 
 # Catch request of page_not_found

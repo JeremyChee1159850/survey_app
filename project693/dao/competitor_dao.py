@@ -1,5 +1,5 @@
-from prototype.dao.base_dao import BaseDAO
-from prototype.model.competitor import Competitor
+from project693.dao.base_dao import BaseDAO
+from project693.model.competitor import Competitor
 from typing import List
 import json
 import random # this is for prototype
