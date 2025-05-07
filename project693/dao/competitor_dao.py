@@ -2,7 +2,7 @@ from project693.dao.base_dao import BaseDAO
 from project693.model.competitor import Competitor
 from typing import List
 import json
-import random # this is for prototype
+import random # this is for project693
 
 
 class CompetitorDAO(BaseDAO):
@@ -67,7 +67,7 @@ class CompetitorDAO(BaseDAO):
             )
         return None
     
-    # prototype
+    # project693
     def get_all_competitors(self) -> List[Competitor]:
         query = "SELECT id, name, description, image, location, invasiveness FROM competitors"
         result = self.execute_query(query)
@@ -87,7 +87,7 @@ class CompetitorDAO(BaseDAO):
         return competitors
     
 
-    # prototype
+    # project693
     def get_random_pair(self, used_invasive_ids=None, used_non_invasive_ids=None) -> List[Competitor]:
         all_competitors = self.get_all_competitors()
 

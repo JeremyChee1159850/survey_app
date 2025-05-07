@@ -12,7 +12,7 @@ import json
 
 
 # Configure the file upload folder
-app.config["UPLOAD_FOLDER"] = "prototype/static/img/"
+app.config["UPLOAD_FOLDER"] = "project693/static/img/"
 app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg", "gif"}
 
 

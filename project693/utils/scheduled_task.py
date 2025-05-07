@@ -9,7 +9,7 @@ sys.path.append(
     os.path.abspath(os.path.join(current_dir, "../.."))
 )  # 向上两层到项目根目录
 
-from prototype.dao.competition_dao import CompetitionDao
+from project693.dao.competition_dao import CompetitionDao
 
 competitionDao = CompetitionDao()
 competitionDao.update_status_for_expired_competitions(None)
