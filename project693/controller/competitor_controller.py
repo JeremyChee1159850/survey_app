@@ -178,6 +178,15 @@ def survey():
     return render_template("survey.html", pair=pair, question_number=1)
 
 
+@app.route("/survey/next/", methods=["GET"])
+def survey_next_refresh():
+    # 🚨 User refreshed or typed in the URL → reset
+    session.clear()
+    SessionManager.clear()
+    flash("Survey restarted due to page refresh or direct access.", "warning")
+    return redirect(url_for("survey"))
+
+
 @app.route("/survey/next/", methods=["POST"])
 def survey_next():
     selected_id = request.form.get("selected_id")
