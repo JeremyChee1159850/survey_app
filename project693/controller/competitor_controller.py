@@ -179,13 +179,27 @@ def survey():
 
 
 @app.route("/survey/next/", methods=["GET"])
-def survey_next_refresh():
-    # 🚨 User refreshed or typed in the URL → reset
-    session.clear()
-    SessionManager.clear()
-    flash("Survey restarted due to page refresh or direct access.", "warning")
-    return redirect(url_for("survey"))
+def survey_next_get():
+    qn = session.get("question_number", 1)
 
+    if qn == 10:
+        return render_template("survey_questionnaire.html")
+
+    used_invasive = SessionManager.get("used_invasive") or []
+    used_non_invasive = SessionManager.get("used_non_invasive") or []
+
+    pair = competitor_dao.get_random_pair(
+        used_invasive_ids=used_invasive,
+        used_non_invasive_ids=used_non_invasive
+    )
+
+    if not pair:
+        flash("Not enough competitors left to continue the survey.", "warning")
+        return redirect(url_for("list_competitors", theme_id=1))
+
+    SessionManager.set("last_pair", [pair[0].id, pair[1].id])
+
+    return render_template("survey.html", pair=pair, question_number=qn)
 
 @app.route("/survey/next/", methods=["POST"])
 def survey_next():
@@ -228,23 +242,8 @@ def survey_next():
     # Increment question number
     session["question_number"] = qn + 1
 
-    # Show final questionnaire if survey done
-    if qn + 1 == 10:
-        return render_template("survey_questionnaire.html")
-
-    # Otherwise get next random pair
-    pair = competitor_dao.get_random_pair(
-        used_invasive_ids=used_invasive,
-        used_non_invasive_ids=used_non_invasive
-    )
-    if not pair:
-        flash("Not enough competitors left to continue the survey.", "warning")
-        return redirect(url_for("list_competitors", theme_id=1))
-
-    # Save the new shown pair
-    SessionManager.set("last_pair", [pair[0].id, pair[1].id])
-
-    return render_template("survey.html", pair=pair, question_number=qn + 1)
+    # Redirect to GET route to show next question
+    return redirect(url_for("survey_next_get"))
 
 
 @app.route("/survey/questionnaire", methods=["POST"])
