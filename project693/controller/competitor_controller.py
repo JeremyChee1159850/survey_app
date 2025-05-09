@@ -158,7 +158,11 @@ def competitor_pick(theme_id):
 
 @app.route("/survey/", methods=["GET"])
 def survey():
-    # 💡 Always start fresh
+    #if "session_id" not in session:
+    #    session["session_id"] = str(uuid.uuid4())
+
+    session["session_id"] = str(uuid.uuid4())  # always new session
+
     session["question_number"] = 1
     session["answers"] = []
     SessionManager.set("used_invasive", [])
@@ -204,14 +208,15 @@ def survey_next_get():
 @app.route("/survey/next/", methods=["POST"])
 def survey_next():
     selected_id = request.form.get("selected_id")
-    user_id = SessionManager.get("user_id")  # None if anonymous
+    session_id = session.get("session_id")
+    #user_id = SessionManager.get("user_id")  # None if anonymous
 
     # Current question number
     qn = session.get("question_number", 1)
 
     # Save answer immediately
     competitor_dao.survey_answer(
-        user_id=user_id,
+        session_id=session_id,
         question_number=qn,
         selected_competitor_id=selected_id,
         reasoning=None
@@ -249,12 +254,13 @@ def survey_next():
 @app.route("/survey/questionnaire", methods=["POST"])
 def survey_questionnaire():
     reasoning = request.form.get("reasoning")
-    user_id = SessionManager.get("user_id")
+    session_id = session.get("session_id")
+    #user_id = SessionManager.get("user_id")
 
     # Save reasoning as question 10
     competitor_dao = CompetitorDAO()
     competitor_dao.survey_answer(
-        user_id=user_id,
+        session_id=session_id,
         question_number=10,
         selected_competitor_id=0,  # or keep it as 0 for reasoning-only
         reasoning=reasoning

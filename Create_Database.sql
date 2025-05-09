@@ -78,7 +78,7 @@ CREATE TABLE `competitors` (
 DROP TABLE IF EXISTS `survey_results`;
 CREATE TABLE `survey_results` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT DEFAULT NULL,               -- NULL if anonymous user
+  `session_id` VARCHAR(255) NOT NULL,       -- stores UUID string
   `question_number` INT NOT NULL,           -- 1 to 10
   `selected_competitor_id` INT NOT NULL,    -- which plant they chose
   `reasoning` VARCHAR(50) DEFAULT NULL,     -- only filled on final question (Q10)
