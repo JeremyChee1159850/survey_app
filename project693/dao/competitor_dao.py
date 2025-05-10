@@ -112,9 +112,18 @@ class CompetitorDAO(BaseDAO):
         ], 2)
     
     # Answers of survey that get stored in the database
-    def survey_answer(self, session_id, question_number, selected_competitor_id, reasoning=None):
+    def survey_answer(self, session_id, question_number, selected_competitor_id):
         query = """
-                INSERT INTO survey_results (session_id, question_number, selected_competitor_id, reasoning)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO survey_results (session_id, question_number, selected_competitor_id)
+                VALUES (%s, %s, %s)
                 """
-        self.execute_non_query(query, (session_id, question_number, selected_competitor_id, reasoning))
+        self.execute_non_query(query, (session_id, question_number, selected_competitor_id))
+
+
+    def save_metadata(self, session_id, reasoning):
+        query = """
+                INSERT INTO survey_metadata (session_id, reasoning)
+                VALUES (%s, %s)
+                """
+        values = (session_id, reasoning)
+        self.execute_non_query(query, values)

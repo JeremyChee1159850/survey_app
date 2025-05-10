@@ -158,9 +158,6 @@ def competitor_pick(theme_id):
 
 @app.route("/survey/", methods=["GET"])
 def survey():
-    #if "session_id" not in session:
-    #    session["session_id"] = str(uuid.uuid4())
-
     session["session_id"] = str(uuid.uuid4())  # always new session
 
     session["question_number"] = 1
@@ -218,8 +215,7 @@ def survey_next():
     competitor_dao.survey_answer(
         session_id=session_id,
         question_number=qn,
-        selected_competitor_id=selected_id,
-        reasoning=None
+        selected_competitor_id=selected_id
     )
 
     # Update answers list
@@ -259,10 +255,8 @@ def survey_questionnaire():
 
     # Save reasoning as question 10
     competitor_dao = CompetitorDAO()
-    competitor_dao.survey_answer(
+    competitor_dao.save_metadata(
         session_id=session_id,
-        question_number=10,
-        selected_competitor_id=0,  # or keep it as 0 for reasoning-only
         reasoning=reasoning
     )
 

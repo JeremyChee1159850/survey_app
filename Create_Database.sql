@@ -77,12 +77,23 @@ CREATE TABLE `competitors` (
 
 DROP TABLE IF EXISTS `survey_results`;
 CREATE TABLE `survey_results` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `id` INT AUTO_INCREMENT,
   `session_id` VARCHAR(255) NOT NULL,       -- stores UUID string
   `question_number` INT NOT NULL,           -- 1 to 10
   `selected_competitor_id` INT NOT NULL,    -- which plant they chose
-  `reasoning` VARCHAR(50) DEFAULT NULL,     -- only filled on final question (Q10)
-  `submission_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- auto logs each click time
+  `submission_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- auto logs each click time
+  PRIMARY KEY (`id`)
+);
+
+DROP TABLE IF EXISTS `survey_metadata`;
+CREATE TABLE `survey_metadata` (
+  `id` INT AUTO_INCREMENT,
+  `session_id` VARCHAR(255) NOT NULL,
+  `has_garden` BOOLEAN,
+  `age` VARCHAR(50),
+  `reasoning` VARCHAR(50), 
+  `submitted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 );
 
 DROP TABLE IF EXISTS `competition_competitors`;
@@ -158,26 +169,26 @@ CREATE TABLE `banned_voters` (
   PRIMARY KEY (`id`)
 ) ;
 
-DROP TABLE IF EXISTS `messages`;
-CREATE TABLE `messages` (
-  `message_id` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL,
-  `title` VARCHAR(255) NOT NULL,
-  `content` TEXT NOT NULL,
-  `created_at` TIMESTAMP NOT NULL,
-  `theme_id` int NOT NULL,
-  PRIMARY KEY (`message_id`)
-) ;
+-- DROP TABLE IF EXISTS `messages`;
+-- CREATE TABLE `messages` (
+--   `message_id` INT NOT NULL AUTO_INCREMENT,
+--   `user_id` INT NOT NULL,
+--   `title` VARCHAR(255) NOT NULL,
+--   `content` TEXT NOT NULL,
+--   `created_at` TIMESTAMP NOT NULL,
+--   `theme_id` int NOT NULL,
+--   PRIMARY KEY (`message_id`)
+-- ) ;
 
-DROP TABLE IF EXISTS `replies`;
-CREATE TABLE `replies` (
-  `reply_id` INT NOT NULL AUTO_INCREMENT,
-  `message_id` INT NOT NULL,
-  `user_id` INT NOT NULL,
-  `content` TEXT NOT NULL,
-  `created_at` TIMESTAMP NOT NULL,
-  PRIMARY KEY (`reply_id`)
-) ;  
+-- DROP TABLE IF EXISTS `replies`;
+-- CREATE TABLE `replies` (
+--   `reply_id` INT NOT NULL AUTO_INCREMENT,
+--   `message_id` INT NOT NULL,
+--   `user_id` INT NOT NULL,
+--   `content` TEXT NOT NULL,
+--   `created_at` TIMESTAMP NOT NULL,
+--   PRIMARY KEY (`reply_id`)
+-- ) ;  
 
 DROP TABLE IF EXISTS `conversations`;
 CREATE TABLE `conversations` (
