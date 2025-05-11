@@ -319,19 +319,19 @@ def uphold_appeal(theme_id, appeal_id):
     )
 
 
-@app.route("/theme/<int:theme_id>/scrutineer/appeal_count", methods=["GET"])
-def get_appeal_count(theme_id):
-    scrutineering_dao = ScrutineeringDAO()
-    count = scrutineering_dao.get_appeal_count(theme_id)
-    return jsonify({"count": count})
+# @app.route("/theme/<int:theme_id>/scrutineer/appeal_count", methods=["GET"])
+# def get_appeal_count(theme_id):
+#     scrutineering_dao = ScrutineeringDAO()
+#     count = scrutineering_dao.get_appeal_count(theme_id)
+#     return jsonify({"count": count})
 
 
 # sitewide appeal count
-@app.route("/siteadmin/sw_appeal_count", methods=["GET"])
-def sw_appeal_count():
-    scrutineering_dao = ScrutineeringDAO()
-    count = scrutineering_dao.sw_appeal_count()
-    return jsonify({"count": count})
+# @app.route("/siteadmin/sw_appeal_count", methods=["GET"])
+# def sw_appeal_count():
+#     scrutineering_dao = ScrutineeringDAO()
+#     count = scrutineering_dao.sw_appeal_count()
+#     return jsonify({"count": count})
 
 
 @app.route("/siteadmin/voting_integrity", methods=["GET"])

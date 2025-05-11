@@ -1,0 +1,42 @@
+{% extends "site_layout.html" %}
+{% block title %}Before You Begin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Before You Start the Survey</h2>
+    <p class="text-center">We’d like to know a bit more about you.</p>
+
+    <form method="POST" action="{{ url_for('survey') }}" class="mx-auto" style="max-width: 600px;">
+
+        <!-- Garden question -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">Do you have your own garden?</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="has_garden" value="yes" required>
+                <label class="form-check-label">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="has_garden" value="no" required>
+                <label class="form-check-label">No</label>
+            </div>
+        </div>
+
+        <!-- Age range -->
+        <div class="mb-4">
+            <label for="age_range" class="form-label fw-bold">What age range are you in?</label>
+            <select class="form-select" name="age_range" id="age_range" required>
+                <option value="" disabled selected>Select your age range</option>
+                <option value="18–29">18–29</option>
+                <option value="30–49">30–49</option>
+                <option value="50–64">50–64</option>
+                <option value="65+">65+</option>
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Start Survey</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

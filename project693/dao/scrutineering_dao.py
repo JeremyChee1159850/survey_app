@@ -306,21 +306,21 @@ class ScrutineeringDAO(BaseDAO):
         sql = "DELETE FROM banned_voters WHERE user_id = %s AND theme_id = %s"
         self.execute_non_query(sql, (user_id, theme_id))
 
-    def get_appeal_count(self, theme_id):
-        sql = "SELECT COUNT(*) FROM ban_appeals WHERE status = 'pending' AND theme_id = %s AND appeal_reason != 'Automatic ban appeal'"
-        result = self.execute_query(sql, (theme_id,))
-        return result[0][0] if result else 0
+    # def get_appeal_count(self, theme_id):
+    #     sql = "SELECT COUNT(*) FROM ban_appeals WHERE status = 'pending' AND theme_id = %s AND appeal_reason != 'Automatic ban appeal'"
+    #     result = self.execute_query(sql, (theme_id,))
+    #     return result[0][0] if result else 0
     
-    def sw_appeal_count(self):
-        sql = """
-            SELECT COUNT(*)
-            FROM ban_appeals
-            WHERE ban_scope = 'sitewide'
-            AND appeal_reason != 'Automatic site-wide ban appeal'
-            AND status = 'pending'
-            """
-        result = self.execute_query(sql)
-        return result[0][0] if result else 0
+    # def sw_appeal_count(self):
+    #     sql = """
+    #         SELECT COUNT(*)
+    #         FROM ban_appeals
+    #         WHERE ban_scope = 'sitewide'
+    #         AND appeal_reason != 'Automatic site-wide ban appeal'
+    #         AND status = 'pending'
+    #         """
+    #     result = self.execute_query(sql)
+    #     return result[0][0] if result else 0
     
     def voting_integrity(self):
         query = """

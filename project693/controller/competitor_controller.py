@@ -156,24 +156,37 @@ def competitor_pick(theme_id):
     )
 
 
-@app.route("/survey/", methods=["GET"])
+@app.route("/survey/", methods=["GET", "POST"])
 def survey():
-    session["session_id"] = str(uuid.uuid4())  # always new session
+    if request.method == "GET":
+        return render_template("survey_intro.html")  # new template with garden + age form
 
+    # POST method – user submitted intro form
+    session["session_id"] = str(uuid.uuid4())  # new session
     session["question_number"] = 1
     session["answers"] = []
+
+    # Save form metadata
+    has_garden = request.form.get("has_garden") == "yes"
+    age_range = request.form.get("age_range")
+
+    # Save metadata with placeholder reasoning
+    competitor_dao.save_metadata(
+        session_id=session["session_id"],
+        reasoning=None,
+        has_garden=has_garden,
+        age=age_range
+    )
+
+    # Start tracking pairs
     SessionManager.set("used_invasive", [])
     SessionManager.set("used_non_invasive", [])
 
-    pair = competitor_dao.get_random_pair(
-        used_invasive_ids=[],
-        used_non_invasive_ids=[]
-    )
+    pair = competitor_dao.get_random_pair([], [])
     if not pair:
         flash("Not enough competitors in the database!", "warning")
         return redirect(url_for("list_competitors", theme_id=1))
-    
-    # Save the pair for tracking used competitors
+
     SessionManager.set("last_pair", [pair[0].id, pair[1].id])
 
     return render_template("survey.html", pair=pair, question_number=1)
@@ -255,9 +268,9 @@ def survey_questionnaire():
 
     # Save reasoning as question 10
     competitor_dao = CompetitorDAO()
-    competitor_dao.save_metadata(
-        session_id=session_id,
-        reasoning=reasoning
+    competitor_dao.update_reasoning(
+    session_id=session_id,
+    reasoning=reasoning
     )
 
     # Get all selected answers from session

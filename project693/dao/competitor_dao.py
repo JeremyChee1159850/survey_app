@@ -119,11 +119,17 @@ class CompetitorDAO(BaseDAO):
                 """
         self.execute_non_query(query, (session_id, question_number, selected_competitor_id))
 
-
-    def save_metadata(self, session_id, reasoning):
+    # Save the Introduction Questions
+    def save_metadata(self, session_id, has_garden=None, age=None, reasoning=None):
         query = """
-                INSERT INTO survey_metadata (session_id, reasoning)
-                VALUES (%s, %s)
+                INSERT INTO survey_metadata (session_id, has_garden, age, reasoning)
+                VALUES (%s, %s, %s, %s)
                 """
-        values = (session_id, reasoning)
-        self.execute_non_query(query, values)
+        self.execute_non_query(query, (session_id, has_garden, age, reasoning))
+
+    # Update Q10 which is the Reasoning Question
+    def update_reasoning(self, session_id, reasoning):
+        query = """
+                UPDATE survey_metadata SET reasoning = %s WHERE session_id = %s
+                """
+        self.execute_non_query(query, (reasoning, session_id))
