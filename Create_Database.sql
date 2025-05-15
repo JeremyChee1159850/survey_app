@@ -64,8 +64,8 @@ CREATE TABLE `competitions` (
   PRIMARY KEY (`id`)
 ) ;
 
-DROP TABLE IF EXISTS `competitors`;
-CREATE TABLE `competitors` (
+DROP TABLE IF EXISTS `plants`;
+CREATE TABLE `plants` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` varchar(255) NOT NULL,

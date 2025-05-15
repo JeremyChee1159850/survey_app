@@ -193,7 +193,7 @@ INSERT INTO `competitions` (id, name, voting_start_date, voting_end_date, status
 
 
 
-INSERT INTO `competitors` (id, name, description, image, location, invasiveness) VALUES
+INSERT INTO `plants` (id, name, description, image, location, invasiveness) VALUES
 -- For theme_id = 1 (surfing spot)
 (1, 'Heather', 'Famous for its powerful waves and dramatic black sand beaches. A popular spot for surfers and photographers.', 'CallunaVulgaris.jpg', JSON_OBJECT('lat', -36.9525, 'lon', 174.4707), 'invasive'),
 (2, 'Daphne', 'Known for its long left-hand break and relaxed atmosphere. Ideal for all levels of surfers.', 'daphne.jpg', JSON_OBJECT('lat', -37.8010, 'lon', 174.8717), 'non-invasive'),

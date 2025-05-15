@@ -12,14 +12,14 @@ class CompetitorDAO(BaseDAO):
 
     def add_competitor(self, name: str, description: str, image: str, location: str, invasiveness: str) -> None:
         query = """
-            INSERT INTO competitors (name, description, image, location, invasiveness)
+            INSERT INTO plants (name, description, image, location, invasiveness)
             VALUES (%s, %s, %s, %s, %s)
         """
         self.execute_non_query(query, (name, description, image, location, invasiveness))
 
     def edit_competitor(self, id: int, name: str, description: str, image: str, location: str) -> None:
         query = """
-            UPDATE competitors
+            UPDATE plants
             SET name = %s, description = %s, image = %s, location = %s
             WHERE id = %s
         """
@@ -27,13 +27,13 @@ class CompetitorDAO(BaseDAO):
 
 
     def delete_competitor(self, id: int) -> None:
-        query = "DELETE FROM competitors WHERE id = %s"
+        query = "DELETE FROM plants WHERE id = %s"
         self.execute_non_query(query, (id,))
 
     def search_competitor(self, keyword: str) -> List[Competitor]:
         query = """
             SELECT id, name, description, image, location, invasiveness
-            FROM competitors
+            FROM plants
             WHERE name LIKE %s OR description LIKE %s
         """
         result = self.execute_query(query, (f"%{keyword}%", f"%{keyword}%"))
@@ -53,7 +53,7 @@ class CompetitorDAO(BaseDAO):
         return competitors
 
     def get_competitor_by_id(self, id: int) -> Competitor:
-        query = "SELECT * FROM competitors WHERE id = %s"
+        query = "SELECT * FROM plants WHERE id = %s"
         result = self.execute_query(query, (id,))
         if result:
             row = result[0]
@@ -69,7 +69,7 @@ class CompetitorDAO(BaseDAO):
     
     # project693
     def get_all_competitors(self) -> List[Competitor]:
-        query = "SELECT id, name, description, image, location, invasiveness FROM competitors"
+        query = "SELECT id, name, description, image, location, invasiveness FROM plants"
         result = self.execute_query(query)
 
         competitors = []
