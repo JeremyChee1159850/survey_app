@@ -96,18 +96,18 @@ CREATE TABLE `survey_metadata` (
   PRIMARY KEY (`id`)
 );
 
-DROP TABLE IF EXISTS `competition_competitors`;
-CREATE TABLE `competition_competitors` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `competition_id` int NOT NULL,
-  `competitor_id` int NOT NULL,
-  `vote_count` int DEFAULT NULL,
-  `vote_ratio` DECIMAL(4,3) DEFAULT NULL,
-  `is_winner` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `competition_competitors_competitions` (`competition_id`),
-  CONSTRAINT `competition_competitors_competitions` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`)
-);
+-- DROP TABLE IF EXISTS `competition_competitors`;
+-- CREATE TABLE `competition_competitors` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `competition_id` int NOT NULL,
+--   `competitor_id` int NOT NULL,
+--   `vote_count` int DEFAULT NULL,
+--   `vote_ratio` DECIMAL(4,3) DEFAULT NULL,
+--   `is_winner` tinyint(1) DEFAULT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `competition_competitors_competitions` (`competition_id`),
+--   CONSTRAINT `competition_competitors_competitions` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`)
+-- );
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -129,45 +129,45 @@ CREATE TABLE `users` (
   UNIQUE KEY `email_UK` (`email`)
 );
 
-DROP TABLE IF EXISTS `votes`;
-CREATE TABLE `votes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `competition_competitor_id` int NOT NULL,
-  `voter_id` int NOT NULL,
-  `voting_time` timestamp NOT NULL,
-  `voting_ip` varchar(50) NOT NULL,
-  `status` enum('valid','invalid') NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `votes_users` (`voter_id`),
-  CONSTRAINT `votes_users` FOREIGN KEY (`voter_id`) REFERENCES `users` (`id`)
-);
+-- DROP TABLE IF EXISTS `votes`;
+-- CREATE TABLE `votes` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `competition_competitor_id` int NOT NULL,
+--   `voter_id` int NOT NULL,
+--   `voting_time` timestamp NOT NULL,
+--   `voting_ip` varchar(50) NOT NULL,
+--   `status` enum('valid','invalid') NOT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `votes_users` (`voter_id`),
+--   CONSTRAINT `votes_users` FOREIGN KEY (`voter_id`) REFERENCES `users` (`id`)
+-- );
 
 
-DROP TABLE IF EXISTS `ban_appeals`;
-CREATE TABLE `ban_appeals` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ban_scope` enum('theme','sitewide') NOT NULL,    
-  `theme_id` int DEFAULT NULL,
-  `appealer_id` int NOT NULL,
-  `appealer` varchar(20) NOT NULL,
-  `appeal_reason` varchar(255) NOT NULL,  
-  `appeal_time` timestamp NOT NULL,  
-  `status` enum('pending','upheld','revoked') NOT NULL,  
-  `upholding_reason` varchar(255) DEFAULT NULL,
-  `operator_id` int DEFAULT NULL,
-  `operator` varchar(20) DEFAULT NULL,
-  `operation_time` timestamp DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `ban_appeals`;
+-- CREATE TABLE `ban_appeals` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `ban_scope` enum('theme','sitewide') NOT NULL,    
+--   `theme_id` int DEFAULT NULL,
+--   `appealer_id` int NOT NULL,
+--   `appealer` varchar(20) NOT NULL,
+--   `appeal_reason` varchar(255) NOT NULL,  
+--   `appeal_time` timestamp NOT NULL,  
+--   `status` enum('pending','upheld','revoked') NOT NULL,  
+--   `upholding_reason` varchar(255) DEFAULT NULL,
+--   `operator_id` int DEFAULT NULL,
+--   `operator` varchar(20) DEFAULT NULL,
+--   `operation_time` timestamp DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ;
 
-DROP TABLE IF EXISTS `banned_voters`;
-CREATE TABLE `banned_voters` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `theme_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `appeal_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `banned_voters`;
+-- CREATE TABLE `banned_voters` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `theme_id` int NOT NULL,
+--   `user_id` int NOT NULL,
+--   `appeal_id` int DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ;
 
 -- DROP TABLE IF EXISTS `messages`;
 -- CREATE TABLE `messages` (
@@ -190,15 +190,15 @@ CREATE TABLE `banned_voters` (
 --   PRIMARY KEY (`reply_id`)
 -- ) ;  
 
-DROP TABLE IF EXISTS `conversations`;
-CREATE TABLE `conversations` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `user_id_1` INT NOT NULL,
-  `user_id_2` INT NOT NULL,
-  `created_at` TIMESTAMP NOT NULL,
-  `latest_message_time` TIMESTAMP NOT NULL,  
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `conversations`;
+-- CREATE TABLE `conversations` (
+--   `id` INT NOT NULL AUTO_INCREMENT,
+--   `user_id_1` INT NOT NULL,
+--   `user_id_2` INT NOT NULL,
+--   `created_at` TIMESTAMP NOT NULL,
+--   `latest_message_time` TIMESTAMP NOT NULL,  
+--   PRIMARY KEY (`id`)
+-- ) ;
 
 -- DROP TABLE IF EXISTS `conversation_messages`;
 -- CREATE TABLE `conversation_messages` (
