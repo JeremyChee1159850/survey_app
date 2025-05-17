@@ -52,11 +52,6 @@
                             <li>
                                 <a class="dropdown-item {% if session.active_page == 'managing_voter' %}active{% endif %}" href="{{ url_for('managing_voter') }}">Managing User</a>
                             </li>
-                            <hr />
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'managing_competition_application' %}active{% endif %}" href="{{ url_for('theme_review') }}">Managing Competition Application</a>
-                            </li>
-                            <hr />
                             <li>
                                 <a class="dropdown-item {% if session.active_page == 'voting_integrity' %}active{% endif %}" href="{{ url_for('voting_integrity') }}">Voting Integrity</a>
                             </li>
@@ -82,10 +77,6 @@
                             </li>
                             <li>
                                 <a class="dropdown-item {% if session.active_page == 'change_password' %}active{% endif %}" href="{{ url_for('change_password',theme_id=0) }}">Change Password</a>
-                            </li>
-                            <hr />
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'my_competition_application' %}active{% endif %}" href="{{ url_for('theme_list',theme_id=0) }}">My Competition Application</a>
                             </li>
                             <hr />
                             <li>

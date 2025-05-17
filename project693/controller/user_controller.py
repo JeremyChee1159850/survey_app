@@ -191,17 +191,6 @@ def appeal(theme_id):
     return redirect(url_for("banned_competitions", theme_id=theme_id))
 
 
-# @app.route("/voter/ban_count", methods=["GET"])
-# def get_ban_count():
-#     user_info = SessionManager.get(SessionManager.USER)
-#     if not user_info:
-#         return jsonify({"error": "User not logged in"}), 401
-#     user_id = user_info["id"]
-#     user_dao = UserDao()
-#     count = user_dao.get_ban_count(user_id)
-#     return jsonify({"count": count})
-
-
 @app.route("/theme/<int:theme_id>/voter/privacy_settings/", methods=["GET", "POST"])
 def privacy_settings(theme_id):
     if request.method == "GET":

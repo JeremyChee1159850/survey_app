@@ -5,7 +5,7 @@ truncate table theme_applications;
 truncate table user_theme_role;
 truncate table user_community_role;
 truncate table competitions;
-truncate table competitors;
+truncate table plants;
 truncate table competition_competitors;
 truncate table users;
 truncate table votes;

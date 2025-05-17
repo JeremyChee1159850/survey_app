@@ -7,7 +7,6 @@ from flask import session
 from flask import flash, abort
 from project693.controller import app
 from project693.dao.user_dao import UserDao
-from project693.dao.theme_dao import ThemeDao
 from project693.model import User
 from datetime import datetime
 from project693.utils.hash_utils import get_password_hash
@@ -21,7 +20,6 @@ exempt_routes_patterns = [
     r"^/home/.*$",
     r"^/login/.*$",
     r"^/logout/$",
-    r"^/register/.*$",
     r"^/about_us/$",
     r"^/admin/competition_end/.*$",
     r"^/static/.*$",
@@ -29,10 +27,6 @@ exempt_routes_patterns = [
     r"^/survey/next/$",
     r"^/survey/questionnaire$",
     r"^/favicon.ico$",
-    r"^/theme/\d+/home/$",  # match /theme/1/home/
-    r"^/theme/\d+/current_voting/$",  # match /theme/1/current_voting/
-    r"^/theme/\d+/competition_results/$",  # match /theme/1/competition_results/
-    r"^/theme/\d+/message/$",
 ]
 
 
@@ -42,26 +36,7 @@ def is_exempt_route(path):
 
 # role and permission mapping
 role_permissions = {
-    "voter": [
-        r"^/voter/.*$",
-        r"^/theme/\d+/voter/.*$",
-    ],
-    "scrutineer": [
-        r"^/theme/\d+/voter/.*$",
-        r"^/theme/\d+/scrutineer/.*$",
-    ],
-    "admin": [
-        r"^/theme/\d+/voter/.*$",
-        r"^/theme/\d+/scrutineer/.*$",
-        r"^/theme/\d+/moderator/.*$",
-        r"^/theme/\d+/admin/.*$",
-    ],
     "siteadmin": [
-        r"^/voter/.*$",
-        r"^/theme/\d+/voter/.*$",
-        r"^/theme/\d+/scrutineer/.*$",
-        r"^/theme/\d+/moderator/.*$",
-        r"^/theme/\d+/admin/.*$",
         r"^/siteadmin/.*$",
     ],
 }
@@ -89,42 +64,8 @@ def before_request():
 
         SessionManager.set(SessionManager.USER, result.to_dict())
         g.user = User.from_dict(SessionManager.get(SessionManager.USER))
-
-        themeDao = ThemeDao()
-        themes = themeDao.theme_list()
-        session["theme_list"] = [theme.to_dict() for theme in themes]
     else:
         g.user = None
-
-    # Check if the URL includes 'competition_id'
-    path_parts = request.path.split("/")
-    if len(path_parts) > 2 and path_parts[1] == "theme":
-        try:
-            g.theme_id = int(path_parts[2])
-
-            # Compatible with the global page to display on the specific competition homepage.
-            if g.theme_id == 0:
-                g.theme_role = None
-                g.community_role = None
-            else:
-                theme_dao = ThemeDao()
-                theme = theme_dao.get_theme_by_id(g.theme_id)
-                g.theme_name = theme.name
-                # if the session exists and the user is under a theme, fetch the user's theme role if he have one.
-                if SessionManager.USER in session:
-                    user = User.from_dict(SessionManager.get(SessionManager.USER))
-                    g.theme_role = (
-                        user.theme_role_mapping.get(g.theme_id)
-                        if user.theme_role_mapping
-                        else None
-                    )
-                    g.community_role = (
-                        user.community_role_mapping.get(g.theme_id)
-                        if user.community_role_mapping
-                        else None
-                    )
-        except ValueError:
-            g.theme_id = None
 
     if request.path == "/":
         return redirect(url_for("site_home"))
@@ -136,31 +77,8 @@ def before_request():
             return redirect(url_for("login"))
         else:
             # if the user is logged in, check if the user has access permission
-            allow = False
             user = User.from_dict(SessionManager.get(SessionManager.USER))
-
-            while True:
-                # if site admin can access
-                if is_allowed(user.role, request.path):
-                    allow = True
-                    break
-
-                # Compatible with the global page to display on the specific competition homepage.
-                if g.theme_id == 0:
-                    break
-
-                # if competition admin or scrutineer can access
-                if (
-                    hasattr(g, "theme_role")
-                    and g.theme_role != None
-                    and is_allowed(g.theme_role, request.path)
-                ):
-                    allow = True
-                    break
-
-                break
-
-            if not allow:
+            if not is_allowed(user.role, request.path):
                 abort(403)
 
 
@@ -174,7 +92,6 @@ def login():
         session["previous_page"] = (
             request.referrer
             if request.referrer != url_for("login")
-            and request.referrer != url_for("register")
             else None
         )
         login_username = session.get("login_username", "")
@@ -215,92 +132,6 @@ def logout():
     session.pop("user_role", None)
     session.pop("env", None)
     return redirect(url_for("login"))
-
-
-@app.route("/register/", methods=["GET", "POST"])
-def register():
-    if request.method == "GET":
-        # if the user has already logged in, navigate to the home page
-        if SessionManager.USER in session:
-            return redirect(url_for("site_home"))
-
-        return render_template(
-            "auth/register.html",
-            currentdate=datetime.now().date(),
-        )
-    else:
-        reg_user_name = request.form.get("reg_user_name")
-        email = request.form.get("email")
-        firstname = request.form.get("firstname")
-        lastname = request.form.get("lastname")
-        reg_password = request.form.get("reg_password")
-        descripti = request.form.get("description") or ""
-        location = request.form.get("location")  # Location input (lat/lon in JSON)
-
-        avatar = request.form.get("avatar")
-        if not avatar:
-            avatar = "default.png"
-        latitude = None
-        longitude = None
-        if location:
-            location_data = json.loads(location)
-            latitude = round(float(location_data.get("lat")), 2)
-            longitude = round(float(location_data.get("lon")), 2)
-            user_location = json.dumps(
-                {"lat": latitude, "lon": longitude}
-            )  # Convert to JSON string
-        else:
-            user_location = None
-        user_dao = UserDao()
-        existing_user = user_dao.find_by_email(email)
-        if existing_user:
-            flash("Email already exists. Please use a different email.")
-            return render_template(
-                "auth/register.html",
-                currentdate=datetime.now().date(),
-                reg_user_name=reg_user_name,
-                email=email,
-                firstname=firstname,
-                lastname=lastname,
-                reg_password=reg_password,
-                confirm_password=reg_password,
-                descripti=descripti,
-                location=location,
-            )
-        user = User(
-            None,
-            reg_user_name,
-            get_password_hash(reg_password),
-            email,
-            firstname,
-            lastname,
-            user_location,
-            descripti,
-            avatar,
-            enums.Role.VOTER,
-            enums.Status.ACTIVE,
-            enums.VotingPermission.ALLOWED,
-            None,
-            None,
-        )
-        flag, message = user_dao.register(user)
-        if flag:
-            flash(message)
-            return redirect(url_for("login"))
-        else:
-            flash(message)
-            return render_template(
-                "auth/register.html",
-                currentdate=datetime.now().date(),
-                reg_user_name=reg_user_name,
-                email=email,
-                firstname=firstname,
-                lastname=lastname,
-                reg_password=reg_password,
-                confirm_password=reg_password,
-                descripti=descripti,
-                location=location,
-            )
 
 
 @app.route("/about_us/")
