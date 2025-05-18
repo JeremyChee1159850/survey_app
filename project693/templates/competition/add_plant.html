@@ -1,10 +1,10 @@
-{% extends "layout.html" %}
+{% extends "site_layout.html" %}
 
 {% block title %}Add Competitor{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Add Competitor</h2>
+    <h2 class="text-center mb-4">Add Plant</h2>
     <hr class="my-3">
     <!-- Display flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -17,19 +17,19 @@
     {% endif %}
     {% endwith %}
 
-    <form id="uploadForm" method="POST" action="{{ url_for('add_competitor', theme_id=g.theme_id) }}" enctype="multipart/form-data" onsubmit="return validateForm()">
-        <!-- Competitor Details Form -->
+    <form id="uploadForm" method="POST" action="{{ url_for('add_plant') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <!-- Plant Details Form -->
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow-sm p-4 mb-4">
                     <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem;">
                         <thead class="thead-dark">
                             <tr>
-                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Competitor Details</th>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Plant Details</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Competitor Image Row -->
+                            <!-- Plant Image Row -->
                             <tr>
                                 <th style="width: 35%; background-color: #f8f9fa;">Image</th>
                                 <td class="text-center">
@@ -89,7 +89,7 @@
 
                     <!-- Submit button at the bottom -->
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-dark">Add Competitor</button>
+                        <button type="submit" class="btn btn-dark">Add Plant</button>
                     </div>
                 </div>
             </div>

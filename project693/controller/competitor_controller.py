@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, flash, ses
 from project693.controller import app
 from werkzeug.utils import secure_filename
 from project693.dao.competitor_dao import CompetitorDAO
-from project693.dao.competition_dao import CompetitionDao
+# from project693.dao.competition_dao import CompetitionDao
 from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
@@ -11,7 +11,6 @@ app.config["UPLOAD_FOLDER"] = "project693/static/img/"
 app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png", "gif"}
 
 competitor_dao = CompetitorDAO()
-competition_dao = CompetitionDao()
 
 # Ensure upload folder exists
 if not os.path.exists(app.config["UPLOAD_FOLDER"]):
@@ -25,21 +24,21 @@ def allowed_file(filename):
     )
 
 
-@app.route("/theme/<int:theme_id>/admin/list_competitors", methods=["GET"])
-def list_competitors(theme_id):
+@app.route("/siteadmin/list_plants", methods=["GET"])
+def list_plants():
     keyword = request.args.get("search", "")
-    competitors = competitor_dao.search_competitor(keyword)
+    plants = competitor_dao.search_plants(keyword)
     SessionManager.set(
         SessionManager.ACTIVE_PAGE, SessionManager.Page.COMPETITOR_SETUP.value
     )
 
     return render_template(
-        "competition/competitor_management.html", competitors=competitors
+        "competition/plant_management.html", plants=plants
     )
 
 
-@app.route("/theme/<int:theme_id>/admin/add_competitors", methods=["GET", "POST"])
-def add_competitor(theme_id):
+@app.route("/siteadmin/add_plants", methods=["GET", "POST"])
+def add_plant():
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]
@@ -57,15 +56,15 @@ def add_competitor(theme_id):
             competitor_location = json.dumps({"lat": lat, "lon": lon})
         else:
             competitor_location = None
-        competitor_dao.add_competitor(name, description, image_filename, competitor_location, invasiveness)
-        flash("New Competitor added successfully!", "success")
-        return redirect(url_for("list_competitors", theme_id=theme_id))
-    return render_template("competition/add_competitor.html")
+        competitor_dao.add_plant(name, description, image_filename, competitor_location, invasiveness)
+        flash("New Plant added successfully!", "success")
+        return redirect(url_for("list_plants"))
+    return render_template("competition/add_plant.html")
 
 
-@app.route("/theme/<int:theme_id>/admin/edit_competitor/<int:id>", methods=["GET", "POST"])
-def edit_competitor(theme_id, id):
-    competitor = competitor_dao.get_competitor_by_id(id)
+@app.route("/siteadmin/edit_plant/<int:id>", methods=["GET", "POST"])
+def edit_plant(id):
+    competitor = competitor_dao.get_plant_by_id(id)
     if isinstance(competitor.location, str):
         competitor.location = json.loads(competitor.location)
     
@@ -90,70 +89,18 @@ def edit_competitor(theme_id, id):
         else:
             image = competitor.image
             
-        competitor_dao.edit_competitor(id, name, description, image, competitor.location)
+        competitor_dao.edit_plant(id, name, description, image, competitor.location)
         flash("Competitor edited successfully!", "success")
-        return redirect(url_for("list_competitors", theme_id=theme_id, id=id))
+        return redirect(url_for("list_plants"))
     
     return render_template("competition/edit_competitor.html", competitor=competitor)
 
 
-@app.route("/theme/<int:theme_id>/admin/delete_competitiors/<int:id>", methods=["POST"])
-def delete_competitor(theme_id, id):
-    competitor_dao.delete_competitor(id)
-    flash("Competitor deleted successfully!", "success")
-    return redirect(url_for("list_competitors", theme_id=theme_id))
-
-
-@app.route("/theme/<int:theme_id>/admin/competitors_pickup", methods=["GET", "POST"])
-def competitor_pick(theme_id):
-    competition_name = request.args.get("competition_name")
-    keyword = request.args.get("search", "")
-
-    competition_id = competition_dao.get_competition_id_by_name(competition_name)
-    if not competition_id:
-        return redirect(
-            url_for(
-                "competitor_pick",
-                theme_id=theme_id,
-                competition_name=competition_name,
-                error="Competition not found",
-            )
-        )
-
-    competitors = competitor_dao.search_competitor(keyword)
-    existing_competitor_ids = {
-        comp["id"]
-        for comp in competition_dao.get_competitors_by_competition(competition_id)
-    }
-
-    if request.method == "POST":
-        selected_competitor_ids = request.form.getlist("selected_competitor_ids[]")
-        selected_competitor_ids = [int(id) for id in selected_competitor_ids if id]
-
-        for competitor_id in selected_competitor_ids:
-            if competitor_id in existing_competitor_ids:
-                competition_dao.delete_competitor_from_competition(
-                    competition_id, competitor_id
-                )
-            else:
-                competition_dao.add_competitor_to_competition(
-                    competition_id, competitor_id
-                )
-
-        flash("Competitor list updated successfully!", "success")
-        return redirect(
-            url_for("competitor_pick", theme_id=theme_id, competition_name=competition_name)
-        )
-
-    competition_status = competition_dao.get_competition_staus(competition_id)
-
-    return render_template(
-        "competition/competitor_pick.html",
-        competitors=competitors,
-        competition_status=competition_status,
-        competition_name=competition_name,
-        existing_competitor_ids=existing_competitor_ids,
-    )
+@app.route("/siteadmin/delete_plants/<int:id>", methods=["POST"])
+def delete_plant(id):
+    competitor_dao.delete_plant(id)
+    flash("Plant deleted successfully!", "success")
+    return redirect(url_for("list_plants"))
 
 
 @app.route("/survey/", methods=["GET", "POST"])
@@ -184,8 +131,8 @@ def survey():
 
     pair = competitor_dao.get_random_pair([], [])
     if not pair:
-        flash("Not enough competitors in the database!", "warning")
-        return redirect(url_for("list_competitors", theme_id=1))
+        flash("Not enough plants in the database!", "warning")
+        return redirect(url_for("list_plants"))
 
     SessionManager.set("last_pair", [pair[0].id, pair[1].id])
 
@@ -208,8 +155,8 @@ def survey_next_get():
     )
 
     if not pair:
-        flash("Not enough competitors left to continue the survey.", "warning")
-        return redirect(url_for("list_competitors", theme_id=1))
+        flash("Not enough plants left to continue the survey.", "warning")
+        return redirect(url_for("list_plants"))
 
     SessionManager.set("last_pair", [pair[0].id, pair[1].id])
 
@@ -228,7 +175,7 @@ def survey_next():
     competitor_dao.survey_answer(
         session_id=session_id,
         question_number=qn,
-        selected_competitor_id=selected_id
+        selected_plant_id=selected_id
     )
 
     # Update answers list
@@ -236,13 +183,13 @@ def survey_next():
     answers.append(selected_id)
     SessionManager.set("answers", answers)
 
-    # Update used competitors list
+    # Update used plants list
     used_invasive = SessionManager.get("used_invasive") or []
     used_non_invasive = SessionManager.get("used_non_invasive") or []
     last_pair = SessionManager.get("last_pair") or []
 
     for comp_id in last_pair:
-        competitor = competitor_dao.get_competitor_by_id(int(comp_id))
+        competitor = competitor_dao.get_plant_by_id(int(comp_id))
         if competitor.invasiveness == 'invasive':
             if competitor.id not in used_invasive:
                 used_invasive.append(competitor.id)
@@ -281,7 +228,7 @@ def survey_questionnaire():
     non_invasive_count = 0
 
     for plant_id in answers:
-        plant = competitor_dao.get_competitor_by_id(int(plant_id))
+        plant = competitor_dao.get_plant_by_id(int(plant_id))
         if plant.invasiveness == 'invasive':
             invasive_count += 1
         else:

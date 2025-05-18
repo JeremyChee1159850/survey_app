@@ -10,14 +10,14 @@ class CompetitorDAO(BaseDAO):
     def __init__(self) -> None:
         super().__init__()
 
-    def add_competitor(self, name: str, description: str, image: str, location: str, invasiveness: str) -> None:
+    def add_plant(self, name: str, description: str, image: str, location: str, invasiveness: str) -> None:
         query = """
             INSERT INTO plants (name, description, image, location, invasiveness)
             VALUES (%s, %s, %s, %s, %s)
         """
         self.execute_non_query(query, (name, description, image, location, invasiveness))
 
-    def edit_competitor(self, id: int, name: str, description: str, image: str, location: str) -> None:
+    def edit_plant(self, id: int, name: str, description: str, image: str, location: str) -> None:
         query = """
             UPDATE plants
             SET name = %s, description = %s, image = %s, location = %s
@@ -26,11 +26,11 @@ class CompetitorDAO(BaseDAO):
         self.execute_non_query(query, (name, description, image, location, id))
 
 
-    def delete_competitor(self, id: int) -> None:
+    def delete_plant(self, id: int) -> None:
         query = "DELETE FROM plants WHERE id = %s"
         self.execute_non_query(query, (id,))
 
-    def search_competitor(self, keyword: str) -> List[Competitor]:
+    def search_plants(self, keyword: str) -> List[Competitor]:
         query = """
             SELECT id, name, description, image, location, invasiveness
             FROM plants
@@ -38,9 +38,9 @@ class CompetitorDAO(BaseDAO):
         """
         result = self.execute_query(query, (f"%{keyword}%", f"%{keyword}%"))
         
-        competitors = []
+        plants = []
         for row in result:
-            competitor = Competitor(
+            plant = Competitor(
                 id=row[0], 
                 name=row[1], 
                 description=row[2], 
@@ -48,11 +48,11 @@ class CompetitorDAO(BaseDAO):
                 location=json.loads(row[4]) if row[4] else {},  # Handle NULL or empty location
                 invasiveness=row[5]
             )
-            competitors.append(competitor)
+            plants.append(plant)
         
-        return competitors
+        return plants
 
-    def get_competitor_by_id(self, id: int) -> Competitor:
+    def get_plant_by_id(self, id: int) -> Competitor:
         query = "SELECT * FROM plants WHERE id = %s"
         result = self.execute_query(query, (id,))
         if result:
@@ -68,13 +68,13 @@ class CompetitorDAO(BaseDAO):
         return None
     
     # project693
-    def get_all_competitors(self) -> List[Competitor]:
+    def get_all_plants(self) -> List[Competitor]:
         query = "SELECT id, name, description, image, location, invasiveness FROM plants"
         result = self.execute_query(query)
 
-        competitors = []
+        plants = []
         for row in result:
-            competitor = Competitor(
+            plant = Competitor(
                 id=row[0],
                 name=row[1],
                 description=row[2],
@@ -82,20 +82,20 @@ class CompetitorDAO(BaseDAO):
                 location=json.loads(row[4]) if row[4] else {},
                 invasiveness=row[5]
             )
-            competitors.append(competitor)
+            plants.append(plant)
         
-        return competitors
+        return plants
     
 
     # project693
     def get_random_pair(self, used_invasive_ids=None, used_non_invasive_ids=None) -> List[Competitor]:
-        all_competitors = self.get_all_competitors()
+        all_plants = self.get_all_plants()
 
-        # Separate the competitors
-        invasive = [c for c in all_competitors if c.invasiveness == 'invasive']
-        non_invasive = [c for c in all_competitors if c.invasiveness == 'non-invasive']
+        # Separate the plants
+        invasive = [c for c in all_plants if c.invasiveness == 'invasive']
+        non_invasive = [c for c in all_plants if c.invasiveness == 'non-invasive']
 
-        # Filter out already used competitors
+        # Filter out already used plants
         if used_invasive_ids:
             invasive = [c for c in invasive if c.id not in used_invasive_ids]
         if used_non_invasive_ids:
@@ -112,12 +112,12 @@ class CompetitorDAO(BaseDAO):
         ], 2)
     
     # Answers of survey that get stored in the database
-    def survey_answer(self, session_id, question_number, selected_competitor_id):
+    def survey_answer(self, session_id, question_number, selected_plant_id):
         query = """
-                INSERT INTO survey_results (session_id, question_number, selected_competitor_id)
+                INSERT INTO survey_results (session_id, question_number, selected_plant_id)
                 VALUES (%s, %s, %s)
                 """
-        self.execute_non_query(query, (session_id, question_number, selected_competitor_id))
+        self.execute_non_query(query, (session_id, question_number, selected_plant_id))
 
     # Save the Introduction Questions
     def save_metadata(self, session_id, has_garden=None, age=None, reasoning=None):

@@ -6,7 +6,6 @@ from flask import flash
 from flask import jsonify
 from project693.controller import app
 from project693.dao.competition_dao import CompetitionDao
-from project693.dao.competitor_dao import CompetitorDAO
 from project693.utils.session_manager import SessionManager
 from flask import request
 from datetime import datetime

@@ -80,7 +80,7 @@ CREATE TABLE `survey_results` (
   `id` INT AUTO_INCREMENT,
   `session_id` VARCHAR(255) NOT NULL,       -- stores UUID string
   `question_number` INT NOT NULL,           -- 1 to 10
-  `selected_competitor_id` INT NOT NULL,    -- which plant they chose
+  `selected_plant_id` INT NOT NULL,    -- which plant they chose
   `submission_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- auto logs each click time
   PRIMARY KEY (`id`)
 );
