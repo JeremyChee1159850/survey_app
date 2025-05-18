@@ -50,6 +50,9 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
+                                <a class="dropdown-item {% if session.active_page == 'add_plant' %}active{% endif %}" href="{{ url_for('add_plant') }}">Add Plants</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item {% if session.active_page == 'managing_voter' %}active{% endif %}" href="{{ url_for('managing_voter') }}">Managing User</a>
                             </li>
                             <li>
