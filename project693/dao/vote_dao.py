@@ -55,32 +55,32 @@ class VoteDao(BaseDAO):
         """
         return self.execute_query(query, (competition_id,))
     
-    def check_ban(self, voter_id, theme_id): # Jeremy
-        # First check if the user is site-wide banned
-        query_site_wide_ban = """
-            SELECT voting_permission
-            FROM users
-            WHERE id = %s
-            LIMIT 1;
-            """
-        result_site_wide_ban = self.execute_query(query_site_wide_ban, (voter_id,))
+    # def check_ban(self, voter_id, theme_id): # Jeremy
+    #     # First check if the user is site-wide banned
+    #     query_site_wide_ban = """
+    #         SELECT voting_permission
+    #         FROM users
+    #         WHERE id = %s
+    #         LIMIT 1;
+    #         """
+    #     result_site_wide_ban = self.execute_query(query_site_wide_ban, (voter_id,))
 
-        is_site_wide_banned = result_site_wide_ban and result_site_wide_ban[0][0] == 'banned'
+    #     is_site_wide_banned = result_site_wide_ban and result_site_wide_ban[0][0] == 'banned'
         
-        # If site-wide banned, no need to check theme-specific ban
-        if is_site_wide_banned:
-            return True, False
+    #     # If site-wide banned, no need to check theme-specific ban
+    #     if is_site_wide_banned:
+    #         return True, False
 
-        # If not site-wide banned, check if the user is banned from the specific theme
-        query_theme_ban = """
-            SELECT 1
-            FROM banned_voters
-            WHERE user_id = %s AND theme_id = %s
-            LIMIT 1;
-            """
-        result_theme_ban = self.execute_query(query_theme_ban, (voter_id, theme_id))
-        is_banned = len(result_theme_ban) > 0
-        return False, is_banned
+    #     # If not site-wide banned, check if the user is banned from the specific theme
+    #     query_theme_ban = """
+    #         SELECT 1
+    #         FROM banned_voters
+    #         WHERE user_id = %s AND theme_id = %s
+    #         LIMIT 1;
+    #         """
+    #     result_theme_ban = self.execute_query(query_theme_ban, (voter_id, theme_id))
+    #     is_banned = len(result_theme_ban) > 0
+    #     return False, is_banned
 
     def get_voter_locations(self, competition_id):
         query = """

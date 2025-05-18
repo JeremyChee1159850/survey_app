@@ -15,38 +15,38 @@ from flask import request
 from datetime import datetime
 
 
-@app.route("/theme/<int:theme_id>/scrutineer/daily_votes", methods=["GET"])
-def daily_votes(theme_id):
-    SessionManager.set(
-        SessionManager.ACTIVE_PAGE, SessionManager.Page.DAILY_VOTES.value
-    )
-    scrutineering_dao = ScrutineeringDAO()
-    result = scrutineering_dao.summary_votes(theme_id)
+# @app.route("/theme/<int:theme_id>/scrutineer/daily_votes", methods=["GET"])
+# def daily_votes(theme_id):
+#     SessionManager.set(
+#         SessionManager.ACTIVE_PAGE, SessionManager.Page.DAILY_VOTES.value
+#     )
+#     scrutineering_dao = ScrutineeringDAO()
+#     result = scrutineering_dao.summary_votes(theme_id)
 
-    summary_votes = []
-    competition = None
-    if len(result) > 0:
-        competition = Competition(
-            None, result[0][0], result[0][1], result[0][2], "ongoing"
-        )
-        end_date = datetime.now().date()
-        dates = scrutineering_dao.generate_date_range(
-            competition.voting_start_date, end_date
-        )
-        for date in dates:
-            item = [date, ""]
-            for row in result:
-                if row[3] == date:
-                    item[1] = row[4]
-                    break
-            summary_votes.append(item)
-        summary_votes.reverse()
+#     summary_votes = []
+#     competition = None
+#     if len(result) > 0:
+#         competition = Competition(
+#             None, result[0][0], result[0][1], result[0][2], "ongoing"
+#         )
+#         end_date = datetime.now().date()
+#         dates = scrutineering_dao.generate_date_range(
+#             competition.voting_start_date, end_date
+#         )
+#         for date in dates:
+#             item = [date, ""]
+#             for row in result:
+#                 if row[3] == date:
+#                     item[1] = row[4]
+#                     break
+#             summary_votes.append(item)
+#         summary_votes.reverse()
 
-    return render_template(
-        "/scrutineering/daily_votes.html",
-        competition=competition,
-        summary_votes=summary_votes,
-    )
+#     return render_template(
+#         "/scrutineering/daily_votes.html",
+#         competition=competition,
+#         summary_votes=summary_votes,
+#     )
 
 
 @app.route("/theme/<int:theme_id>/scrutineer/unusual_votes", methods=["GET", "POST"])
@@ -130,33 +130,33 @@ def approving_competition(theme_id):
         return redirect(url_for("approving_competition", theme_id=theme_id))
 
 
-@app.route(
-    "/theme/<int:theme_id>/scrutineer/unusual_votes_by_ip", methods=["GET", "POST"]
-)  # Jeremy
-def unusual_votes_by_ip(theme_id):
-    competitionDao = CompetitionDao()
-    competition_list = competitionDao.ongoing_or_ended_competition(theme_id)
-    SessionManager.set(
-        SessionManager.ACTIVE_PAGE, SessionManager.Page.LIST_OF_VOTES.value
-    )
+# @app.route(
+#     "/theme/<int:theme_id>/scrutineer/unusual_votes_by_ip", methods=["GET", "POST"]
+# )  # Jeremy
+# def unusual_votes_by_ip(theme_id):
+#     competitionDao = CompetitionDao()
+#     competition_list = competitionDao.ongoing_or_ended_competition(theme_id)
+#     SessionManager.set(
+#         SessionManager.ACTIVE_PAGE, SessionManager.Page.LIST_OF_VOTES.value
+#     )
 
-    scrutineering_dao = ScrutineeringDAO()
+#     scrutineering_dao = ScrutineeringDAO()
 
-    # Get parameters from the query string (GET request)
-    competition_id = request.args.get("competition_id", "").strip()
+#     # Get parameters from the query string (GET request)
+#     competition_id = request.args.get("competition_id", "").strip()
 
-    # Fetch all results grouped by IP if a competition_id is provided, or fetch all results if not
-    votes_by_ip = scrutineering_dao.unusual_votes_by_ip(theme_id)
-    message = "no_data" if len(votes_by_ip) == 0 else ""
+#     # Fetch all results grouped by IP if a competition_id is provided, or fetch all results if not
+#     votes_by_ip = scrutineering_dao.unusual_votes_by_ip(theme_id)
+#     message = "no_data" if len(votes_by_ip) == 0 else ""
 
-    return render_template(
-        "/scrutineering/unusual_votes.html",
-        message=message,
-        votes_by_ip=votes_by_ip,
-        competition_list=competition_list,
-        competition_id=competition_id,
-        flag="group_by_ip",
-    )
+#     return render_template(
+#         "/scrutineering/unusual_votes.html",
+#         message=message,
+#         votes_by_ip=votes_by_ip,
+#         competition_list=competition_list,
+#         competition_id=competition_id,
+#         flag="group_by_ip",
+#     )
 
 
 @app.route("/theme/<int:theme_id>/scrutineer/list_voters", methods=["GET", "POST"])
@@ -216,26 +216,26 @@ def voter_details(theme_id):
     return render_template("/scrutineering/voter_details.html", details=details)
 
 
-@app.route("/theme/<int:theme_id>/scrutineer/theme_ban", methods=["POST"])
-def theme_ban(theme_id):
-    data = request.get_json()
-    voter_id = data.get("voter_id")
-    appeal_id = data.get("appeal_id") or None
+# @app.route("/theme/<int:theme_id>/scrutineer/theme_ban", methods=["POST"])
+# def theme_ban(theme_id):
+#     data = request.get_json()
+#     voter_id = data.get("voter_id")
+#     appeal_id = data.get("appeal_id") or None
 
-    if not voter_id:
-        return jsonify({"status": "error", "message": "Voter ID is required"}), 400
+#     if not voter_id:
+#         return jsonify({"status": "error", "message": "Voter ID is required"}), 400
 
-    scrutineeringDao = ScrutineeringDAO()
-    # Step 1: Ban the voter from the theme
-    scrutineeringDao.theme_ban(voter_id, theme_id)
-    # Step 2: Invalidate the votes from ongoing and ended competitions
-    scrutineeringDao.invalidate_votes(voter_id)
-    return jsonify(
-        {
-            "status": "success",
-            "message": "Voter banned from this theme and votes are invalidated.",
-        }
-    )
+#     scrutineeringDao = ScrutineeringDAO()
+#     # Step 1: Ban the voter from the theme
+#     scrutineeringDao.theme_ban(voter_id, theme_id)
+#     # Step 2: Invalidate the votes from ongoing and ended competitions
+#     scrutineeringDao.invalidate_votes(voter_id)
+#     return jsonify(
+#         {
+#             "status": "success",
+#             "message": "Voter banned from this theme and votes are invalidated.",
+#         }
+#     )
 
 
 @app.route("/theme/<int:theme_id>/scrutineer/profile_voter", methods=["GET"])

@@ -14,21 +14,21 @@ SET FOREIGN_KEY_CHECKS = 0;
 --   PRIMARY KEY (`id`)
 -- ) ;
 
-DROP TABLE IF EXISTS `theme_applications`;
-CREATE TABLE `theme_applications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `theme_name` varchar(50) NOT NULL,
-  `theme_description` varchar(255) NOT NULL,
-  `applicant_id` int NOT NULL,
-  `applicant` varchar(20) NOT NULL,
-  `applying_time` timestamp NOT NULL,  
-  `status` enum('pending','approved','rejected') NOT NULL,  
-  `rejection_reason` varchar(255) DEFAULT NULL,
-  `operator_id` int DEFAULT NULL,
-  `operator` varchar(20) DEFAULT NULL,
-  `operation_time` timestamp DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `theme_applications`;
+-- CREATE TABLE `theme_applications` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `theme_name` varchar(50) NOT NULL,
+--   `theme_description` varchar(255) NOT NULL,
+--   `applicant_id` int NOT NULL,
+--   `applicant` varchar(20) NOT NULL,
+--   `applying_time` timestamp NOT NULL,  
+--   `status` enum('pending','approved','rejected') NOT NULL,  
+--   `rejection_reason` varchar(255) DEFAULT NULL,
+--   `operator_id` int DEFAULT NULL,
+--   `operator` varchar(20) DEFAULT NULL,
+--   `operation_time` timestamp DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ;
 
 DROP TABLE IF EXISTS `user_theme_role`;
 CREATE TABLE `user_theme_role` (
@@ -52,17 +52,17 @@ CREATE TABLE `user_community_role` (
   FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
 );
 
-DROP TABLE IF EXISTS `competitions`;
-CREATE TABLE `competitions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `voting_start_date` date NOT NULL,
-  `voting_end_date` date NOT NULL,
-  `status` enum('pending','ongoing','ended','published') NOT NULL,
-  `theme_id` int NOT NULL,
-  `theme_name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `competitions`;
+-- CREATE TABLE `competitions` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `name` varchar(100) NOT NULL,
+--   `voting_start_date` date NOT NULL,
+--   `voting_end_date` date NOT NULL,
+--   `status` enum('pending','ongoing','ended','published') NOT NULL,
+--   `theme_id` int NOT NULL,
+--   `theme_name` varchar(50) NOT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ;
 
 DROP TABLE IF EXISTS `plants`;
 CREATE TABLE `plants` (
@@ -227,47 +227,5 @@ CREATE TABLE `user_privacy_settings` (
   `show_in_user_list` BOOLEAN NOT NULL,  
   PRIMARY KEY (`id`)
 ) ;  
-
--- DROP TABLE IF EXISTS `donation_applications`;
--- CREATE TABLE `donation_applications` (
---   `id` int NOT NULL AUTO_INCREMENT,
---   `theme_id` int NOT NULL,
---   `theme_name` varchar(50) NOT NULL,
---   `charity_name` varchar(255) NOT NULL,
---   `registration_number` varchar(50) NOT NULL,
---   `bank_account` varchar(50) NOT NULL,
---   `nz_ird_number` varchar(50) NOT NULL,
---   `stamp_file_path` varchar(64) NOT NULL,
---   `rep_first_name` varchar(50) NOT NULL,
---   `rep_last_name` varchar(50) NOT NULL,
---   `rep_designation` varchar(50) NOT NULL,
---   `rep_signature_file_path` varchar(64) NOT NULL,
---   `applicant_id` int NOT NULL,
---   `applicant` varchar(20) NOT NULL,
---   `applying_time` timestamp NOT NULL,  
---   `status` enum('pending','approved','rejected') NOT NULL,  
---   `rejection_reason` varchar(255) DEFAULT NULL,
---   `operator_id` int DEFAULT NULL,
---   `operator` varchar(20) DEFAULT NULL,
---   `operation_time` timestamp DEFAULT NULL,
---   PRIMARY KEY (`id`)
--- ) ;
-
--- DROP TABLE IF EXISTS `donation_record`;
--- CREATE TABLE `donation_record` (
---   `id` int NOT NULL AUTO_INCREMENT,
---   `theme_id` int NOT NULL,
---   `donation_app_id` int NOT NULL,
---   `donor_user_id` int NOT NULL,
---   `donation_amount` int NOT NULL,  
---   `donation_date` date NOT NULL,  
---   `credit_card` varchar(50) NOT NULL,
---   `expiry_date` varchar(7) NOT NULL,
---   `cvv` char(3) NOT NULL,
---   `receipt_number` varchar(20) NOT NULL,
---   `receipt_file_path` varchar(150) NOT NULL,
---   `receipt_generation_status` enum('pending','generated','sent') NOT NULL,  
---   PRIMARY KEY (`id`)
--- ) ;
 
 SET FOREIGN_KEY_CHECKS = 1;

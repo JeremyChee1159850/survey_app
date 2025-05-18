@@ -1,36 +1,35 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-truncate table competition_themes;
-truncate table theme_applications;
+-- truncate table competition_themes;
+-- truncate table theme_applications;
 truncate table user_theme_role;
 truncate table user_community_role;
-truncate table competitions;
+-- truncate table competitions;
 truncate table plants;
-truncate table competition_competitors;
+-- truncate table competition_competitors;
 truncate table users;
-truncate table ban_appeals;
-truncate table banned_voters;
-truncate table conversation_messages;
-truncate table conversations;
-truncate table donation_applications;
-truncate table messages;
-truncate table replies;
+-- truncate table ban_appeals;
+-- truncate table banned_voters;
+-- truncate table conversation_messages;
+-- truncate table conversations;
+-- truncate table messages;
+-- truncate table replies;
 truncate table user_privacy_settings;
 
 
-INSERT INTO `competition_themes` (id, name, description, application_id, donation_status,donation_app_id) VALUES
-(1, 'Surfing Spot', 'Recognize the best and most popular surfing locations of the year.', 1, 'enabled',1),
-(2, 'Bird', 'Highlight and celebrate the most remarkable bird species of the year.', 2, 'disabled',NULL),
-(3, 'Beach', 'Honor the most beautiful and well-preserved beaches of the year.', 3, 'disabled', NULL),
-(4, 'Forest', 'Celebrate the most stunning and ecologically significant forests of the year.', 4, 'disabled', NULL);
+-- INSERT INTO `competition_themes` (id, name, description, application_id, donation_status,donation_app_id) VALUES
+-- (1, 'Surfing Spot', 'Recognize the best and most popular surfing locations of the year.', 1, 'enabled',1),
+-- (2, 'Bird', 'Highlight and celebrate the most remarkable bird species of the year.', 2, 'disabled',NULL),
+-- (3, 'Beach', 'Honor the most beautiful and well-preserved beaches of the year.', 3, 'disabled', NULL),
+-- (4, 'Forest', 'Celebrate the most stunning and ecologically significant forests of the year.', 4, 'disabled', NULL);
 
-INSERT INTO `theme_applications` (id, theme_name, theme_description, applicant_id, applicant, applying_time, status, rejection_reason, operator_id, operator, operation_time) VALUES
-(1, 'Surfing Spot', 'Recognize the best and most popular surfing locations of the year.', 1, 'voter2', '2023-09-01 11:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 15:00:00'),
-(2, 'Bird', 'Highlight and celebrate the most remarkable bird species of the year.', 2, 'voter1', '2023-09-01 10:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 14:00:00'),
-(3, 'Beach', 'Honor the most beautiful and well-preserved beaches of the year.', 3, 'voter3', '2023-09-01 12:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 16:00:00'),
-(4, 'Forest', 'Celebrate the most stunning and ecologically significant forests of the year.', 4, 'voter4', '2023-09-01 13:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 17:00:00'),
-(5, 'Insects', 'Promote and appreciate the diversity of insect species in our region.', 5, 'voter5', '2023-09-01 14:00:00', 'pending', NULL, NULL, NULL, NULL),
-(6, 'Marine Life', 'Highlight the importance of preserving marine ecosystems and species.', 6, 'voter6', '2023-09-01 15:00:00', 'rejected', 'Not relevant to this year’s themes.', 31, 'siteadmin1', '2023-09-02 18:00:00');
+-- INSERT INTO `theme_applications` (id, theme_name, theme_description, applicant_id, applicant, applying_time, status, rejection_reason, operator_id, operator, operation_time) VALUES
+-- (1, 'Surfing Spot', 'Recognize the best and most popular surfing locations of the year.', 1, 'voter2', '2023-09-01 11:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 15:00:00'),
+-- (2, 'Bird', 'Highlight and celebrate the most remarkable bird species of the year.', 2, 'voter1', '2023-09-01 10:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 14:00:00'),
+-- (3, 'Beach', 'Honor the most beautiful and well-preserved beaches of the year.', 3, 'voter3', '2023-09-01 12:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 16:00:00'),
+-- (4, 'Forest', 'Celebrate the most stunning and ecologically significant forests of the year.', 4, 'voter4', '2023-09-01 13:00:00', 'approved', '', 31, 'siteadmin1', '2023-09-02 17:00:00'),
+-- (5, 'Insects', 'Promote and appreciate the diversity of insect species in our region.', 5, 'voter5', '2023-09-01 14:00:00', 'pending', NULL, NULL, NULL, NULL),
+-- (6, 'Marine Life', 'Highlight the importance of preserving marine ecosystems and species.', 6, 'voter6', '2023-09-01 15:00:00', 'rejected', 'Not relevant to this year’s themes.', 31, 'siteadmin1', '2023-09-02 18:00:00');
 
 INSERT INTO `user_theme_role` (id, theme_id, user_id, role) VALUES
 (1, 1, 1, 'admin'),
@@ -50,7 +49,7 @@ INSERT INTO `user_community_role` (id, theme_id, user_id, role) VALUES
 (3, 4, 4, 'moderator'),
 (4, 4, 5, 'moderator');
 
-INSERT INTO users (id, username, password_hash, email, first_name, last_name, location, description, avatar, role, status, voting_permission) VALUES
+INSERT INTO `users` (id, username, password_hash, email, first_name, last_name, location, description, avatar, role, status, voting_permission) VALUES
 (1, 'voter1', 'ed75aa81d4621cf7f1f9b29ba33648a9c7d914a5963f2802d397f74f8580bc64', 'voter1@example.com', 'John', 'Doe', '{"lat": -45.8, "lon": 170.4}', 'Enthusiastic about community service.', 'img1.jpg', 'voter', 'active', 'allowed'),
 (2, 'voter2', '02ccbd5e91ada4e380c21b413cd9780f3056b9594c9f1dbdd46511c1a190a5a6', 'voter2@example.com', 'Jane', 'Smith', '{"lat": -41.2, "lon": 174.8}', 'Passionate about education.', 'img2.jpg', 'voter', 'active', 'allowed'),
 (3, 'voter3', '696e3b3da705c61059620e7d4f27ca14e3aec2b709955875296f6ba66db6dc76', 'voter3@example.com', 'Michael', 'Johnson', '{"lat": -36.8, "lon": 174.7}', 'Advocate for environmental conservation.', 'img3.jpg', 'voter', 'active', 'allowed'),
@@ -155,39 +154,39 @@ INSERT INTO users (id, username, password_hash, email, first_name, last_name, lo
 (102, 'siteadmin2', '96bd7a2f308098c2e52d1cc3c9e5406f914f08fcf989989e35bc80c16063e455', 'siteadmin2@example.com', 'Jane', 'Smith', '{"lat": -45.0, "lon": 168.7}', NULL, 'default.png', 'siteadmin', 'active', 'allowed');
 
 
-INSERT INTO `competitions` (id, name, voting_start_date, voting_end_date, status, theme_id, theme_name) VALUES
--- For theme_id = 1 (surfing spot)
-(1, 'Most Scenic Surfing Spot 2025', '2025-09-15', '2025-10-10', 'pending', 1, 'Surfing Spot'),
-(2, 'Best Value Surfing Spot 2025', '2025-09-20', '2025-11-01', 'pending', 1, 'Surfing Spot'),
-(3, 'Best Year-Round Surfing Spot 2024', '2024-06-01', '2024-12-01', 'ongoing', 1, 'Surfing Spot'),
-(4, 'Best Beginner Surfing Spot 2022', '2022-09-01', '2022-12-01', 'ended', 1, 'Surfing Spot'),
-(5, 'Most Challenging Surfing Spot 2022', '2022-08-15', '2022-11-20', 'ended', 1, 'Surfing Spot'),
-(6, 'Most Popular Surfing Spot 2023', '2023-11-01', '2023-12-15', 'published', 1, 'Surfing Spot'),
-(7, 'Best Hidden Gem Surfing Spot 2023', '2023-09-01', '2023-11-01', 'published', 1, 'Surfing Spot'),
--- For theme_id = 2 (bird)
-(8, 'Most Scenic Bird of the Year 2025', '2025-09-15', '2025-10-10', 'pending', 2, 'Bird'),
-(9, 'Best Endangered Bird Species 2025', '2025-09-20', '2025-11-01', 'pending', 2, 'Bird'),
-(10, 'Best Migratory Bird of the Year 2024', '2024-06-01', '2024-12-05', 'ongoing', 2, 'Bird'),
-(11, 'Most Popular Bird Species 2022', '2022-09-01', '2022-12-01', 'ended', 2, 'Bird'),
-(12, 'Best Songbird of the Year 2022', '2022-08-15', '2022-11-20', 'ended', 2, 'Bird'),
-(13, 'Most Photogenic Bird of the Year 2023', '2023-11-01', '2023-12-15', 'published', 2, 'Bird'),
-(14, 'Best Rare Bird Species 2023', '2023-09-01', '2023-11-01', 'published', 2, 'Bird'),
--- For theme_id = 3 (beach)
--- (15, 'Most Scenic Beach 2025', '2025-09-15', '2025-10-10', 'pending', 3, 'Beach'),
--- (16, 'Best Family-Friendly Beach 2025', '2025-09-20', '2025-11-01', 'pending', 3, 'Beach'),
--- (17, 'Best Preserved Beach 2024', '2024-06-01', '2024-12-01', 'ongoing', 3, 'Beach'),
--- (18, 'Most Popular Beach 2022', '2022-09-01', '2022-12-01', 'ended', 3, 'Beach'),
--- (19, 'Best Hidden Gem Beach 2022', '2022-08-15', '2022-11-20', 'ended', 3, 'Beach'),
--- (20, 'Best Beach for Adventure 2023', '2023-11-01', '2023-12-15', 'published', 3, 'Beach'),
--- (21, 'Best Family Beach Spot 2023', '2023-09-01', '2023-11-01', 'published', 3, 'Beach'),
--- For theme_id = 4 (forest)
-(22, 'Most Scenic Forest 2025', '2025-09-15', '2025-10-10', 'pending', 4, 'Forest'),
-(23, 'Best Ecologically Significant Forest 2025', '2025-09-20', '2025-11-01', 'pending', 4, 'Forest'),
-(24, 'Best Forest for Wildlife 2024', '2024-06-01', '2024-12-01', 'ongoing', 4, 'Forest'),
-(25, 'Most Popular Forest 2022', '2022-09-01', '2022-12-01', 'ended', 4, 'Forest'),
-(26, 'Best Hidden Gem Forest 2022', '2022-08-15', '2022-11-20', 'ended', 4, 'Forest'),
-(27, 'Best Family-Friendly Forest 2023', '2023-11-01', '2023-12-15', 'published', 4, 'Forest'),
-(28, 'Best Forest for Adventure 2023', '2023-09-01', '2023-11-01', 'published', 4, 'Forest');
+-- INSERT INTO `competitions` (id, name, voting_start_date, voting_end_date, status, theme_id, theme_name) VALUES
+-- -- For theme_id = 1 (surfing spot)
+-- (1, 'Most Scenic Surfing Spot 2025', '2025-09-15', '2025-10-10', 'pending', 1, 'Surfing Spot'),
+-- (2, 'Best Value Surfing Spot 2025', '2025-09-20', '2025-11-01', 'pending', 1, 'Surfing Spot'),
+-- (3, 'Best Year-Round Surfing Spot 2024', '2024-06-01', '2024-12-01', 'ongoing', 1, 'Surfing Spot'),
+-- (4, 'Best Beginner Surfing Spot 2022', '2022-09-01', '2022-12-01', 'ended', 1, 'Surfing Spot'),
+-- (5, 'Most Challenging Surfing Spot 2022', '2022-08-15', '2022-11-20', 'ended', 1, 'Surfing Spot'),
+-- (6, 'Most Popular Surfing Spot 2023', '2023-11-01', '2023-12-15', 'published', 1, 'Surfing Spot'),
+-- (7, 'Best Hidden Gem Surfing Spot 2023', '2023-09-01', '2023-11-01', 'published', 1, 'Surfing Spot'),
+-- -- For theme_id = 2 (bird)
+-- (8, 'Most Scenic Bird of the Year 2025', '2025-09-15', '2025-10-10', 'pending', 2, 'Bird'),
+-- (9, 'Best Endangered Bird Species 2025', '2025-09-20', '2025-11-01', 'pending', 2, 'Bird'),
+-- (10, 'Best Migratory Bird of the Year 2024', '2024-06-01', '2024-12-05', 'ongoing', 2, 'Bird'),
+-- (11, 'Most Popular Bird Species 2022', '2022-09-01', '2022-12-01', 'ended', 2, 'Bird'),
+-- (12, 'Best Songbird of the Year 2022', '2022-08-15', '2022-11-20', 'ended', 2, 'Bird'),
+-- (13, 'Most Photogenic Bird of the Year 2023', '2023-11-01', '2023-12-15', 'published', 2, 'Bird'),
+-- (14, 'Best Rare Bird Species 2023', '2023-09-01', '2023-11-01', 'published', 2, 'Bird'),
+-- -- For theme_id = 3 (beach)
+-- -- (15, 'Most Scenic Beach 2025', '2025-09-15', '2025-10-10', 'pending', 3, 'Beach'),
+-- -- (16, 'Best Family-Friendly Beach 2025', '2025-09-20', '2025-11-01', 'pending', 3, 'Beach'),
+-- -- (17, 'Best Preserved Beach 2024', '2024-06-01', '2024-12-01', 'ongoing', 3, 'Beach'),
+-- -- (18, 'Most Popular Beach 2022', '2022-09-01', '2022-12-01', 'ended', 3, 'Beach'),
+-- -- (19, 'Best Hidden Gem Beach 2022', '2022-08-15', '2022-11-20', 'ended', 3, 'Beach'),
+-- -- (20, 'Best Beach for Adventure 2023', '2023-11-01', '2023-12-15', 'published', 3, 'Beach'),
+-- -- (21, 'Best Family Beach Spot 2023', '2023-09-01', '2023-11-01', 'published', 3, 'Beach'),
+-- -- For theme_id = 4 (forest)
+-- (22, 'Most Scenic Forest 2025', '2025-09-15', '2025-10-10', 'pending', 4, 'Forest'),
+-- (23, 'Best Ecologically Significant Forest 2025', '2025-09-20', '2025-11-01', 'pending', 4, 'Forest'),
+-- (24, 'Best Forest for Wildlife 2024', '2024-06-01', '2024-12-01', 'ongoing', 4, 'Forest'),
+-- (25, 'Most Popular Forest 2022', '2022-09-01', '2022-12-01', 'ended', 4, 'Forest'),
+-- (26, 'Best Hidden Gem Forest 2022', '2022-08-15', '2022-11-20', 'ended', 4, 'Forest'),
+-- (27, 'Best Family-Friendly Forest 2023', '2023-11-01', '2023-12-15', 'published', 4, 'Forest'),
+-- (28, 'Best Forest for Adventure 2023', '2023-09-01', '2023-11-01', 'published', 4, 'Forest');
 
 
 
@@ -226,100 +225,100 @@ INSERT INTO `plants` (id, name, description, image, location, invasiveness) VALU
 
 
 
-INSERT INTO `competition_competitors` (`id`, `competition_id`, `competitor_id`, `vote_count`, `vote_ratio`, `is_winner`) VALUES
--- Competitions 1-2 (surfing spot)
-(1, 1, 1, 0, 0, 0),
-(2, 1, 2, 0, 0, 0),
-(3, 1, 3, 0, 0, 0),
-(4, 1, 4, 0, 0, 0),
-(5, 1, 5, 0, 0, 0),
-(6, 2, 6, 0, 0, 0),
-(7, 2, 7, 0, 0, 0),
-(8, 2, 8, 0, 0, 0),
-(9, 2, 9, 0, 0, 0),
--- Competitions 3 ongoing (surfing spot)
-(10, 3, 10, 10, 10/100, 0),
-(11, 3, 11, 15, 15/100, 0),
-(12, 3, 12, 3, 3/100, 0),
-(13, 3, 13, 2, 2/100, 0),
-(14, 3, 1, 0, 0/100, 0),
-(15, 3, 2, 0, 0/100, 0),
-(16, 3, 3, 0, 0/100, 0),
-(17, 3, 4, 0, 0/100, 0),
-(18, 3, 5, 0, 0/100, 0),
-(19, 3, 6, 0, 0/100, 0),
-(20, 3, 7, 0, 70/100, 0),
-(21, 3, 8, 0, 0/100, 0),
-(22, 3, 9, 0, 0/100, 0),
-(23, 3, 14, 0, 0/100, 0),
-(24, 3, 15, 0, 0/100, 0),
-(25, 3, 16, 0, 0/100, 0),
-(26, 3, 17, 0, 0/100, 0),
-(27, 3, 18, 0, 0/100, 0),
-(28, 3, 19, 0, 0/100, 0),
-(29, 3, 20, 0, 0/100, 0),
--- Competitions 4-7 (surfing spot)
-(30, 4, 14, 6, 6/30, 0),
-(31, 4, 15, 10, 10/30, 1),
-(32, 4, 16, 8, 8/30, 0),
-(33, 4, 17, 6, 6/30, 0),
-(34, 5, 18, 10, 10/30, 0),
-(35, 5, 19, 15, 15/30, 1),
-(36, 5, 20, 5, 5/30, 0),
-(37, 6, 1, 8, 8/30, 0),
-(38, 6, 2, 12, 12/30, 1),
-(39, 6, 3, 6, 6/30, 0),
-(40, 6, 4, 4, 4/30, 0),
-(41, 7, 5, 10, 10/30, 1),
-(42, 7, 6, 7, 7/30, 0),
-(43, 7, 7, 8, 8/30, 0),
-(44, 7, 8, 5, 5/30, 0),
+-- INSERT INTO `competition_competitors` (`id`, `competition_id`, `competitor_id`, `vote_count`, `vote_ratio`, `is_winner`) VALUES
+-- -- Competitions 1-2 (surfing spot)
+-- (1, 1, 1, 0, 0, 0),
+-- (2, 1, 2, 0, 0, 0),
+-- (3, 1, 3, 0, 0, 0),
+-- (4, 1, 4, 0, 0, 0),
+-- (5, 1, 5, 0, 0, 0),
+-- (6, 2, 6, 0, 0, 0),
+-- (7, 2, 7, 0, 0, 0),
+-- (8, 2, 8, 0, 0, 0),
+-- (9, 2, 9, 0, 0, 0),
+-- -- Competitions 3 ongoing (surfing spot)
+-- (10, 3, 10, 10, 10/100, 0),
+-- (11, 3, 11, 15, 15/100, 0),
+-- (12, 3, 12, 3, 3/100, 0),
+-- (13, 3, 13, 2, 2/100, 0),
+-- (14, 3, 1, 0, 0/100, 0),
+-- (15, 3, 2, 0, 0/100, 0),
+-- (16, 3, 3, 0, 0/100, 0),
+-- (17, 3, 4, 0, 0/100, 0),
+-- (18, 3, 5, 0, 0/100, 0),
+-- (19, 3, 6, 0, 0/100, 0),
+-- (20, 3, 7, 0, 70/100, 0),
+-- (21, 3, 8, 0, 0/100, 0),
+-- (22, 3, 9, 0, 0/100, 0),
+-- (23, 3, 14, 0, 0/100, 0),
+-- (24, 3, 15, 0, 0/100, 0),
+-- (25, 3, 16, 0, 0/100, 0),
+-- (26, 3, 17, 0, 0/100, 0),
+-- (27, 3, 18, 0, 0/100, 0),
+-- (28, 3, 19, 0, 0/100, 0),
+-- (29, 3, 20, 0, 0/100, 0),
+-- -- Competitions 4-7 (surfing spot)
+-- (30, 4, 14, 6, 6/30, 0),
+-- (31, 4, 15, 10, 10/30, 1),
+-- (32, 4, 16, 8, 8/30, 0),
+-- (33, 4, 17, 6, 6/30, 0),
+-- (34, 5, 18, 10, 10/30, 0),
+-- (35, 5, 19, 15, 15/30, 1),
+-- (36, 5, 20, 5, 5/30, 0),
+-- (37, 6, 1, 8, 8/30, 0),
+-- (38, 6, 2, 12, 12/30, 1),
+-- (39, 6, 3, 6, 6/30, 0),
+-- (40, 6, 4, 4, 4/30, 0),
+-- (41, 7, 5, 10, 10/30, 1),
+-- (42, 7, 6, 7, 7/30, 0),
+-- (43, 7, 7, 8, 8/30, 0),
+-- (44, 7, 8, 5, 5/30, 0),
 
--- Competitions 8-14 (bird)
-(45, 8, 21, 0, 0, 0),
-(46, 8, 22, 0, 0, 0),
-(47, 8, 23, 0, 0, 0),
-(48, 8, 24, 0, 0, 0),
-(49, 8, 25, 0, 0, 0),
-(50, 9, 26, 0, 0, 0),
-(51, 9, 27, 0, 0, 0),
-(52, 9, 28, 0, 0, 0),
-(53, 9, 29, 0, 0, 0),
-(54, 10, 30, 10, 10/30, 0),
-(55, 10, 31, 15, 15/30, 0),
-(56, 10, 32, 3, 3/30, 0),
-(57, 10, 33, 2, 2/30, 0),
-(58, 10, 21, 0, 0/30, 0),
-(59, 10, 22, 0, 0/30, 0),
-(60, 10, 23, 0, 0/30, 0),
-(61, 10, 24, 0, 0/30, 0),
-(62, 10, 25, 0, 0/30, 0),
-(63, 10, 26, 0, 0/30, 0),
-(64, 10, 27, 0, 0/30, 0),
-(65, 10, 28, 0, 0/30, 0),
-(66, 10, 29, 0, 0/30, 0),
-(67, 10, 34, 0, 0/30, 0),
-(68, 10, 35, 0, 0/30, 0),
-(69, 10, 36, 0, 0/30, 0),
-(70, 10, 37, 0, 0/30, 0),
-(71, 10, 38, 0, 0/30, 0),
-(72, 10, 39, 0, 0/30, 0),
-(73, 10, 40, 0, 0/30, 0),
-(74, 11, 34, 6, 6/30, 0),
-(75, 11, 35, 10, 10/30, 1),
-(76, 11, 36, 8, 8/30, 0),
-(77, 11, 37, 6, 6/30, 0),
-(78, 12, 38, 10, 10/30, 0),
-(79, 12, 39, 15, 15/30, 1),
-(80, 12, 40, 5, 5/30, 0),
-(81, 13, 21, 8, 8/30, 0),
-(82, 13, 22, 12, 12/30, 1),
-(83, 13, 23, 6, 6/30, 0),
-(84, 13, 24, 4, 4/30, 0),
-(85, 14, 25, 10, 10/30, 1),
-(86, 14, 26, 7, 7/30, 0),
-(87, 14, 27, 8, 8/30, 0),
-(88, 14, 28, 5, 5/30, 0),
+-- -- Competitions 8-14 (bird)
+-- (45, 8, 21, 0, 0, 0),
+-- (46, 8, 22, 0, 0, 0),
+-- (47, 8, 23, 0, 0, 0),
+-- (48, 8, 24, 0, 0, 0),
+-- (49, 8, 25, 0, 0, 0),
+-- (50, 9, 26, 0, 0, 0),
+-- (51, 9, 27, 0, 0, 0),
+-- (52, 9, 28, 0, 0, 0),
+-- (53, 9, 29, 0, 0, 0),
+-- (54, 10, 30, 10, 10/30, 0),
+-- (55, 10, 31, 15, 15/30, 0),
+-- (56, 10, 32, 3, 3/30, 0),
+-- (57, 10, 33, 2, 2/30, 0),
+-- (58, 10, 21, 0, 0/30, 0),
+-- (59, 10, 22, 0, 0/30, 0),
+-- (60, 10, 23, 0, 0/30, 0),
+-- (61, 10, 24, 0, 0/30, 0),
+-- (62, 10, 25, 0, 0/30, 0),
+-- (63, 10, 26, 0, 0/30, 0),
+-- (64, 10, 27, 0, 0/30, 0),
+-- (65, 10, 28, 0, 0/30, 0),
+-- (66, 10, 29, 0, 0/30, 0),
+-- (67, 10, 34, 0, 0/30, 0),
+-- (68, 10, 35, 0, 0/30, 0),
+-- (69, 10, 36, 0, 0/30, 0),
+-- (70, 10, 37, 0, 0/30, 0),
+-- (71, 10, 38, 0, 0/30, 0),
+-- (72, 10, 39, 0, 0/30, 0),
+-- (73, 10, 40, 0, 0/30, 0),
+-- (74, 11, 34, 6, 6/30, 0),
+-- (75, 11, 35, 10, 10/30, 1),
+-- (76, 11, 36, 8, 8/30, 0),
+-- (77, 11, 37, 6, 6/30, 0),
+-- (78, 12, 38, 10, 10/30, 0),
+-- (79, 12, 39, 15, 15/30, 1),
+-- (80, 12, 40, 5, 5/30, 0),
+-- (81, 13, 21, 8, 8/30, 0),
+-- (82, 13, 22, 12, 12/30, 1),
+-- (83, 13, 23, 6, 6/30, 0),
+-- (84, 13, 24, 4, 4/30, 0),
+-- (85, 14, 25, 10, 10/30, 1),
+-- (86, 14, 26, 7, 7/30, 0),
+-- (87, 14, 27, 8, 8/30, 0),
+-- (88, 14, 28, 5, 5/30, 0),
 
 -- Competitions 15-21 (beach)
 -- (89, 15, 41, 0, 0, 0),
@@ -368,50 +367,50 @@ INSERT INTO `competition_competitors` (`id`, `competition_id`, `competitor_id`, 
 -- (132, 21, 48, 5, 5/30, 0),
 
 -- Competitions 22-28 (forest)
-(133, 22, 61, 0, 0, 0),
-(134, 22, 62, 0, 0, 0),
-(135, 22, 63, 0, 0, 0),
-(136, 22, 64, 0, 0, 0),
-(137, 22, 65, 0, 0, 0),
-(138, 23, 66, 0, 0, 0),
-(139, 23, 67, 0, 0, 0),
-(140, 23, 68, 0, 0, 0),
-(141, 23, 69, 0, 0, 0),
-(142, 24, 70, 10, 10/30, 0),
-(143, 24, 71, 15, 15/30, 0),
-(144, 24, 72, 3, 3/30, 0),
-(145, 24, 73, 2, 2/30, 0),
-(146, 24, 61, 0, 0/30, 0),
-(147, 24, 62, 0, 0/30, 0),
-(148, 24, 63, 0, 0/30, 0),
-(149, 24, 64, 0, 0/30, 0),
-(150, 24, 65, 0, 0/30, 0),
-(151, 24, 66, 0, 0/30, 0),
-(152, 24, 67, 0, 0/30, 0),
-(153, 24, 68, 0, 0/30, 0),
-(154, 24, 69, 0, 0/30, 0),
-(155, 24, 74, 0, 0/30, 0),
-(156, 24, 75, 0, 0/30, 0),
-(157, 24, 76, 0, 0/30, 0),
-(158, 24, 77, 0, 0/30, 0),
-(159, 24, 78, 0, 0/30, 0),
-(160, 24, 79, 0, 0/30, 0),
-(161, 24, 80, 0, 0/30, 0),
-(162, 25, 74, 6, 6/30, 0),
-(163, 25, 75, 10, 10/30, 1),
-(164, 25, 76, 8, 8/30, 0),
-(165, 25, 77, 6, 6/30, 0),
-(166, 26, 78, 10, 10/30, 0),
-(167, 26, 79, 15, 15/30, 1),
-(168, 26, 80, 5, 5/30, 0),
-(169, 27, 61, 8, 8/30, 0),
-(170, 27, 62, 12, 12/30, 1),
-(171, 27, 63, 6, 6/30, 0),
-(172, 27, 64, 4, 4/30, 0),
-(173, 28, 65, 10, 10/30, 1),
-(174, 28, 66, 7, 7/30, 0),
-(175, 28, 67, 8, 8/30, 0),
-(176, 28, 68, 5, 5/30, 0);
+-- (133, 22, 61, 0, 0, 0),
+-- (134, 22, 62, 0, 0, 0),
+-- (135, 22, 63, 0, 0, 0),
+-- (136, 22, 64, 0, 0, 0),
+-- (137, 22, 65, 0, 0, 0),
+-- (138, 23, 66, 0, 0, 0),
+-- (139, 23, 67, 0, 0, 0),
+-- (140, 23, 68, 0, 0, 0),
+-- (141, 23, 69, 0, 0, 0),
+-- (142, 24, 70, 10, 10/30, 0),
+-- (143, 24, 71, 15, 15/30, 0),
+-- (144, 24, 72, 3, 3/30, 0),
+-- (145, 24, 73, 2, 2/30, 0),
+-- (146, 24, 61, 0, 0/30, 0),
+-- (147, 24, 62, 0, 0/30, 0),
+-- (148, 24, 63, 0, 0/30, 0),
+-- (149, 24, 64, 0, 0/30, 0),
+-- (150, 24, 65, 0, 0/30, 0),
+-- (151, 24, 66, 0, 0/30, 0),
+-- (152, 24, 67, 0, 0/30, 0),
+-- (153, 24, 68, 0, 0/30, 0),
+-- (154, 24, 69, 0, 0/30, 0),
+-- (155, 24, 74, 0, 0/30, 0),
+-- (156, 24, 75, 0, 0/30, 0),
+-- (157, 24, 76, 0, 0/30, 0),
+-- (158, 24, 77, 0, 0/30, 0),
+-- (159, 24, 78, 0, 0/30, 0),
+-- (160, 24, 79, 0, 0/30, 0),
+-- (161, 24, 80, 0, 0/30, 0),
+-- (162, 25, 74, 6, 6/30, 0),
+-- (163, 25, 75, 10, 10/30, 1),
+-- (164, 25, 76, 8, 8/30, 0),
+-- (165, 25, 77, 6, 6/30, 0),
+-- (166, 26, 78, 10, 10/30, 0),
+-- (167, 26, 79, 15, 15/30, 1),
+-- (168, 26, 80, 5, 5/30, 0),
+-- (169, 27, 61, 8, 8/30, 0),
+-- (170, 27, 62, 12, 12/30, 1),
+-- (171, 27, 63, 6, 6/30, 0),
+-- (172, 27, 64, 4, 4/30, 0),
+-- (173, 28, 65, 10, 10/30, 1),
+-- (174, 28, 66, 7, 7/30, 0),
+-- (175, 28, 67, 8, 8/30, 0),
+-- (176, 28, 68, 5, 5/30, 0);
 
 
 
@@ -998,152 +997,75 @@ INSERT INTO `competition_competitors` (`id`, `competition_id`, `competitor_id`, 
 -- (210, 21, 18, 'Protecting forests ensures we can continue exploring the wonders of nature.', '2023-09-11');
 
 -- conversation
-INSERT INTO `conversations` (id, user_id_1, user_id_2, created_at, latest_message_time) 
-VALUES (1, 100, 11, '2024-10-14 10:47:10.074021', '2024-10-14 10:47:10.074021'),
-       (2, 100, 12, '2024-10-14 10:57:10.074021', '2024-10-14 10:57:10.074021'),
-       (3, 100, 13, '2024-10-14 11:07:10.074021', '2024-10-14 11:07:10.074021'),
-       (4, 100, 14, '2024-10-14 11:17:10.074021', '2024-10-14 11:17:10.074021'),
-       (5, 100, 15, '2024-10-14 11:27:10.074021', '2024-10-14 11:27:10.074021');
+-- INSERT INTO `conversations` (id, user_id_1, user_id_2, created_at, latest_message_time) 
+-- VALUES (1, 100, 11, '2024-10-14 10:47:10.074021', '2024-10-14 10:47:10.074021'),
+--        (2, 100, 12, '2024-10-14 10:57:10.074021', '2024-10-14 10:57:10.074021'),
+--        (3, 100, 13, '2024-10-14 11:07:10.074021', '2024-10-14 11:07:10.074021'),
+--        (4, 100, 14, '2024-10-14 11:17:10.074021', '2024-10-14 11:17:10.074021'),
+--        (5, 100, 15, '2024-10-14 11:27:10.074021', '2024-10-14 11:27:10.074021');
 
 
--- conversation_id = 1, chat records between user 10 and user 11, 20 messages each, is_read = 1
-INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
-(1, 100, 'Have you gone birdwatching recently?', '2024-10-14 10:50:10', 1),
-(1, 11, 'Yes, I went to the nearby nature reserve. There are many rare birds there.', '2024-10-14 10:51:10', 1),
-(1, 100, 'Sounds amazing! What kind of birds did you see?', '2024-10-14 10:52:30', 1),
-(1, 11, 'I saw hawks, eagles, and some colorful parrots.', '2024-10-14 10:53:45', 1),
-(1, 100, 'I love parrots! Were they flying around?', '2024-10-14 10:55:00', 1),
-(1, 11, 'Yes, they were very active. I also got to see them feeding.', '2024-10-14 10:56:20', 1),
-(1, 100, 'That must have been a great experience.', '2024-10-14 10:57:40', 1),
-(1, 11, 'It really was. Are you planning any birdwatching trips?', '2024-10-14 10:58:50', 1),
-(1, 100, 'Yes, I’m thinking of visiting a beach next weekend to see seabirds.', '2024-10-14 11:00:00', 1),
-(1, 11, 'That’s a good idea! I’ve heard seabird watching can be very exciting.', '2024-10-14 11:01:00', 1),
-(1, 100, 'Especially with all the variety you can find along the coast.', '2024-10-14 11:01:59', 1),
-(1, 11, 'Exactly! Maybe I’ll join you if I’m free.', '2024-10-14 11:03:10', 1),
-(1, 100, 'That would be great! Let me know if you can make it.', '2024-10-14 11:04:15', 1),
-(1, 11, 'Will do! Have you been to any forests recently?', '2024-10-14 11:05:25', 1),
-(1, 100, 'Not yet, but I want to. Forests are great for birdwatching too.', '2024-10-14 11:06:45', 1),
-(1, 11, 'True, forests are peaceful and full of interesting species.', '2024-10-14 11:07:55', 1),
-(1, 100, 'Exactly. Plus, I enjoy the fresh air and sounds of nature.', '2024-10-14 11:09:10', 1),
-(1, 11, 'It’s the perfect escape from the city.', '2024-10-14 11:10:20', 1),
-(1, 100, 'Agreed! Let’s plan a forest trip soon.', '2024-10-14 11:11:30', 1),
-(1, 11, 'Absolutely! I’ll check my schedule.', '2024-10-14 11:12:40', 1);
+-- -- conversation_id = 1, chat records between user 10 and user 11, 20 messages each, is_read = 1
+-- INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
+-- (1, 100, 'Have you gone birdwatching recently?', '2024-10-14 10:50:10', 1),
+-- (1, 11, 'Yes, I went to the nearby nature reserve. There are many rare birds there.', '2024-10-14 10:51:10', 1),
+-- (1, 100, 'Sounds amazing! What kind of birds did you see?', '2024-10-14 10:52:30', 1),
+-- (1, 11, 'I saw hawks, eagles, and some colorful parrots.', '2024-10-14 10:53:45', 1),
+-- (1, 100, 'I love parrots! Were they flying around?', '2024-10-14 10:55:00', 1),
+-- (1, 11, 'Yes, they were very active. I also got to see them feeding.', '2024-10-14 10:56:20', 1),
+-- (1, 100, 'That must have been a great experience.', '2024-10-14 10:57:40', 1),
+-- (1, 11, 'It really was. Are you planning any birdwatching trips?', '2024-10-14 10:58:50', 1),
+-- (1, 100, 'Yes, I’m thinking of visiting a beach next weekend to see seabirds.', '2024-10-14 11:00:00', 1),
+-- (1, 11, 'That’s a good idea! I’ve heard seabird watching can be very exciting.', '2024-10-14 11:01:00', 1),
+-- (1, 100, 'Especially with all the variety you can find along the coast.', '2024-10-14 11:01:59', 1),
+-- (1, 11, 'Exactly! Maybe I’ll join you if I’m free.', '2024-10-14 11:03:10', 1),
+-- (1, 100, 'That would be great! Let me know if you can make it.', '2024-10-14 11:04:15', 1),
+-- (1, 11, 'Will do! Have you been to any forests recently?', '2024-10-14 11:05:25', 1),
+-- (1, 100, 'Not yet, but I want to. Forests are great for birdwatching too.', '2024-10-14 11:06:45', 1),
+-- (1, 11, 'True, forests are peaceful and full of interesting species.', '2024-10-14 11:07:55', 1),
+-- (1, 100, 'Exactly. Plus, I enjoy the fresh air and sounds of nature.', '2024-10-14 11:09:10', 1),
+-- (1, 11, 'It’s the perfect escape from the city.', '2024-10-14 11:10:20', 1),
+-- (1, 100, 'Agreed! Let’s plan a forest trip soon.', '2024-10-14 11:11:30', 1),
+-- (1, 11, 'Absolutely! I’ll check my schedule.', '2024-10-14 11:12:40', 1);
 
--- conversation_id = 2, chat records between user 10 and user 12, 10 messages each, is_read = 1
-INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
-(2, 100, 'Do you enjoy going to the beach?', '2024-10-14 11:02:50', 1),
-(2, 12, 'Yes, I love spending time near the ocean. What about you?', '2024-10-14 11:04:10', 1),
-(2, 100, 'I do! The sound of the waves is so relaxing.', '2024-10-14 11:05:20', 1),
-(2, 12, 'Agreed! Have you ever gone surfing?', '2024-10-14 11:06:30', 1),
-(2, 100, 'I’ve tried a few times, but I’m not very good at it.', '2024-10-14 11:07:45', 1),
-(2, 12, 'It takes practice, but once you get the hang of it, it’s so much fun.', '2024-10-14 11:09:00', 1),
-(2, 100, 'I believe it! I might try again next time I go to the beach.', '2024-10-14 11:10:10', 1),
-(2, 12, 'You definitely should! Let me know how it goes.', '2024-10-14 11:11:50', 1),
-(2, 100, 'Will do! Maybe I’ll take a lesson this time.', '2024-10-14 11:12:50', 1),
-(2, 12, 'That’s a great idea. It’ll help you learn faster.', '2024-10-14 11:14:00', 1);
+-- -- conversation_id = 2, chat records between user 10 and user 12, 10 messages each, is_read = 1
+-- INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
+-- (2, 100, 'Do you enjoy going to the beach?', '2024-10-14 11:02:50', 1),
+-- (2, 12, 'Yes, I love spending time near the ocean. What about you?', '2024-10-14 11:04:10', 1),
+-- (2, 100, 'I do! The sound of the waves is so relaxing.', '2024-10-14 11:05:20', 1),
+-- (2, 12, 'Agreed! Have you ever gone surfing?', '2024-10-14 11:06:30', 1),
+-- (2, 100, 'I’ve tried a few times, but I’m not very good at it.', '2024-10-14 11:07:45', 1),
+-- (2, 12, 'It takes practice, but once you get the hang of it, it’s so much fun.', '2024-10-14 11:09:00', 1),
+-- (2, 100, 'I believe it! I might try again next time I go to the beach.', '2024-10-14 11:10:10', 1),
+-- (2, 12, 'You definitely should! Let me know how it goes.', '2024-10-14 11:11:50', 1),
+-- (2, 100, 'Will do! Maybe I’ll take a lesson this time.', '2024-10-14 11:12:50', 1),
+-- (2, 12, 'That’s a great idea. It’ll help you learn faster.', '2024-10-14 11:14:00', 1);
 
--- conversation_id = 3, chat records between user 10 and user 13, 3 messages each, is_read = 0
-INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
-(3, 100, 'Have you been to any good surf spots lately?', '2024-10-14 11:16:00', 0),
-(3, 13, 'Yeah, I went to a great spot last week. The waves were perfect.', '2024-10-14 11:17:30', 0),
-(3, 100, 'Sounds awesome! Where was it?', '2024-10-14 11:18:45', 0),
-(3, 13, 'It’s a beach a bit further out, not too crowded.', '2024-10-14 11:19:50', 0),
-(3, 100, 'I might have to check it out next time I go surfing.', '2024-10-14 11:20:55', 0),
-(3, 13, 'You should! It’s one of the best I’ve found.', '2024-10-14 11:22:00', 0);
+-- -- conversation_id = 3, chat records between user 10 and user 13, 3 messages each, is_read = 0
+-- INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
+-- (3, 100, 'Have you been to any good surf spots lately?', '2024-10-14 11:16:00', 0),
+-- (3, 13, 'Yeah, I went to a great spot last week. The waves were perfect.', '2024-10-14 11:17:30', 0),
+-- (3, 100, 'Sounds awesome! Where was it?', '2024-10-14 11:18:45', 0),
+-- (3, 13, 'It’s a beach a bit further out, not too crowded.', '2024-10-14 11:19:50', 0),
+-- (3, 100, 'I might have to check it out next time I go surfing.', '2024-10-14 11:20:55', 0),
+-- (3, 13, 'You should! It’s one of the best I’ve found.', '2024-10-14 11:22:00', 0);
 
--- conversation_id = 4, chat records between user 10 and user 14, 3 messages each, is_read = 0
-INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
-(4, 100, 'What’s your favorite thing about the forest?', '2024-10-14 11:23:00', 0),
-(4, 14, 'I love the calm atmosphere and the fresh air.', '2024-10-14 11:24:10', 0),
-(4, 100, 'Same here! The forest is such a peaceful place.', '2024-10-14 11:25:30', 0),
-(4, 14, 'It’s the perfect place to unwind and connect with nature.', '2024-10-14 11:26:40', 0),
-(4, 100, 'Exactly! Have you gone hiking recently?', '2024-10-14 11:27:50', 0),
-(4, 14, 'Yes, last weekend. It was a great trip.', '2024-10-14 11:28:55', 0);
+-- -- conversation_id = 4, chat records between user 10 and user 14, 3 messages each, is_read = 0
+-- INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
+-- (4, 100, 'What’s your favorite thing about the forest?', '2024-10-14 11:23:00', 0),
+-- (4, 14, 'I love the calm atmosphere and the fresh air.', '2024-10-14 11:24:10', 0),
+-- (4, 100, 'Same here! The forest is such a peaceful place.', '2024-10-14 11:25:30', 0),
+-- (4, 14, 'It’s the perfect place to unwind and connect with nature.', '2024-10-14 11:26:40', 0),
+-- (4, 100, 'Exactly! Have you gone hiking recently?', '2024-10-14 11:27:50', 0),
+-- (4, 14, 'Yes, last weekend. It was a great trip.', '2024-10-14 11:28:55', 0);
 
--- conversation_id = 5, chat records between user 10 and user 15, 3 messages each, is_read = 0
-INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
-(5, 100, 'Do you have any favorite birds?', '2024-10-14 11:30:00', 0),
-(5, 15, 'I really like eagles. They’re so majestic.', '2024-10-14 11:31:10', 0),
-(5, 100, 'Eagles are incredible! Have you seen one in the wild?', '2024-10-14 11:32:20', 0),
-(5, 15, 'Yes, a couple of times. It’s always an amazing sight.', '2024-10-14 11:33:30', 0),
-(5, 100, 'I’ve only seen them from afar, but it’s still impressive.', '2024-10-14 11:34:40', 0),
-(5, 15, 'You should try to see one up close. It’s unforgettable.', '2024-10-14 11:35:45', 0);
+-- -- conversation_id = 5, chat records between user 10 and user 15, 3 messages each, is_read = 0
+-- INSERT INTO conversation_messages (conversation_id, sender_id, content, created_at, is_read) VALUES
+-- (5, 100, 'Do you have any favorite birds?', '2024-10-14 11:30:00', 0),
+-- (5, 15, 'I really like eagles. They’re so majestic.', '2024-10-14 11:31:10', 0),
+-- (5, 100, 'Eagles are incredible! Have you seen one in the wild?', '2024-10-14 11:32:20', 0),
+-- (5, 15, 'Yes, a couple of times. It’s always an amazing sight.', '2024-10-14 11:33:30', 0),
+-- (5, 100, 'I’ve only seen them from afar, but it’s still impressive.', '2024-10-14 11:34:40', 0),
+-- (5, 15, 'You should try to see one up close. It’s unforgettable.', '2024-10-14 11:35:45', 0);
 
-INSERT INTO `donation_applications` (theme_id, theme_name, charity_name, registration_number, bank_account, nz_ird_number, stamp_file_path, rep_first_name, rep_last_name, rep_designation, rep_signature_file_path, applicant_id, applicant, applying_time, status, rejection_reason, operator_id, operator, operation_time) VALUES
-(1, 'Surfing Spot', 'Save Our Seas Foundation', 'REG-67890', 'NZ-00987654321', 'IRD-123456789', 'SOSF.png', 'Jane', 'Smith', 'Director', 'Jane_smith.jpg', 1, 'voter1', '2024-10-02 09:10:45', 'approved', NULL, 31, 'siteadmin1', '2024-10-03 12:30:00'),
-(2, 'Bird', 'New Zealand Bird Rescue', 'REG-33445', 'NZ-00553322119', 'IRD-665544332', '/bird.jpeg', 'Bob', 'Williams', 'Manager', 'bobwillian.jpg', 2, 'voter2', '2024-10-05 15:40:30', 'rejected', 'Missing documents', 31, 'siteadmin1', '2024-10-06 10:00:00'),
-(3, 'Beach', 'Coastal Preservation Society', 'REG-55443', 'NZ-00123344567', 'IRD-112233445', 'Logo-sand-water.webp', 'Diana', 'King', 'Director', 'dianna.png', 3, 'voter3', '2024-10-07 10:05:30', 'pending', NULL, NULL, NULL, NULL),
-(4, 'Forest', 'Rainforest Trust', 'REG-22119', 'NZ-00221199887', 'IRD-445566778', 'Rainforest_Trust_logo.png', 'Frank', 'Miller', 'Treasurer', 'frankmiller.jpg', 4, 'voter4', '2024-10-08 14:10:40', 'rejected', 'Invalid registration number', 31, 'siteadmin1', '2024-10-10 08:30:00'),
-(4, 'Forest', 'Rainforest Trust', 'REG-22119', 'NZ-00221199887', 'IRD-445566778', 'Rainforest_Trust_logo.png', 'Frank', 'Miller', 'Treasurer', 'frankmiller.jpg', 4, 'voter4', '2024-10-12 09:45:30', 'pending', NULL, NULL, NULL, NULL);
-
--- INSERT INTO donation_record (theme_id, donation_app_id, donor_user_id, donation_amount, donation_date, credit_card, expiry_date, cvv, receipt_number, receipt_file_path, receipt_generation_status) VALUES
--- (1, 1, 1, 100, '2024-10-01', '4111111111111111', '12/25', '123', 'REC1001', 'None', 'pending'),
--- (1, 1, 2, 150, '2024-10-02', '4111111111111112', '11/24', '456', 'REC1002', 'None', 'pending'),
--- (1, 1, 3, 200, '2024-10-03', '4111111111111113', '10/26', '789', 'REC1003', 'None', 'pending'),
--- (1, 1, 4, 250, '2024-10-04', '4111111111111114', '09/25', '321', 'REC1004', 'None', 'pending'),
--- (1, 1, 5, 300, '2024-10-05', '4111111111111115', '08/27', '654', 'REC1005', 'None', 'pending'),
--- (1, 1, 6, 350, '2024-10-06', '4111111111111116', '07/24', '987', 'REC1006', 'None', 'pending'),
--- (1, 1, 7, 400, '2024-10-07', '4111111111111117', '06/25', '258', 'REC1007', 'None', 'pending'),
--- (1, 1, 8, 450, '2024-10-08', '4111111111111118', '05/26', '369', 'REC1008', 'None', 'pending'),
--- (1, 1, 9, 500, '2024-10-09', '4111111111111119', '04/25', '147', 'REC1009', 'None', 'pending'),
--- (1, 1, 10, 550, '2024-10-10', '4111111111111120', '03/26', '258', 'REC1010', 'None', 'pending'),
--- (1, 1, 1, 100, '2023-10-01', '4111111111111121', '12/25', '123', 'REC001', 'None', 'pending'),
--- (1, 1, 2, 150, '2023-10-02', '4111111111111122', '11/24', '456', 'REC002', 'None', 'pending'),
--- (1, 1, 3, 200, '2023-10-03', '4111111111111123', '10/26', '789', 'REC003', 'None', 'pending'),
--- (1, 1, 4, 250, '2023-10-04', '4111111111111124', '09/25', '321', 'REC004', 'None', 'pending'),
--- (1, 1, 5, 300, '2023-10-05', '4111111111111125', '08/27', '654', 'REC005', 'None', 'pending'),
--- (1, 1, 6, 350, '2023-10-06', '4111111111111126', '07/24', '987', 'REC006', 'None', 'pending'),
--- (1, 1, 7, 400, '2023-10-07', '4111111111111127', '06/25', '258', 'REC007', 'None', 'pending'),
--- (1, 1, 8, 450, '2023-10-08', '4111111111111128', '05/26', '369', 'REC008', 'None', 'pending'),
--- (1, 1, 9, 500, '2023-10-09', '4111111111111129', '04/25', '147', 'REC009', 'None', 'pending'),
--- (1, 1, 10, 550, '2023-10-10', '4111111111111130', '03/26', '258', 'REC010', 'None', 'pending'),
--- (1, 1, 11, 600, '2023-10-11', '4111111111111131', '02/24', '369', 'REC011', 'None', 'pending'),
--- (1, 1, 12, 650, '2023-10-12', '4111111111111132', '01/25', '147', 'REC012', 'None', 'pending'),
--- (1, 1, 13, 700, '2023-10-13', '4111111111111133', '12/24', '258', 'REC013', 'None', 'pending'),
--- (1, 1, 14, 750, '2023-10-14', '4111111111111134', '11/23', '369', 'REC014', 'None', 'pending'),
--- (1, 1, 15, 800, '2023-10-15', '4111111111111135', '10/24', '147', 'REC015', 'None', 'pending'),
--- (1, 1, 16, 850, '2023-10-16', '4111111111111136', '09/25', '258', 'REC016', 'None', 'pending'),
--- (1, 1, 17, 900, '2023-10-17', '4111111111111137', '08/26', '369', 'REC017', 'None', 'pending'),
--- (1, 1, 18, 950, '2023-10-18', '4111111111111138', '07/24', '147', 'REC018', 'None', 'pending'),
--- (1, 1, 19, 1000, '2023-10-19', '4111111111111139', '06/25', '258', 'REC019', 'None', 'pending'),
--- (1, 1, 20, 1050, '2023-10-20', '4111111111111140', '05/26', '369', 'REC020', 'None', 'pending'),
--- (1, 1, 21, 100, '2023-10-21', '4532756230123456', '01/26', '123', 'REC021', 'None', 'pending'),
--- (1, 1, 22, 115, '2023-10-22', '6011512111111234', '02/25', '456', 'REC022', 'None', 'pending'),
--- (1, 1, 23, 12, '2023-10-23', '370123456789012', '03/24', '789', 'REC023', 'None', 'pending'),
--- (1, 1, 24, 12, '2023-10-24', '4916123456789012', '04/27', '321', 'REC024', 'None', 'pending'),
--- (1, 1, 25, 300, '2023-10-25', '4539876543215678', '05/25', '654', 'REC025', 'None', 'pending'),
--- (1, 1, 26, 350, '2023-10-26', '5019712345678900', '06/24', '987', 'REC026', 'None', 'pending'),
--- (1, 1, 27, 40, '2023-07-25','4012888888881881', '07/25',  '258', 'REC027', 'None', 'pending'),
--- (1, 1, 28, 45, '2023-08-26','6011555599999999', '08/26', '369', 'REC028', 'None', 'pending'),
--- (1, 1, 29, 15, '2023-09-25','6011555598888888', '09/25', '147', 'REC029', 'None', 'pending'),
--- (1, 1, 30, 15, '2023-10-23','376161616161616', '10/23', '258', 'REC030', 'None', 'pending'),
--- (1, 1, 31, 100, '2023-11-25','5523000000000000', '11/25', '369', 'REC031', 'None', 'pending'),
--- (1, 1, 32, 150, '2023-12-24','4024007182021000', '12/24', '147', 'REC032', 'None', 'pending'),
--- (1, 1, 12, 170, '2023-01-26','5555555555554444', '01/26', '258', 'REC033', 'None', 'pending'),
--- (1, 1, 14, 10, '2023-02-25','4424424424442444', '02/25', '369', 'REC034', 'None', 'pending'),
--- (1, 1, 15, 180, '2023-03-24','378282246310005', '03/24', '147', 'REC035', 'None', 'pending'),
--- (1, 1, 16, 180, '2023-04-27','6011558888888888', '04/27', '258', 'REC036', 'None', 'pending'),
--- (1, 1, 17, 190, '2022-05-25','4556361888881580', '05/25', '369', 'REC037', 'None', 'pending'),
--- (1, 1, 18, 150, '2022-06-24','4532017111111111', '06/24', '147', 'REC038', 'None', 'pending'),
--- (1, 1, 19, 20, '2022-07-25','4895168466660242', '07/25', '258', 'REC039', 'None', 'pending'),
--- (1, 1, 20, 25, '2022-08-26','6011512626210012', '08/26', '369', 'REC040', 'None', 'pending'),
--- (1, 1, 31, 21, '2022-09-25','5105105105105100', '09/25', '147', 'REC041', 'None', 'pending'),
--- (1, 1, 12, 210, '2022-07-25','378734493671000', '10/23', '258', 'REC042', 'None', 'pending'),
--- (1, 1, 23, 200, '2022-11-25','4532756230123456', '11/25', '369', 'REC043', 'None', 'pending'),
--- (1, 1, 24, 250, '2022-12-24','6011512111111234', '12/24', '147', 'REC044', 'None', 'pending'),
--- (1, 1, 25, 300, '2022-01-26','370123456789012', '01/26', '258', 'REC045', 'None', 'pending'),
--- (1, 1, 26, 350, '2022-02-25','4916123456789012', '02/25', '369', 'REC046', 'None', 'pending'),
--- (1, 1, 17, 400, '2022-03-24','4539876543215678', '03/24', '147', 'REC047', 'None', 'pending'),
--- (1, 1, 18, 45, '2022-04-27','5019712345678900', '04/27', '258', 'REC048', 'None', 'pending'),
--- (1, 1, 19, 500, '2022-05-25','4012888888881881', '05/25', '369', 'REC049', 'None', 'pending'),
--- (1, 1, 30, 55, '2022-06-24','6011555599999999', '06/24', '147', 'REC050', 'None', 'pending');
-
-
-INSERT INTO banned_voters (id, theme_id, user_id, appeal_id) VALUES 
-(1, 4, 100, NULL),
-(2, 1, 98, NULL),
-(3, 2, 98, NULL),
-(4, 3, 98, NULL),
-(5, 1, 99, NULL),
-(6, 2, 99, NULL);
 SET FOREIGN_KEY_CHECKS = 1;

@@ -180,27 +180,27 @@ class ScrutineeringDAO(BaseDAO):
         result = self.execute_query(query, (user_id,))
         return result[0][0] if result else None
     
-    def theme_ban(self, voter_id, theme_id):
-        # Step 1: Create a new 'pending' appeal in the ban_appeals table
-        appeal_query = """
-                        INSERT INTO ban_appeals (ban_scope, theme_id, appealer_id, appealer, appeal_reason, appeal_time, status)
-                        VALUES ('theme', %s, %s, %s, 'Automatic ban appeal', NOW(), 'pending')
-                        """
+    # def theme_ban(self, voter_id, theme_id):
+    #     # Step 1: Create a new 'pending' appeal in the ban_appeals table
+    #     appeal_query = """
+    #                     INSERT INTO ban_appeals (ban_scope, theme_id, appealer_id, appealer, appeal_reason, appeal_time, status)
+    #                     VALUES ('theme', %s, %s, %s, 'Automatic ban appeal', NOW(), 'pending')
+    #                     """
 
-        appealer_username = self.get_username_by_id(voter_id)
-        self.execute_non_query(appeal_query, (theme_id, voter_id, appealer_username))
+    #     appealer_username = self.get_username_by_id(voter_id)
+    #     self.execute_non_query(appeal_query, (theme_id, voter_id, appealer_username))
         
-        # Step 2: Retrieve the appeal_id of the newly inserted appeal
-        appeal_id_query = "SELECT LAST_INSERT_ID()"
-        appeal_id_result = self.execute_query(appeal_id_query)
-        appeal_id = appeal_id_result[0][0]
+    #     # Step 2: Retrieve the appeal_id of the newly inserted appeal
+    #     appeal_id_query = "SELECT LAST_INSERT_ID()"
+    #     appeal_id_result = self.execute_query(appeal_id_query)
+    #     appeal_id = appeal_id_result[0][0]
 
-        # Step 3: Insert the ban into banned_voters table with the new appeal_id
-        ban_query = """
-            INSERT INTO banned_voters (user_id, theme_id, appeal_id)
-            VALUES (%s, %s, %s)
-            """
-        self.execute_non_query(ban_query, (voter_id, theme_id, appeal_id))
+    #     # Step 3: Insert the ban into banned_voters table with the new appeal_id
+    #     ban_query = """
+    #         INSERT INTO banned_voters (user_id, theme_id, appeal_id)
+    #         VALUES (%s, %s, %s)
+    #         """
+    #     self.execute_non_query(ban_query, (voter_id, theme_id, appeal_id))
 
     def site_wide_ban(self, voter_id): # Jeremy
          # Step 1: Create a new 'pending' appeal in the ban_appeals table for the site-wide ban
