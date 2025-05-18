@@ -1,7 +1,7 @@
 from flask import Flask, session
 import os
 from dotenv import load_dotenv
-import pusher
+#import pusher
 #from project693.dao.theme_dao import ThemeDao
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
@@ -37,17 +37,17 @@ app.env = environment
 if environment is None:
     raise ValueError("ENVIRONMENT variable is not set in the .env file.")
 
-if environment not in config:
-    raise KeyError(f"Invalid environment: {environment}")
+# if environment not in config:
+#     raise KeyError(f"Invalid environment: {environment}")
 
 
-app.pusher_client = pusher.Pusher(
-    app_id=config[environment]["app_id"],
-    key=config[environment]["key"],
-    secret=config[environment]["secret"],
-    cluster=config[environment]["cluster"],
-    ssl=True,
-)
+# app.pusher_client = pusher.Pusher(
+#     app_id=config[environment]["app_id"],
+#     key=config[environment]["key"],
+#     secret=config[environment]["secret"],
+#     cluster=config[environment]["cluster"],
+#     ssl=True,
+# )
 
 from . import error_controller
 from . import auth_controller

@@ -3,16 +3,16 @@
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `competition_themes`;
-CREATE TABLE `competition_themes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(255) NOT NULL,  
-  `application_id` int NOT NULL,
-  `donation_status` enum('enabled','disabled') NOT NULL,    
-  `donation_app_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ;
+-- DROP TABLE IF EXISTS `competition_themes`;
+-- CREATE TABLE `competition_themes` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `name` varchar(50) NOT NULL,
+--   `description` varchar(255) NOT NULL,  
+--   `application_id` int NOT NULL,
+--   `donation_status` enum('enabled','disabled') NOT NULL,    
+--   `donation_app_id` int DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ;
 
 DROP TABLE IF EXISTS `theme_applications`;
 CREATE TABLE `theme_applications` (
