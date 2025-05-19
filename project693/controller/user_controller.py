@@ -23,8 +23,8 @@ def allowed_file(filename):
     )
 
 
-@app.route("/theme/<int:theme_id>/voter/profile/", methods=["GET", "POST"])
-def profile(theme_id):
+@app.route("/profile/", methods=["GET", "POST"])
+def profile():
     user_id = session["user_id"]
     user_dao = UserDao()
     user = user_dao.get_full_user_info(user_id)

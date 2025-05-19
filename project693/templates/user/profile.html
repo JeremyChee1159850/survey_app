@@ -1,9 +1,5 @@
 <!-- prettier-ignore -->
-{%if g.theme_id == 0%}
 {% extends "site_layout.html" %}
-{%else%}
-{% extends "layout.html" %}
-{%endif%}
 
 {% block title %}User Profile{% endblock %}
 
@@ -52,23 +48,6 @@
                             <th style="width: 35%; background-color: #f8f9fa">Site Role</th>
                             <td>{% if session.user.role == 'siteadmin' %} Site Admin {% else %} Voter {% endif %}</td>
                         </tr>
-
-                        <tr>
-                            <th style="width: 35%; background-color: #f8f9fa">Competition Roles</th>
-                            <td>
-                                {% if user.theme_role_mapping %} {% for theme_info, role in user.theme_role_mapping.items() %}
-                                <div>{{ theme_info[1] | capitalize }} - {{ role.name | capitalize }}</div>
-                                {% endfor %} {% else %} No competition roles assigned. {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="width: 35%; background-color: #f8f9fa">Community Roles</th>
-                            <td>
-                                {% if user.community_role_mapping %} {% for theme_info, role in user.community_role_mapping.items() %}
-                                <div>{{ theme_info[1] | capitalize }} - {{ role.name | capitalize }}</div>
-                                {% endfor %} {% else %} No community roles assigned. {% endif %}
-                            </td>
-                        </tr>
                         <tr>
                             <th style="width: 35%; background-color: #f8f9fa">Location</th>
                             <td>
@@ -80,7 +59,7 @@
 
                 <div class="d-grid mt-4">
                     <!-- Dark Gray Button -->
-                    <a href="{{ url_for('update_profile',theme_id=g.theme_id) }}" class="btn btn-dark">Update Profile</a>
+                    <a href="#" class="btn btn-dark">Update Profile</a>
                 </div>
             </div>
         </div>

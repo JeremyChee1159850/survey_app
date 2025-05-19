@@ -2,8 +2,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- truncate table competition_themes;
 -- truncate table theme_applications;
-truncate table user_theme_role;
-truncate table user_community_role;
+-- truncate table user_theme_role;
+-- truncate table user_community_role;
 -- truncate table competitions;
 truncate table plants;
 -- truncate table competition_competitors;
@@ -31,23 +31,23 @@ truncate table user_privacy_settings;
 -- (5, 'Insects', 'Promote and appreciate the diversity of insect species in our region.', 5, 'voter5', '2023-09-01 14:00:00', 'pending', NULL, NULL, NULL, NULL),
 -- (6, 'Marine Life', 'Highlight the importance of preserving marine ecosystems and species.', 6, 'voter6', '2023-09-01 15:00:00', 'rejected', 'Not relevant to this year’s themes.', 31, 'siteadmin1', '2023-09-02 18:00:00');
 
-INSERT INTO `user_theme_role` (id, theme_id, user_id, role) VALUES
-(1, 1, 1, 'admin'),
-(2, 2, 2, 'admin'),
-(3, 3, 3, 'admin'),
-(4, 4, 4, 'admin'),
-(5, 1, 31, 'scrutineer'),
-(6, 1, 99, 'admin'),
-(7, 2, 99, 'admin'),
-(8, 3, 99, 'admin'),
-(9, 4, 99, 'admin'),
-(10, 4, 5, 'scrutineer');
+-- INSERT INTO `user_theme_role` (id, theme_id, user_id, role) VALUES
+-- (1, 1, 1, 'admin'),
+-- (2, 2, 2, 'admin'),
+-- (3, 3, 3, 'admin'),
+-- (4, 4, 4, 'admin'),
+-- (5, 1, 31, 'scrutineer'),
+-- (6, 1, 99, 'admin'),
+-- (7, 2, 99, 'admin'),
+-- (8, 3, 99, 'admin'),
+-- (9, 4, 99, 'admin'),
+-- (10, 4, 5, 'scrutineer');
 
-INSERT INTO `user_community_role` (id, theme_id, user_id, role) VALUES
-(1, 1, 1, 'moderator'),
-(2, 2, 2, 'moderator'),
-(3, 4, 4, 'moderator'),
-(4, 4, 5, 'moderator');
+-- INSERT INTO `user_community_role` (id, theme_id, user_id, role) VALUES
+-- (1, 1, 1, 'moderator'),
+-- (2, 2, 2, 'moderator'),
+-- (3, 4, 4, 'moderator'),
+-- (4, 4, 5, 'moderator');
 
 INSERT INTO `users` (id, username, password_hash, email, first_name, last_name, location, description, avatar, role, status, voting_permission) VALUES
 (1, 'voter1', 'ed75aa81d4621cf7f1f9b29ba33648a9c7d914a5963f2802d397f74f8580bc64', 'voter1@example.com', 'John', 'Doe', '{"lat": -45.8, "lon": 170.4}', 'Enthusiastic about community service.', 'img1.jpg', 'voter', 'active', 'allowed'),

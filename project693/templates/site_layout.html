@@ -65,19 +65,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item {% if session.active_page == 'user_profile' %}active{% endif %}" href="{{ url_for('profile',theme_id=0) }}">User Profile</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'privacy_settings' %}active{% endif %}" href="{{ url_for('privacy_settings',theme_id=0) }}">Privacy Settings</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'change_password' %}active{% endif %}" href="{{ url_for('change_password',theme_id=0) }}">Change Password</a>
-                            </li>
-                            <hr />
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'my_ban' %}active{% endif %}" href="{{ url_for('banned_competitions',theme_id=0) }}">
-                                    My Ban
-                                </a>
+                                <a class="dropdown-item {% if session.active_page == 'user_profile' %}active{% endif %}" href="{{ url_for('profile') }}">User Profile</a>
                             </li>
                             <hr />
                             <li>

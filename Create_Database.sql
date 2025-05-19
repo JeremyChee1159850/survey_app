@@ -30,27 +30,27 @@ SET FOREIGN_KEY_CHECKS = 0;
 --   PRIMARY KEY (`id`)
 -- ) ;
 
-DROP TABLE IF EXISTS `user_theme_role`;
-CREATE TABLE `user_theme_role` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `theme_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `role` enum('scrutineer','admin') NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-  FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
-);
+-- DROP TABLE IF EXISTS `user_theme_role`;
+-- CREATE TABLE `user_theme_role` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `theme_id` int NOT NULL,
+--   `user_id` int NOT NULL,
+--   `role` enum('scrutineer','admin') NOT NULL,
+--   PRIMARY KEY (`id`),
+--   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+--   FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
+-- );
 
-DROP TABLE IF EXISTS `user_community_role`;
-CREATE TABLE `user_community_role` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `theme_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `role` enum('moderator') NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-  FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
-);
+-- DROP TABLE IF EXISTS `user_community_role`;
+-- CREATE TABLE `user_community_role` (
+--   `id` int NOT NULL AUTO_INCREMENT,
+--   `theme_id` int NOT NULL,
+--   `user_id` int NOT NULL,
+--   `role` enum('moderator') NOT NULL,
+--   PRIMARY KEY (`id`),
+--   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+--   FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
+-- );
 
 -- DROP TABLE IF EXISTS `competitions`;
 -- CREATE TABLE `competitions` (

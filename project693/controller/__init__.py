@@ -1,8 +1,6 @@
 from flask import Flask, session
 import os
 from dotenv import load_dotenv
-#import pusher
-# from project693.dao.theme_dao import ThemeDao
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.urandom(24)
@@ -22,7 +20,6 @@ config = {
     },
 }
 
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 while current_dir and os.path.basename(current_dir) != "COMP693_25S1_project_Jeremy_Chee_1159850":
@@ -40,23 +37,9 @@ if environment is None:
 if environment not in config:
      raise KeyError(f"Invalid environment: {environment}")
 
-
-# app.pusher_client = pusher.Pusher(
-#     app_id=config[environment]["app_id"],
-#     key=config[environment]["key"],
-#     secret=config[environment]["secret"],
-#     cluster=config[environment]["cluster"],
-#     ssl=True,
-# )
-
 from . import error_controller
 from . import auth_controller
 from . import home_controller
-from . import competition_controller
-#from . import voting_controller
 from . import competitor_controller
-from . import voter_controller
 from . import management_controller
 from . import user_controller
-#from . import scrutineering_controller
-#from . import theme_controller
