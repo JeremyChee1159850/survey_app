@@ -2,7 +2,7 @@ from flask import Flask, session
 import os
 from dotenv import load_dotenv
 #import pusher
-#from project693.dao.theme_dao import ThemeDao
+# from project693.dao.theme_dao import ThemeDao
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.secret_key = os.urandom(24)
@@ -37,8 +37,8 @@ app.env = environment
 if environment is None:
     raise ValueError("ENVIRONMENT variable is not set in the .env file.")
 
-# if environment not in config:
-#     raise KeyError(f"Invalid environment: {environment}")
+if environment not in config:
+     raise KeyError(f"Invalid environment: {environment}")
 
 
 # app.pusher_client = pusher.Pusher(
