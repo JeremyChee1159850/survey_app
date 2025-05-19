@@ -10,20 +10,20 @@ class CompetitorDAO(BaseDAO):
     def __init__(self) -> None:
         super().__init__()
 
-    def add_plant(self, name: str, description: str, image: str, location: str, invasiveness: str) -> None:
+    def add_plant(self, name: str, description: str, image: str, invasiveness: str) -> None:
         query = """
-            INSERT INTO plants (name, description, image, location, invasiveness)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO plants (name, description, image, invasiveness)
+            VALUES (%s, %s, %s, %s)
         """
-        self.execute_non_query(query, (name, description, image, location, invasiveness))
+        self.execute_non_query(query, (name, description, image, invasiveness))
 
-    def edit_plant(self, id: int, name: str, description: str, image: str, location: str) -> None:
+    def edit_plant(self, id: int, name: str, description: str, image: str) -> None:
         query = """
             UPDATE plants
-            SET name = %s, description = %s, image = %s, location = %s
+            SET name = %s, description = %s, image = %s
             WHERE id = %s
         """
-        self.execute_non_query(query, (name, description, image, location, id))
+        self.execute_non_query(query, (name, description, image, id))
 
 
     def delete_plant(self, id: int) -> None:
@@ -32,7 +32,7 @@ class CompetitorDAO(BaseDAO):
 
     def search_plants(self, keyword: str) -> List[Competitor]:
         query = """
-            SELECT id, name, description, image, location, invasiveness
+            SELECT id, name, description, image, invasiveness
             FROM plants
             WHERE name LIKE %s OR description LIKE %s
         """
@@ -45,8 +45,7 @@ class CompetitorDAO(BaseDAO):
                 name=row[1], 
                 description=row[2], 
                 image=row[3],
-                location=json.loads(row[4]) if row[4] else {},  # Handle NULL or empty location
-                invasiveness=row[5]
+                invasiveness=row[4]
             )
             plants.append(plant)
         
@@ -62,14 +61,13 @@ class CompetitorDAO(BaseDAO):
                 name=row[1],
                 description=row[2],
                 image=row[3],
-                location=json.loads(row[4]),
-                invasiveness=row[5]
+                invasiveness=row[4]
             )
         return None
     
     # project693
     def get_all_plants(self) -> List[Competitor]:
-        query = "SELECT id, name, description, image, location, invasiveness FROM plants"
+        query = "SELECT id, name, description, image, invasiveness FROM plants"
         result = self.execute_query(query)
 
         plants = []
@@ -79,8 +77,7 @@ class CompetitorDAO(BaseDAO):
                 name=row[1],
                 description=row[2],
                 image=row[3],
-                location=json.loads(row[4]) if row[4] else {},
-                invasiveness=row[5]
+                invasiveness=row[4]
             )
             plants.append(plant)
         

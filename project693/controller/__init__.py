@@ -58,5 +58,5 @@ from . import competitor_controller
 from . import voter_controller
 from . import management_controller
 from . import user_controller
-from . import scrutineering_controller
+#from . import scrutineering_controller
 #from . import theme_controller

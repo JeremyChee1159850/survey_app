@@ -33,7 +33,7 @@ def list_plants():
     )
 
     return render_template(
-        "competition/plant_management.html", plants=plants
+        "competition/plant_list.html", plants=plants
     )
 
 
@@ -44,19 +44,13 @@ def add_plant():
         description = request.form["description"]
         invasiveness = request.form.get("invasiveness")
         image = request.files.get("image")
-        lat = request.form.get("lat")
-        lon = request.form.get("lon")
         image_filename = "default.png"
         if image and allowed_file(image.filename):
             ext = os.path.splitext(image.filename)[1]
             image_filename = f"{uuid.uuid4()}{ext}"
             image_path = os.path.join(app.config["UPLOAD_FOLDER"], image_filename)
             image.save(image_path)
-        if lat and lon:
-            competitor_location = json.dumps({"lat": lat, "lon": lon})
-        else:
-            competitor_location = None
-        competitor_dao.add_plant(name, description, image_filename, competitor_location, invasiveness)
+        competitor_dao.add_plant(name, description, image_filename, invasiveness)
         flash("New Plant added successfully!", "success")
         return redirect(url_for("list_plants"))
     return render_template("competition/add_plant.html")
@@ -65,18 +59,10 @@ def add_plant():
 @app.route("/siteadmin/edit_plant/<int:id>", methods=["GET", "POST"])
 def edit_plant(id):
     competitor = competitor_dao.get_plant_by_id(id)
-    if isinstance(competitor.location, str):
-        competitor.location = json.loads(competitor.location)
-    
+
     if request.method == "POST":
         name = request.form["name"]
-        description = request.form["description"]
-        updated_lat = request.form.get("lat")
-        updated_lon = request.form.get("lon")
-        
-        if updated_lat and updated_lon:
-            competitor.location = json.dumps({"lat": float(updated_lat), "lon": float(updated_lon)})
-            
+        description = request.form["description"]     
         file = request.files.get("image")
         if file and file.filename != "":
             filename = secure_filename(file.filename)
@@ -89,11 +75,11 @@ def edit_plant(id):
         else:
             image = competitor.image
             
-        competitor_dao.edit_plant(id, name, description, image, competitor.location)
-        flash("Competitor edited successfully!", "success")
+        competitor_dao.edit_plant(id, name, description, image)
+        flash("Plant edited successfully!", "success")
         return redirect(url_for("list_plants"))
     
-    return render_template("competition/edit_competitor.html", competitor=competitor)
+    return render_template("competition/edit_plant.html", competitor=competitor)
 
 
 @app.route("/siteadmin/delete_plants/<int:id>", methods=["POST"])

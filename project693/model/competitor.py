@@ -7,14 +7,12 @@ class Competitor:
         name,
         description,
         image,
-        location,
         invasiveness
     ):
         self.id = id
         self.name = name
         self.description = description
         self.image = image
-        self.location = json.loads(location) if isinstance(location, str) else location
         self.invasiveness = invasiveness
 
     def to_dict(self):
@@ -23,7 +21,6 @@ class Competitor:
             "name": self.name,
             "description": self.description,
             "image": self.image,
-            "location": json.dumps(self.location),
             "invasiveness": self.invasiveness
         }
 
@@ -34,7 +31,7 @@ class Competitor:
             name=data["name"],
             description=data["description"],
             image=data["image"],
-            location=data["location"],
+            invasiveness=data["invasiveness"]
         )
     
 

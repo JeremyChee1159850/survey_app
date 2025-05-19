@@ -70,7 +70,6 @@ CREATE TABLE `plants` (
   `name` varchar(50) NOT NULL,
   `description` varchar(255) NOT NULL,
   `image` varchar(64) NOT NULL,
-  `location` json DEFAULT NULL,
   `invasiveness` enum('invasive', 'non-invasive') NOT NULL DEFAULT 'non-invasive',
   PRIMARY KEY (`id`)
 ) ;

@@ -53,15 +53,7 @@
                                 <a class="dropdown-item {% if session.active_page == 'add_plant' %}active{% endif %}" href="{{ url_for('add_plant') }}">Add Plants</a>
                             </li>
                             <li>
-                                <a class="dropdown-item {% if session.active_page == 'managing_voter' %}active{% endif %}" href="{{ url_for('managing_voter') }}">Managing User</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'voting_integrity' %}active{% endif %}" href="{{ url_for('voting_integrity') }}">Voting Integrity</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {% if session.active_page == 'sitewide_appeal_requests' %}active{% endif %}" href="{{ url_for('sitewide_appeals') }}">
-                                    Site-Wide Appeal Requests
-                                </a>
+                                <a class="dropdown-item {% if session.active_page == 'list_plants' %}active{% endif %}" href="{{ url_for('list_plants') }}">Plant List</a>
                             </li>
                         </ul>
                     </li>
