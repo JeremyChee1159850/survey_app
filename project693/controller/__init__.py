@@ -53,7 +53,7 @@ from . import error_controller
 from . import auth_controller
 from . import home_controller
 from . import competition_controller
-from . import voting_controller
+#from . import voting_controller
 from . import competitor_controller
 from . import voter_controller
 from . import management_controller
