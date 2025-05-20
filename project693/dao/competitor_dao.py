@@ -108,25 +108,25 @@ class CompetitorDAO(BaseDAO):
             random.choice(non_invasive)
         ], 2)
     
-    # Answers of survey that get stored in the database
-    def survey_answer(self, session_id, question_number, selected_plant_id):
-        query = """
-                INSERT INTO survey_results (session_id, question_number, selected_plant_id)
-                VALUES (%s, %s, %s)
-                """
-        self.execute_non_query(query, (session_id, question_number, selected_plant_id))
+    # # Answers of survey that get stored in the database
+    # def survey_answer(self, session_id, question_number, selected_plant_id):
+    #     query = """
+    #             INSERT INTO survey_results (session_id, question_number, selected_plant_id)
+    #             VALUES (%s, %s, %s)
+    #             """
+    #     self.execute_non_query(query, (session_id, question_number, selected_plant_id))
 
-    # Save the Introduction Questions
-    def save_metadata(self, session_id, has_garden=None, age=None, reasoning=None):
-        query = """
-                INSERT INTO survey_metadata (session_id, has_garden, age, reasoning)
-                VALUES (%s, %s, %s, %s)
-                """
-        self.execute_non_query(query, (session_id, has_garden, age, reasoning))
+    # # Save the Introduction Questions
+    # def save_metadata(self, session_id, has_garden=None, age=None, reasoning=None):
+    #     query = """
+    #             INSERT INTO survey_metadata (session_id, has_garden, age, reasoning)
+    #             VALUES (%s, %s, %s, %s)
+    #             """
+    #     self.execute_non_query(query, (session_id, has_garden, age, reasoning))
 
-    # Update Q10 which is the Reasoning Question
-    def update_reasoning(self, session_id, reasoning):
-        query = """
-                UPDATE survey_metadata SET reasoning = %s WHERE session_id = %s
-                """
-        self.execute_non_query(query, (reasoning, session_id))
+    # # Update Q10 which is the Reasoning Question
+    # def update_reasoning(self, session_id, reasoning):
+    #     query = """
+    #             UPDATE survey_metadata SET reasoning = %s WHERE session_id = %s
+    #             """
+    #     self.execute_non_query(query, (reasoning, session_id))

@@ -89,163 +89,163 @@ def delete_plant(id):
     return redirect(url_for("list_plants"))
 
 
-@app.route("/survey/", methods=["GET", "POST"])
-def survey():
-    if request.method == "GET":
-        return render_template("survey_intro.html")  # new template with garden + age form
+# @app.route("/survey/", methods=["GET", "POST"])
+# def survey():
+#     if request.method == "GET":
+#         return render_template("survey_intro.html")  # new template with garden + age form
 
-    # POST method – user submitted intro form
-    session["session_id"] = str(uuid.uuid4())  # new session
-    session["question_number"] = 1
-    session["answers"] = []
+#     # POST method – user submitted intro form
+#     session["session_id"] = str(uuid.uuid4())  # new session
+#     session["question_number"] = 1
+#     session["answers"] = []
 
-    # Save form metadata
-    has_garden = request.form.get("has_garden") == "yes"
-    age_range = request.form.get("age_range")
+#     # Save form metadata
+#     has_garden = request.form.get("has_garden") == "yes"
+#     age_range = request.form.get("age_range")
 
-    # Save metadata with placeholder reasoning
-    competitor_dao.save_metadata(
-        session_id=session["session_id"],
-        reasoning=None,
-        has_garden=has_garden,
-        age=age_range
-    )
+#     # Save metadata with placeholder reasoning
+#     competitor_dao.save_metadata(
+#         session_id=session["session_id"],
+#         reasoning=None,
+#         has_garden=has_garden,
+#         age=age_range
+#     )
 
-    # Start tracking pairs
-    SessionManager.set("used_invasive", [])
-    SessionManager.set("used_non_invasive", [])
+#     # Start tracking pairs
+#     SessionManager.set("used_invasive", [])
+#     SessionManager.set("used_non_invasive", [])
 
-    pair = competitor_dao.get_random_pair([], [])
-    if not pair:
-        flash("Not enough plants in the database!", "warning")
-        return redirect(url_for("list_plants"))
+#     pair = competitor_dao.get_random_pair([], [])
+#     if not pair:
+#         flash("Not enough plants in the database!", "warning")
+#         return redirect(url_for("list_plants"))
 
-    SessionManager.set("last_pair", [pair[0].id, pair[1].id])
+#     SessionManager.set("last_pair", [pair[0].id, pair[1].id])
 
-    return render_template("survey.html", pair=pair, question_number=1)
-
-
-@app.route("/survey/next/", methods=["GET"])
-def survey_next_get():
-    qn = session.get("question_number", 1)
-
-    if qn == 10:
-        return render_template("survey_questionnaire.html")
-
-    used_invasive = SessionManager.get("used_invasive") or []
-    used_non_invasive = SessionManager.get("used_non_invasive") or []
-
-    pair = competitor_dao.get_random_pair(
-        used_invasive_ids=used_invasive,
-        used_non_invasive_ids=used_non_invasive
-    )
-
-    if not pair:
-        flash("Not enough plants left to continue the survey.", "warning")
-        return redirect(url_for("list_plants"))
-
-    SessionManager.set("last_pair", [pair[0].id, pair[1].id])
-
-    return render_template("survey.html", pair=pair, question_number=qn)
-
-@app.route("/survey/next/", methods=["POST"])
-def survey_next():
-    selected_id = request.form.get("selected_id")
-    session_id = session.get("session_id")
-    #user_id = SessionManager.get("user_id")  # None if anonymous
-
-    # Current question number
-    qn = session.get("question_number", 1)
-
-    # Save answer immediately
-    competitor_dao.survey_answer(
-        session_id=session_id,
-        question_number=qn,
-        selected_plant_id=selected_id
-    )
-
-    # Update answers list
-    answers = SessionManager.get("answers") or []
-    answers.append(selected_id)
-    SessionManager.set("answers", answers)
-
-    # Update used plants list
-    used_invasive = SessionManager.get("used_invasive") or []
-    used_non_invasive = SessionManager.get("used_non_invasive") or []
-    last_pair = SessionManager.get("last_pair") or []
-
-    for comp_id in last_pair:
-        competitor = competitor_dao.get_plant_by_id(int(comp_id))
-        if competitor.invasiveness == 'invasive':
-            if competitor.id not in used_invasive:
-                used_invasive.append(competitor.id)
-        else:
-            if competitor.id not in used_non_invasive:
-                used_non_invasive.append(competitor.id)
-
-    SessionManager.set("used_invasive", used_invasive)
-    SessionManager.set("used_non_invasive", used_non_invasive)
-
-    # Increment question number
-    session["question_number"] = qn + 1
-
-    # Redirect to GET route to show next question
-    return redirect(url_for("survey_next_get"))
+#     return render_template("survey.html", pair=pair, question_number=1)
 
 
-@app.route("/survey/questionnaire", methods=["POST"])
-def survey_questionnaire():
-    reasoning = request.form.get("reasoning")
-    session_id = session.get("session_id")
-    #user_id = SessionManager.get("user_id")
+# @app.route("/survey/next/", methods=["GET"])
+# def survey_next_get():
+#     qn = session.get("question_number", 1)
 
-    # Save reasoning as question 10
-    competitor_dao = CompetitorDAO()
-    competitor_dao.update_reasoning(
-    session_id=session_id,
-    reasoning=reasoning
-    )
+#     if qn == 10:
+#         return render_template("survey_questionnaire.html")
 
-    # Get all selected answers from session
-    answers = SessionManager.get("answers") or []
+#     used_invasive = SessionManager.get("used_invasive") or []
+#     used_non_invasive = SessionManager.get("used_non_invasive") or []
 
-    # Count invasive vs non-invasive
-    invasive_count = 0
-    non_invasive_count = 0
+#     pair = competitor_dao.get_random_pair(
+#         used_invasive_ids=used_invasive,
+#         used_non_invasive_ids=used_non_invasive
+#     )
 
-    for plant_id in answers:
-        plant = competitor_dao.get_plant_by_id(int(plant_id))
-        if plant.invasiveness == 'invasive':
-            invasive_count += 1
-        else:
-            non_invasive_count += 1
+#     if not pair:
+#         flash("Not enough plants left to continue the survey.", "warning")
+#         return redirect(url_for("list_plants"))
 
-    total = invasive_count + non_invasive_count
-    invasive_percent = round((invasive_count / total) * 100, 1) if total else 0
-    non_invasive_percent = round((non_invasive_count / total) * 100, 1) if total else 0
+#     SessionManager.set("last_pair", [pair[0].id, pair[1].id])
 
-     # Decide message
-    if non_invasive_count >= 5:
-        message = "🌿 Well done! You have a preference for native species. You're helping conserve New Zealand biodiversity."
-    elif invasive_count >= 5:
-        message = "⚠️ Be careful! You’re choosing non-native species and these can chomp the garden fence."
-    else:
-        message = "Thanks for your input! Your preferences have been recorded."
+#     return render_template("survey.html", pair=pair, question_number=qn)
 
-    # Log for dev
-    print("Reasoning:", reasoning)
-    print("Answers:", SessionManager.get("answers"))
+# @app.route("/survey/next/", methods=["POST"])
+# def survey_next():
+#     selected_id = request.form.get("selected_id")
+#     session_id = session.get("session_id")
+#     #user_id = SessionManager.get("user_id")  # None if anonymous
 
-    # Clear session
-    SessionManager.remove("question_number")
-    SessionManager.remove("answers")
-    SessionManager.remove("reasoning")
-    SessionManager.remove("used_invasive")
-    SessionManager.remove("used_non_invasive")
+#     # Current question number
+#     qn = session.get("question_number", 1)
 
-    return render_template(
-        "survey_complete.html",
-        invasive_percent=invasive_percent,
-        non_invasive_percent=non_invasive_percent,
-        message=message
-    )
+#     # Save answer immediately
+#     competitor_dao.survey_answer(
+#         session_id=session_id,
+#         question_number=qn,
+#         selected_plant_id=selected_id
+#     )
+
+#     # Update answers list
+#     answers = SessionManager.get("answers") or []
+#     answers.append(selected_id)
+#     SessionManager.set("answers", answers)
+
+#     # Update used plants list
+#     used_invasive = SessionManager.get("used_invasive") or []
+#     used_non_invasive = SessionManager.get("used_non_invasive") or []
+#     last_pair = SessionManager.get("last_pair") or []
+
+#     for comp_id in last_pair:
+#         competitor = competitor_dao.get_plant_by_id(int(comp_id))
+#         if competitor.invasiveness == 'invasive':
+#             if competitor.id not in used_invasive:
+#                 used_invasive.append(competitor.id)
+#         else:
+#             if competitor.id not in used_non_invasive:
+#                 used_non_invasive.append(competitor.id)
+
+#     SessionManager.set("used_invasive", used_invasive)
+#     SessionManager.set("used_non_invasive", used_non_invasive)
+
+#     # Increment question number
+#     session["question_number"] = qn + 1
+
+#     # Redirect to GET route to show next question
+#     return redirect(url_for("survey_next_get"))
+
+
+# @app.route("/survey/questionnaire", methods=["POST"])
+# def survey_questionnaire():
+#     reasoning = request.form.get("reasoning")
+#     session_id = session.get("session_id")
+#     #user_id = SessionManager.get("user_id")
+
+#     # Save reasoning as question 10
+#     competitor_dao = CompetitorDAO()
+#     competitor_dao.update_reasoning(
+#     session_id=session_id,
+#     reasoning=reasoning
+#     )
+
+#     # Get all selected answers from session
+#     answers = SessionManager.get("answers") or []
+
+#     # Count invasive vs non-invasive
+#     invasive_count = 0
+#     non_invasive_count = 0
+
+#     for plant_id in answers:
+#         plant = competitor_dao.get_plant_by_id(int(plant_id))
+#         if plant.invasiveness == 'invasive':
+#             invasive_count += 1
+#         else:
+#             non_invasive_count += 1
+
+#     total = invasive_count + non_invasive_count
+#     invasive_percent = round((invasive_count / total) * 100, 1) if total else 0
+#     non_invasive_percent = round((non_invasive_count / total) * 100, 1) if total else 0
+
+#      # Decide message
+#     if non_invasive_count >= 5:
+#         message = "🌿 Well done! You have a preference for native species. You're helping conserve New Zealand Biodiversity."
+#     elif invasive_count >= 5:
+#         message = "⚠️ Be careful! You’re choosing non-native species and these can chomp the garden fence."
+#     else:
+#         message = "Thanks for your input! Your preferences have been recorded."
+
+#     # Log for dev
+#     print("Reasoning:", reasoning)
+#     print("Answers:", SessionManager.get("answers"))
+
+#     # Clear session
+#     SessionManager.remove("question_number")
+#     SessionManager.remove("answers")
+#     SessionManager.remove("reasoning")
+#     SessionManager.remove("used_invasive")
+#     SessionManager.remove("used_non_invasive")
+
+#     return render_template(
+#         "survey_complete.html",
+#         invasive_percent=invasive_percent,
+#         non_invasive_percent=non_invasive_percent,
+#         message=message
+#     )

@@ -21,7 +21,7 @@ exempt_routes_patterns = [
     r"^/login/.*$",
     r"^/logout/$",
     r"^/about_us/$",
-    r"^/admin/competition_end/.*$",
+    #r"^/admin/competition_end/.*$",
     r"^/static/.*$",
     r"^/survey/$",
     r"^/survey/next/$",

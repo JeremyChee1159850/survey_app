@@ -119,10 +119,12 @@
     }
 </script>
 
+{% if not session.get('user') or session['user'].get('role') != 'siteadmin' %}
 <div class="container text-center mt-5 mb-4">
     <a href="{{ url_for('survey') }}" class="btn btn-success btn-lg">
         🌿 Click here to take the Green or Mean Survey
     </a>
 </div>
+{% endif %}
 
 {%endblock%}
