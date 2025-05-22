@@ -3,7 +3,7 @@
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `competition_themes`;
+-- DROP TABLE IF EXISTS `competition_themes`;
 -- CREATE TABLE `competition_themes` (
 --   `id` int NOT NULL AUTO_INCREMENT,
 --   `name` varchar(50) NOT NULL,
@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS `competition_themes`;
 --   PRIMARY KEY (`id`)
 -- ) ;
 
-DROP TABLE IF EXISTS `theme_applications`;
+-- DROP TABLE IF EXISTS `theme_applications`;
 -- CREATE TABLE `theme_applications` (
 --   `id` int NOT NULL AUTO_INCREMENT,
 --   `theme_name` varchar(50) NOT NULL,
@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS `theme_applications`;
 --   PRIMARY KEY (`id`)
 -- ) ;
 
-DROP TABLE IF EXISTS `user_theme_role`;
+-- DROP TABLE IF EXISTS `user_theme_role`;
 -- CREATE TABLE `user_theme_role` (
 --   `id` int NOT NULL AUTO_INCREMENT,
 --   `theme_id` int NOT NULL,
@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS `user_theme_role`;
 --   FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
 -- );
 
-DROP TABLE IF EXISTS `user_community_role`;
+-- DROP TABLE IF EXISTS `user_community_role`;
 -- CREATE TABLE `user_community_role` (
 --   `id` int NOT NULL AUTO_INCREMENT,
 --   `theme_id` int NOT NULL,
@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `user_community_role`;
 --   FOREIGN KEY (`theme_id`) REFERENCES `competition_themes`(`id`)
 -- );
 
-DROP TABLE IF EXISTS `competitions`;
+-- DROP TABLE IF EXISTS `competitions`;
 -- CREATE TABLE `competitions` (
 --   `id` int NOT NULL AUTO_INCREMENT,
 --   `name` varchar(100) NOT NULL,

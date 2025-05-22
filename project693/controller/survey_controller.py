@@ -50,6 +50,9 @@ def survey():
 
 @app.route("/survey/next/", methods=["GET"])
 def survey_next_get():
+    if "session_id" not in session:
+        return redirect(url_for("survey"))
+
     qn = session.get("question_number", 1)
 
     if qn == 10:
@@ -73,6 +76,9 @@ def survey_next_get():
 
 @app.route("/survey/next/", methods=["POST"])
 def survey_next():
+    if "session_id" not in session:
+        return redirect(url_for("survey"))
+
     selected_id = request.form.get("selected_id")
     session_id = session.get("session_id")
     #user_id = SessionManager.get("user_id")  # None if anonymous
@@ -117,7 +123,7 @@ def survey_next():
     return redirect(url_for("survey_next_get"))
 
 
-@app.route("/survey/questionnaire", methods=["POST"])
+@app.route("/survey/questionnaire/", methods=["POST"])
 def survey_questionnaire():
     reasoning = request.form.get("reasoning")
     session_id = session.get("session_id")
@@ -166,6 +172,7 @@ def survey_questionnaire():
     SessionManager.remove("reasoning")
     SessionManager.remove("used_invasive")
     SessionManager.remove("used_non_invasive")
+    session.pop("session_id", None)
 
     return render_template(
         "survey_complete.html",
