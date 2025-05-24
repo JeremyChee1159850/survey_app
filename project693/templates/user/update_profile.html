@@ -1,9 +1,5 @@
 <!-- prettier-ignore -->
-{%if g.theme_id == 0%}
 {% extends "site_layout.html" %}
-{%else%}
-{% extends "layout.html" %}
-{%endif%}
 
 {% block title %}Update Profile{% endblock %}
 
@@ -25,7 +21,7 @@
         <img src="{{ url_for('static', filename='img/' ~ user.avatar if user.avatar != 'default.png' else 'img/default.png') }}" alt="Avatar" class="rounded-circle" style="width: 150px; height: 150px" />
     </div>
 
-    <form id="uploadForm" method="POST" action="{{ url_for('update_profile',theme_id = g.theme_id) }}" enctype="multipart/form-data" class="mb-4 text-center">
+    <form id="uploadForm" method="POST" action="{{ url_for('update_profile') }}" enctype="multipart/form-data" class="mb-4 text-center">
         <div class="mb-3">
             <input type="file" class="form-control-file" name="profile_image" id="profile_image" accept="image/*" />
         </div>
@@ -36,7 +32,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm p-4 mb-4">
-                <form method="POST" action="{{ url_for('update_profile',theme_id = g.theme_id) }}" class="text-left">
+                <form method="POST" action="{{ url_for('update_profile') }}" class="text-left">
                     <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem">
                         <thead class="thead-dark">
                             <tr>

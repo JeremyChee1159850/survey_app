@@ -1,9 +1,6 @@
 from project693.model.enums import (
     Role,
     Status,
-    VotingPermission,
-    CompetitionRole,
-    CommunityRole,
 )
 
 
@@ -21,9 +18,6 @@ class User:
         avatar,
         role,
         status,
-        voting_permission,
-        theme_role_mapping,
-        community_role_mapping,
     ):
         self.id = id
         self.username = username
@@ -34,8 +28,6 @@ class User:
         self.location = location
         self.description = description
         self.avatar = avatar
-        self.theme_role_mapping = theme_role_mapping
-        self.community_role_mapping = community_role_mapping
 
         # Pass enum directly without calling upper()
         if isinstance(role, Role):
@@ -47,11 +39,7 @@ class User:
             self.status = status
         else:
             raise ValueError(f"Invalid status: {status}")
-
-        if isinstance(voting_permission, VotingPermission):
-            self.voting_permission = voting_permission
-        else:
-            raise ValueError(f"Invalid voting permission: {voting_permission}")
+        
 
     def to_dict(self):
         return {
@@ -66,23 +54,6 @@ class User:
             "avatar": self.avatar,
             "role": self.role.value,
             "status": self.status.value,
-            "voting_permission": self.voting_permission.value,
-            "theme_role_mapping": (
-                {
-                    int(theme_id): role.value
-                    for theme_id, role in self.theme_role_mapping.items()
-                }
-                if self.theme_role_mapping
-                else None
-            ),
-            "community_role_mapping": (
-                {
-                    int(theme_id): role.value
-                    for theme_id, role in self.community_role_mapping.items()
-                }
-                if self.community_role_mapping
-                else None
-            ),
         }
 
     @staticmethod
@@ -99,23 +70,4 @@ class User:
             avatar=data["avatar"],
             role=Role[data["role"].upper()],  # Convert string to Role enum
             status=Status[data["status"].upper()],  # Convert string to Status enum
-            voting_permission=VotingPermission[
-                data["voting_permission"].upper()
-            ],  # Convert string to VotingPermission enum
-            theme_role_mapping=(
-                {
-                    int(theme_id): CompetitionRole[role.upper()]
-                    for theme_id, role in data.get("theme_role_mapping", {}).items()
-                }
-                if data.get("theme_role_mapping")
-                else None
-            ),
-            community_role_mapping=(
-                {
-                    int(theme_id): CommunityRole[role.upper()]
-                    for theme_id, role in data.get("community_role_mapping", {}).items()
-                }
-                if data.get("community_role_mapping")
-                else None
-            ),
         )

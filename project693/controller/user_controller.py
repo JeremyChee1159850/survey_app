@@ -23,7 +23,7 @@ def allowed_file(filename):
     )
 
 
-@app.route("/profile/", methods=["GET", "POST"])
+@app.route("/siteadmin/profile/", methods=["GET", "POST"])
 def profile():
     user_id = session["user_id"]
     user_dao = UserDao()
@@ -34,8 +34,8 @@ def profile():
     return render_template("user/profile.html", user=user)
 
 
-@app.route("/theme/<int:theme_id>/voter/update_profile/", methods=["GET", "POST"])
-def update_profile(theme_id):
+@app.route("/siteadmin/update_profile/", methods=["GET", "POST"])
+def update_profile():
     user_id = session["user_id"]
     user_dao = UserDao()
     user = user_dao.find_by_id(user_id)
@@ -71,8 +71,8 @@ def update_profile(theme_id):
         else:
             flash("Latitude and longitude values are required.")
 
-        if updated_lat and updated_lon:
-            user.location = json.dumps({"lat": updated_lat, "lon": updated_lon})
+        # if updated_lat and updated_lon:
+        #     user.location = json.dumps({"lat": updated_lat, "lon": updated_lon})
 
         if updated_email:
             existing_user = user_dao.find_by_email(updated_email)
@@ -86,7 +86,7 @@ def update_profile(theme_id):
 
                 user_dao.update_user(user)
                 flash("Profile updated successfully!")
-        return redirect(url_for("update_profile", theme_id=theme_id))
+        return redirect(url_for("update_profile"))
 
     return render_template("user/update_profile.html", user=user)
 
@@ -104,134 +104,89 @@ def delete_profile_image():
     return redirect(url_for("profile"))
 
 
-@app.route("/theme/<int:theme_id>/voter/change_password", methods=["GET", "POST"])
-def change_password(theme_id):
-    SessionManager.set(
-        SessionManager.ACTIVE_PAGE, SessionManager.Page.CHANGE_PASSWORD.value
-    )
-    user_id = session["user_id"]
-    user_dao = UserDao()
-    user = user_dao.find_by_id(user_id)
-    current_password = ""
-    new_password = ""
-    confirm_password = ""
+# @app.route("/theme/<int:theme_id>/voter/change_password", methods=["GET", "POST"])
+# def change_password(theme_id):
+#     SessionManager.set(
+#         SessionManager.ACTIVE_PAGE, SessionManager.Page.CHANGE_PASSWORD.value
+#     )
+#     user_id = session["user_id"]
+#     user_dao = UserDao()
+#     user = user_dao.find_by_id(user_id)
+#     current_password = ""
+#     new_password = ""
+#     confirm_password = ""
 
-    if request.method == "POST":
-        current_password = request.form["current_password"]
-        new_password = request.form["new_password"]
-        confirm_password = request.form["confirm_password"]
+#     if request.method == "POST":
+#         current_password = request.form["current_password"]
+#         new_password = request.form["new_password"]
+#         confirm_password = request.form["confirm_password"]
 
-        # Check if the current password is correct
-        if not check_password_hash(user.password_hash, current_password):
-            flash("Current password is incorrect.")
-        # Check if the new password is the same as the current password
-        elif check_password_hash(user.password_hash, new_password):
-            flash("New password cannot be the same as the current password.")
-        # Check if the new password and confirmation match
-        elif new_password != confirm_password:
-            flash("New passwords do not match.")
-        else:
-            # Update the password in the database
-            hashed_password = get_password_hash(new_password)
-            user.password_hash = hashed_password
-            user_dao.update_user(user)
-            flash("Password changed successfully!")
-            return redirect(url_for("change_password", theme_id=theme_id))
+#         # Check if the current password is correct
+#         if not check_password_hash(user.password_hash, current_password):
+#             flash("Current password is incorrect.")
+#         # Check if the new password is the same as the current password
+#         elif check_password_hash(user.password_hash, new_password):
+#             flash("New password cannot be the same as the current password.")
+#         # Check if the new password and confirmation match
+#         elif new_password != confirm_password:
+#             flash("New passwords do not match.")
+#         else:
+#             # Update the password in the database
+#             hashed_password = get_password_hash(new_password)
+#             user.password_hash = hashed_password
+#             user_dao.update_user(user)
+#             flash("Password changed successfully!")
+#             return redirect(url_for("change_password", theme_id=theme_id))
 
-    return render_template(
-        "user/change_password.html",
-        current_password=current_password,
-        new_password=new_password,
-        confirm_password=confirm_password,
-    )
-
-
-# List of Banned Competitions
-@app.route("/theme/<int:theme_id>/voter/banned_competitions", methods=["GET"])  # Jeremy
-def banned_competitions(theme_id):
-
-    user_info = SessionManager.get(SessionManager.USER)
-    if not user_info:
-        return redirect(url_for("login"))
-
-    SessionManager.set(SessionManager.ACTIVE_PAGE, SessionManager.Page.MY_BAN.value)
-    user_dao = UserDao()
-    banned_competitions = user_dao.banned_competitions(user_info["id"])
-    return render_template(
-        "user/banned_competitions.html",
-        competitions=banned_competitions,
-        username=user_info["username"],
-    )
+#     return render_template(
+#         "user/change_password.html",
+#         current_password=current_password,
+#         new_password=new_password,
+#         confirm_password=confirm_password,
+#     )
 
 
-@app.route("/theme/<int:theme_id>/voter/appeal", methods=["POST"])  # Jeremy
-def appeal(theme_id):
-    id = request.form.get("id")
-    ban_theme_id = request.form.get("ban_theme_id")
-    user_id = session.get("user_id")
-    appeal_reason = request.form.get("appealReason")
+# @app.route("/theme/<int:theme_id>/voter/privacy_settings/", methods=["GET", "POST"])
+# def privacy_settings(theme_id):
+#     if request.method == "GET":
+#         user = User.from_dict(SessionManager.get(SessionManager.USER))
+#         userDao = UserDao()
+#         privacy_settings = userDao.get_privacy_settings_by_id(user.id)
 
-    user_dao = UserDao()
-    user_info = SessionManager.get(SessionManager.USER)
-    username = user_info["username"]
+#         SessionManager.set(
+#             SessionManager.ACTIVE_PAGE, SessionManager.Page.PRIVACYSETTINGS.value
+#         )
+#         return render_template(
+#             "user/privacy_settings.html", privacy_settings=privacy_settings
+#         )
+#     else:
+#         user = User.from_dict(SessionManager.get(SessionManager.USER))
+#         show_email = request.form.get("show_email") == "on"
+#         show_first_name = request.form.get("show_first_name") == "on"
+#         show_last_name = request.form.get("show_last_name") == "on"
+#         show_location = request.form.get("show_location") == "on"
+#         show_description = request.form.get("show_description") == "on"
+#         show_avatar = request.form.get("show_avatar") == "on"
+#         show_recent_post = request.form.get("show_recent_post") == "on"
+#         show_recent_vote = request.form.get("show_recent_vote") == "on"
+#         show_recent_donation = request.form.get("show_recent_donation") == "on"
+#         show_in_user_list = request.form.get("show_in_user_list") == "on"
 
-    # Handle both site-wide and theme-specific appeals
-    if ban_theme_id:
-        user_dao.appeal(
-            id=id,
-            theme_id=ban_theme_id,
-            user_id=user_id,
-            username=username,
-            appeal_reason=appeal_reason,
-        )
-    else:
-        user_dao.appeal_sitewide(
-            user_id=user_id, username=username, appeal_reason=appeal_reason
-        )
-    return redirect(url_for("banned_competitions", theme_id=theme_id))
-
-
-@app.route("/theme/<int:theme_id>/voter/privacy_settings/", methods=["GET", "POST"])
-def privacy_settings(theme_id):
-    if request.method == "GET":
-        user = User.from_dict(SessionManager.get(SessionManager.USER))
-        userDao = UserDao()
-        privacy_settings = userDao.get_privacy_settings_by_id(user.id)
-
-        SessionManager.set(
-            SessionManager.ACTIVE_PAGE, SessionManager.Page.PRIVACYSETTINGS.value
-        )
-        return render_template(
-            "user/privacy_settings.html", privacy_settings=privacy_settings
-        )
-    else:
-        user = User.from_dict(SessionManager.get(SessionManager.USER))
-        show_email = request.form.get("show_email") == "on"
-        show_first_name = request.form.get("show_first_name") == "on"
-        show_last_name = request.form.get("show_last_name") == "on"
-        show_location = request.form.get("show_location") == "on"
-        show_description = request.form.get("show_description") == "on"
-        show_avatar = request.form.get("show_avatar") == "on"
-        show_recent_post = request.form.get("show_recent_post") == "on"
-        show_recent_vote = request.form.get("show_recent_vote") == "on"
-        show_recent_donation = request.form.get("show_recent_donation") == "on"
-        show_in_user_list = request.form.get("show_in_user_list") == "on"
-
-        privacy_settings = UserPrivacySettings(
-            None,
-            user.id,
-            show_email,
-            show_first_name,
-            show_last_name,
-            show_location,
-            show_description,
-            show_avatar,
-            show_recent_post,
-            show_recent_vote,
-            show_recent_donation,
-            show_in_user_list,
-        )
-        userDao = UserDao()
-        userDao.update_privacy_setting(privacy_settings)
-        flash("Privacy settings updated successfully!")
-        return redirect(url_for("privacy_settings", theme_id=theme_id))
+#         privacy_settings = UserPrivacySettings(
+#             None,
+#             user.id,
+#             show_email,
+#             show_first_name,
+#             show_last_name,
+#             show_location,
+#             show_description,
+#             show_avatar,
+#             show_recent_post,
+#             show_recent_vote,
+#             show_recent_donation,
+#             show_in_user_list,
+#         )
+#         userDao = UserDao()
+#         userDao.update_privacy_setting(privacy_settings)
+#         flash("Privacy settings updated successfully!")
+#         return redirect(url_for("privacy_settings", theme_id=theme_id))

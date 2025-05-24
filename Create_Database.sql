@@ -64,6 +64,24 @@ SET FOREIGN_KEY_CHECKS = 0;
 --   PRIMARY KEY (`id`)
 -- ) ;
 
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `password_hash` varchar(64) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `location` json DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `avatar` varchar(64) NOT NULL,
+  `role` enum('siteadmin') NOT NULL,
+  `status` enum('active','inactive') NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username_UK` (`username`),
+  UNIQUE KEY `email_UK` (`email`)
+);
+
 DROP TABLE IF EXISTS `plants`;
 CREATE TABLE `plants` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -74,16 +92,6 @@ CREATE TABLE `plants` (
   PRIMARY KEY (`id`)
 ) ;
 
-DROP TABLE IF EXISTS `survey_results`;
-CREATE TABLE `survey_results` (
-  `id` INT AUTO_INCREMENT,
-  `session_id` VARCHAR(255) NOT NULL,       -- stores UUID string
-  `question_number` INT NOT NULL,           -- 1 to 10
-  `selected_plant_id` INT NOT NULL,    -- which plant they chose
-  `submission_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- auto logs each click time
-  PRIMARY KEY (`id`)
-);
-
 DROP TABLE IF EXISTS `survey_metadata`;
 CREATE TABLE `survey_metadata` (
   `id` INT AUTO_INCREMENT,
@@ -92,7 +100,22 @@ CREATE TABLE `survey_metadata` (
   `age` VARCHAR(50),
   `reasoning` VARCHAR(50), 
   `submitted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`session_id`)
+);
+
+DROP TABLE IF EXISTS `survey_results`;
+CREATE TABLE `survey_results` (
+  `id` INT AUTO_INCREMENT,
+  `session_id` VARCHAR(255) NOT NULL,       -- stores UUID string
+  `question_number` INT NOT NULL,           -- 1 to 10
+  `selected_plant_id` INT NOT NULL,    -- which plant they chose
+  `submission_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- auto logs each click time
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_selected_plant`
+    FOREIGN KEY (`selected_plant_id`) REFERENCES `plants`(`id`),
+  CONSTRAINT `fk_session_id`
+    FOREIGN KEY (`session_id`) REFERENCES `survey_metadata`(`session_id`)
 );
 
 -- DROP TABLE IF EXISTS `competition_competitors`;
@@ -107,26 +130,6 @@ CREATE TABLE `survey_metadata` (
 --   KEY `competition_competitors_competitions` (`competition_id`),
 --   CONSTRAINT `competition_competitors_competitions` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`)
 -- );
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL,
-  `password_hash` varchar(64) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
-  `location` json DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `avatar` varchar(64) NOT NULL,
-  `role` enum('voter','siteadmin') NOT NULL,
-  `status` enum('active','inactive') NOT NULL,
-  `voting_permission` enum('allowed','banned') NOT NULL,
-  `appeal_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username_UK` (`username`),
-  UNIQUE KEY `email_UK` (`email`)
-);
 
 -- DROP TABLE IF EXISTS `votes`;
 -- CREATE TABLE `votes` (
@@ -210,21 +213,21 @@ CREATE TABLE `users` (
 --   PRIMARY KEY (`id`)
 -- ) ;  
 
-DROP TABLE IF EXISTS `user_privacy_settings`;
-CREATE TABLE `user_privacy_settings` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL,
-  `show_email` BOOLEAN NOT NULL,
-  `show_first_name` BOOLEAN NOT NULL,
-  `show_last_name` BOOLEAN NOT NULL,
-  `show_location` BOOLEAN NOT NULL,
-  `show_description` BOOLEAN NOT NULL,
-  `show_avatar` BOOLEAN NOT NULL,
-  `show_recent_post` BOOLEAN NOT NULL,
-  `show_recent_vote` BOOLEAN NOT NULL,
-  `show_recent_donation` BOOLEAN NOT NULL,
-  `show_in_user_list` BOOLEAN NOT NULL,  
-  PRIMARY KEY (`id`)
-) ;  
+-- DROP TABLE IF EXISTS `user_privacy_settings`;
+-- CREATE TABLE `user_privacy_settings` (
+--   `id` INT NOT NULL AUTO_INCREMENT,
+--   `user_id` INT NOT NULL,
+--   `show_email` BOOLEAN NOT NULL,
+--   `show_first_name` BOOLEAN NOT NULL,
+--   `show_last_name` BOOLEAN NOT NULL,
+--   `show_location` BOOLEAN NOT NULL,
+--   `show_description` BOOLEAN NOT NULL,
+--   `show_avatar` BOOLEAN NOT NULL,
+--   `show_recent_post` BOOLEAN NOT NULL,
+--   `show_recent_vote` BOOLEAN NOT NULL,
+--   `show_recent_donation` BOOLEAN NOT NULL,
+--   `show_in_user_list` BOOLEAN NOT NULL,  
+--   PRIMARY KEY (`id`)
+-- ) ;  
 
 SET FOREIGN_KEY_CHECKS = 1;
