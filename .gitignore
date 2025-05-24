@@ -169,6 +169,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-prototype/dao/connect.py
-693/dao/connect.py
 project693/dao/connect.py
