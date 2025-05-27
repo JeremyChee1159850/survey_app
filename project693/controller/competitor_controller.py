@@ -2,12 +2,11 @@ from flask import Flask, request, render_template, redirect, url_for, flash, ses
 from project693.controller import app
 from werkzeug.utils import secure_filename
 from project693.dao.competitor_dao import CompetitorDAO
-# from project693.dao.competition_dao import CompetitionDao
 from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
 
-app.config["UPLOAD_FOLDER"] = "project693/static/img/"
+app.config["UPLOAD_FOLDER"] = "/home/jeremychee1159850/COMP693_25S1_project_Jeremy_Chee_1159850/project693/static/img"
 app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png", "gif"}
 
 competitor_dao = CompetitorDAO()
