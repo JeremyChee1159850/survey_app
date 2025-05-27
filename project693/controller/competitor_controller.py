@@ -6,7 +6,7 @@ from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
 
-app.config["UPLOAD_FOLDER"] = "/home/jeremychee1159850/COMP693_25S1_project_Jeremy_Chee_1159850/project693/static/img"
+app.config["UPLOAD_FOLDER"] = "project693/static/img/"
 app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png", "gif"}
 
 competitor_dao = CompetitorDAO()
