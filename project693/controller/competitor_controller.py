@@ -29,7 +29,7 @@ def list_plants():
     keyword = request.args.get("search", "")
     plants = competitor_dao.search_plants(keyword)
     SessionManager.set(
-        SessionManager.ACTIVE_PAGE, SessionManager.Page.COMPETITOR_SETUP.value
+        SessionManager.ACTIVE_PAGE, SessionManager.Page.LISTPLANTS.value
     )
 
     return render_template(
@@ -39,6 +39,10 @@ def list_plants():
 
 @app.route("/siteadmin/add_plants", methods=["GET", "POST"])
 def add_plant():
+    SessionManager.set(
+        SessionManager.ACTIVE_PAGE, SessionManager.Page.ADDPLANT.value
+    )
+
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]

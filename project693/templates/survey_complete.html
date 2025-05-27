@@ -3,25 +3,34 @@
 
 {% block content %}
 <div class="container mt-5 text-center">
-    <div class="p-5 bg-light rounded-3 shadow-sm">
-        <h1 class="display-4 text-success">Thank You!</h1>
-        <p class="lead mt-3">You've successfully completed the Green or Mean survey.</p>
+    <div class="p-5 bg-light rounded-3 shadow-sm" style="max-width: 700px; margin: auto;">
+        <h1 class="display-4 text-success fw-bold">Thank You!</h1>
         <hr class="my-4">
-        <p class="mb-4">Your preferences have been recorded. We appreciate your time and input!</p>
+        <p class="fs-5 mb-4">Your preferences have been recorded. We truly appreciate your time and contribution to our research.</p>
 
-        <!-- Show percentage breakdown -->
-        <div class="mt-4">
-            <h5>Your Selection Summary:</h5>
-            <p>Non-Invasive Plants Chosen: <strong>{{ non_invasive_percent }}%</strong></p>
-            <p>Invasive Plants Chosen: <strong>{{ invasive_percent }}%</strong></p>
+        <!-- Selection Summary -->
+        <div class="mt-4 mb-4">
+            <h5 class="fw-bold">Your Selection Summary</h5>
+            <div class="d-flex justify-content-center gap-4 mt-3">
+                <div class="border p-3 rounded bg-white shadow-sm">
+                    <p class="mb-1 text-muted">Non-Invasive Plants Chosen</p>
+                    <p class="fs-4 fw-semibold text-success">{{ non_invasive_percent }}%</p>
+                </div>
+                <div class="border p-3 rounded bg-white shadow-sm">
+                    <p class="mb-1 text-muted">Invasive Plants Chosen</p>
+                    <p class="fs-4 fw-semibold text-danger">{{ invasive_percent }}%</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Show feedback message -->
-        <div class="alert alert-info mt-4">
+        <!-- Optional feedback message -->
+        {% if message %}
+        <div class="alert alert-info mt-4 mx-auto" style="max-width: 500px;">
             {{ message }}
         </div>
+        {% endif %}
 
-        <a href="{{ url_for('site_home') }}" class="btn btn-primary btn-lg">Back to Home</a>
+        <a href="{{ url_for('site_home') }}" class="btn btn-primary btn-lg px-4 mt-4">Back to Home</a>
     </div>
 </div>
 {% endblock %}

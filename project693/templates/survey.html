@@ -14,9 +14,11 @@
             <form method="POST" action="{{ url_for('survey_next') }}">
                 <div class="row justify-content-center">
                     {% for comp in pair %}
-                    <div class="col-md-5 m-2 text-center border rounded p-3 bg-white">
-                        <button type="submit" name="selected_id" value="{{ comp.id }}" class="btn btn-link text-decoration-none">
-                            <img src="{{ url_for('static', filename='img/' ~ comp.image) }}" alt="{{ comp.name }}" class="img-fluid mb-2" style="width: 300px; height: 300px; object-fit: cover;" />
+                    <div class="col-md-5 m-2 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 320px;">
+                        <button type="submit" name="selected_id" value="{{ comp.id }}" class="btn btn-link text-decoration-none p-0">
+                            <img src="{{ url_for('static', filename='img/' ~ comp.image) }}" 
+                                alt="{{ comp.name }}" 
+                                style="width: 300px; height: 300px; object-fit: cover; border-radius: 6px;" />
                         </button>
                     </div>
                     {% endfor %}

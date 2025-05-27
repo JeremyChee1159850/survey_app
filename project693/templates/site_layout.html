@@ -45,7 +45,7 @@
                     {% if session.user.role == 'siteadmin' %}
                     <!-- Site Management -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if session.active_page in ['managing_voter', 'managing_competition_application', 'managing_donation_application', 'voting_integrity', 'sitewide_appeal_requests'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle {% if session.active_page in ['add_plant', 'list_plants'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">
                             Site Management
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">

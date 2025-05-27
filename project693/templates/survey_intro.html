@@ -2,41 +2,45 @@
 {% block title %}Before You Begin{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Before You Start the Survey</h2>
-    <p class="text-center">We’d like to know a bit more about you.</p>
+<div class="container mt-5" style="max-width: 720px;">
+    <div class="bg-light p-5 rounded shadow-sm">
+        <h2 class="text-center mb-4 fw-bold text-dark">Before You Start the Survey</h2>
+        <p class="text-center fs-5 mb-5">We’d Like to Know a Bit More About You.</p>
 
-    <form method="POST" action="{{ url_for('survey') }}" class="mx-auto" style="max-width: 600px;">
+        <form method="POST" action="{{ url_for('survey') }}">
 
-        <!-- Garden question -->
-        <div class="mb-4">
-            <label class="form-label fw-bold">Do you have your own garden?</label><br>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="has_garden" value="yes" required>
-                <label class="form-check-label">Yes</label>
+            <!-- Garden question -->
+            <div class="mb-4">
+                <label class="form-label fs-5 fw-semibold">Do you have your own garden?</label>
+                <div class="d-flex gap-4 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="has_garden" value="yes" id="gardenYes" required>
+                        <label class="form-check-label" for="gardenYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="has_garden" value="no" id="gardenNo" required>
+                        <label class="form-check-label" for="gardenNo">No</label>
+                    </div>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="has_garden" value="no" required>
-                <label class="form-check-label">No</label>
+
+            <!-- Age range -->
+            <div class="mb-4">
+                <label for="age_range" class="form-label fs-5 fw-semibold">What age range are you in?</label>
+                <select class="form-select" name="age_range" id="age_range" required>
+                    <option value="" disabled selected>Select your age range</option>
+                    <option value="18–29">18–29</option>
+                    <option value="30–49">30–49</option>
+                    <option value="50–64">50–64</option>
+                    <option value="65+">65+</option>
+                </select>
             </div>
-        </div>
 
-        <!-- Age range -->
-        <div class="mb-4">
-            <label for="age_range" class="form-label fw-bold">What age range are you in?</label>
-            <select class="form-select" name="age_range" id="age_range" required>
-                <option value="" disabled selected>Select your age range</option>
-                <option value="18–29">18–29</option>
-                <option value="30–49">30–49</option>
-                <option value="50–64">50–64</option>
-                <option value="65+">65+</option>
-            </select>
-        </div>
-
-        <!-- Submit -->
-        <div class="text-center">
-            <button type="submit" class="btn btn-success">Start Survey</button>
-        </div>
-    </form>
+            <!-- Submit -->
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-success btn-lg px-5">Start Survey</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
