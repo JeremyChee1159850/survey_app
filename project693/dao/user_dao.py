@@ -1,9 +1,7 @@
 from flask import session
 from project693.dao.base_dao import BaseDAO
-#from project693.dao.theme_dao import ThemeDao
 from project693.model import User
 from project693.model import enums
-from project693.model.privacy_settings import UserPrivacySettings
 from project693.utils.hash_utils import get_password_hash
 from project693.model.enums import (
     Role,

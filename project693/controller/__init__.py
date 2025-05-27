@@ -41,6 +41,5 @@ from . import error_controller
 from . import auth_controller
 from . import home_controller
 from . import competitor_controller
-from . import management_controller
 from . import user_controller
 from . import survey_controller

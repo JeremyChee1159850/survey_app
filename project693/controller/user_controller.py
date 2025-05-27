@@ -2,7 +2,6 @@ from flask import request, render_template, redirect, url_for, flash, session
 from project693.controller import app
 from project693.dao.user_dao import UserDao
 from project693.model import User
-from project693.model.privacy_settings import UserPrivacySettings
 from werkzeug.utils import secure_filename
 from project693.utils.hash_utils import get_password_hash, check_password_hash
 from project693.utils.session_manager import SessionManager
@@ -33,66 +32,6 @@ def profile():
     )
     return render_template("user/profile.html", user=user)
 
-
-# @app.route("/siteadmin/update_profile/", methods=["GET", "POST"])
-# def update_profile():
-#     user_id = session["user_id"]
-#     user_dao = UserDao()
-#     user = user_dao.find_by_id(user_id)
-
-#     if request.method == "POST":
-#         # Handle profile image update
-#         if "profile_image" in request.files:
-#             file = request.files["profile_image"]
-#             if file and allowed_file(file.filename):
-#                 filename = secure_filename(file.filename)
-#                 file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-
-#                 # Replace old image with new one
-#                 user.avatar = filename
-#                 user_dao.update_user(user)
-#                 flash("Profile image updated successfully!")
-#                 return redirect(url_for("update_profile"))
-#         updated_email = request.form.get("email")
-#         updated_first_name = request.form.get("first_name")
-#         updated_last_name = request.form.get("last_name")
-#         updated_description = request.form.get("description")
-
-#         # Initialize coordinates to None
-#         updated_lat = None
-#         updated_lon = None
-
-#         # Get updated location coordinates and round them to 2 decimal place
-#         lat_value = request.form.get("lat")
-#         lon_value = request.form.get("lon")
-#         if lat_value and lon_value:
-#             try:
-#                 updated_lat = round(float(lat_value), 2)
-#                 updated_lon = round(float(lon_value), 2)
-#                 user.location = json.dumps({"lat": updated_lat, "lon": updated_lon})
-#             except ValueError:
-#                 flash("Invalid latitude or longitude values. Please enter valid numbers.")
-#         else:
-#             flash("Latitude and longitude values are required.")
-
-#         if updated_lat and updated_lon is not None:
-#             user.location = json.dumps({"lat": updated_lat, "lon": updated_lon})
-
-#         if updated_email:
-#             existing_user = user_dao.find_by_email(updated_email)
-#             if existing_user and existing_user.id != user_id:
-#                 flash("Email already exists. Please use a different email.")
-#             else:
-#                 user.email = updated_email
-#                 user.first_name = updated_first_name
-#                 user.last_name = updated_last_name
-#                 user.description = updated_description
-
-#                 user_dao.update_user(user)
-#                 flash("Profile updated successfully!")
-#         return redirect(url_for("update_profile"))
-
-#     return render_template("user/update_profile.html", user=user)
 
 @app.route("/siteadmin/update_profile/", methods=["GET", "POST"])
 def update_profile():
