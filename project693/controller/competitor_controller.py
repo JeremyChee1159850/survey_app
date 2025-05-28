@@ -6,8 +6,6 @@ from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
 
-#app.config["UPLOAD_FOLDER"] = "project693/static/img/"
-#app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static", "img")
 app.config["UPLOAD_FOLDER"] = os.path.abspath(
     os.path.join(app.root_path, "..", "static", "img")
 )
@@ -76,9 +74,6 @@ def edit_plant(id):
             ext = os.path.splitext(filename)[1]
             filename = f"{uuid.uuid4().hex}{ext}"
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-            #current_directory = os.path.dirname(os.path.abspath(__file__))
-            #base_dir = os.path.dirname(current_directory)
-            #file.save(os.path.join(base_dir, "static", "img", filename))
             image = filename
         else:
             image = competitor.image
