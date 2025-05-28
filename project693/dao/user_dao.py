@@ -80,10 +80,6 @@ class UserDao(BaseDAO):
 
             return user
 
-    def set_voter_status(self, voter_id, status):
-        query = "UPDATE users SET status = %s WHERE id = %s"
-        self.execute_non_query(query, (status, voter_id))
-
 
     def find_by_email(self, email):
         query = "SELECT * FROM users WHERE email = %s"
@@ -201,44 +197,6 @@ class UserDao(BaseDAO):
 
         return user_list
 
-    def backend_user_add(self):
-        # Generate unique username, email, and other default values
-        last_user = self.execute_query("SELECT MAX(id) FROM users", ())[0][0] or 0
-        username = f"backend_user_{last_user + 1}"
-        email = f"{username}@example.com"
-        password_hash = get_password_hash("backenduser1pass")
-        first_name = "firstname"
-        last_name = "lastname"
-        location = "location"
-        description = "n/a"
-        avatar = "default.png"
-        role = Role.SCRUTINEER.value
-        status = Status.INACTIVE.value
-
-        query = (
-            "INSERT INTO users (username, password_hash, email, first_name, last_name, description, location, avatar, role, status)"
-            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        )
-
-        try:
-            self.execute_non_query(
-                query,
-                (
-                    username,
-                    password_hash,
-                    email,
-                    first_name,
-                    last_name,
-                    description,
-                    location,
-                    avatar,
-                    role,
-                    status,
-                ),
-            )
-            return True, f"Backend user '{username}' created successfully."
-        except Exception as e:
-            return False, f"Failed to create backend user: {str(e)}"
 
     def update_backend_user(
         self,

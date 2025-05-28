@@ -1,10 +1,10 @@
 {% extends "site_layout.html" %}
 
-{% block title %}Edit Competitor{% endblock %}
+{% block title %}Edit Plant{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Edit Competitor</h2>
+    <h2 class="text-center mb-4">Edit Plant</h2>
     <hr class="my-3">
     <!-- Display flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -25,7 +25,7 @@
                     <table class="table table-bordered table-hover table-responsive-sm" style="width: 100%; font-size: 1rem;">
                         <thead class="thead-dark">
                             <tr>
-                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Competitor Details</th>
+                                <th colspan="2" class="text-center" style="background-color: #343a40; color: white;">Plant Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,6 +48,17 @@
                             <tr>
                                 <th style="width: 35%; background-color: #f8f9fa;">Description<span style="color: red;">*</span></th>
                                 <td><textarea class="form-control" name="description" rows="5" maxlength="255" required>{{ competitor.description }}</textarea></td>
+                            </tr>
+                            <!-- Invasiveness Row -->
+                            <tr>
+                                <th style="width: 35%; background-color: #f8f9fa;">Invasiveness<span style="color: red;">*</span></th>
+                                <td>
+                                    <select class="form-select" name="invasiveness" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="invasive" {% if competitor.invasiveness == 'invasive' %}selected{% endif %}>Invasive</option>
+                                        <option value="non-invasive" {% if competitor.invasiveness == 'non-invasive' %}selected{% endif %}>Non-Invasive</option>
+                                    </select>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
