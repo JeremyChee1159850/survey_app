@@ -7,7 +7,10 @@ import os, uuid, json
 
 
 #app.config["UPLOAD_FOLDER"] = "project693/static/img/"
-app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static", "img")
+#app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static", "img")
+app.config["UPLOAD_FOLDER"] = os.path.abspath(
+    os.path.join(app.root_path, "..", "static", "img")
+)
 app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png", "gif"}
 
 competitor_dao = CompetitorDAO()
