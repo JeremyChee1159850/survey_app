@@ -59,7 +59,7 @@ class UserDao(BaseDAO):
 
         result = self.execute_query(query, (user_id,))
         if len(result) > 0:
-            # Convert role, status, and voting_permission to enums
+            # Convert role, status to enums
             role_enum = enums.Role[result[0][9].upper()]
             status_enum = enums.Status[result[0][10].upper()]
 

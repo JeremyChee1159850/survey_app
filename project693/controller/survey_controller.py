@@ -1,13 +1,13 @@
 from flask import request, render_template, redirect, url_for, session, flash
 from project693.controller import app
 from project693.utils.session_manager import SessionManager
-from project693.dao.competitor_dao import CompetitorDAO
+from project693.dao.plant_dao import PlantDAO
 from project693.dao.survey_dao import SurveyDAO
 from project693.model.survey import SurveyMetadata, SurveyAnswer
 import uuid
 
 
-competitor_dao = CompetitorDAO()
+plant_dao = PlantDAO()
 survey_dao = SurveyDAO()
 
 
@@ -38,7 +38,7 @@ def survey():
     SessionManager.set("used_invasive", [])
     SessionManager.set("used_non_invasive", [])
 
-    pair = competitor_dao.get_random_pair([], [])
+    pair = plant_dao.get_random_pair([], [])
     if not pair:
         flash("Not enough plants in the database!", "warning")
         return redirect(url_for("list_plants"))
@@ -61,7 +61,7 @@ def survey_next_get():
     used_invasive = SessionManager.get("used_invasive") or []
     used_non_invasive = SessionManager.get("used_non_invasive") or []
 
-    pair = competitor_dao.get_random_pair(
+    pair = plant_dao.get_random_pair(
         used_invasive_ids=used_invasive,
         used_non_invasive_ids=used_non_invasive
     )
@@ -85,7 +85,7 @@ def survey_next():
     # Current question number
     qn = session.get("question_number", 1)
 
-    # Save answer immediately
+    # Save answer
     answer = SurveyAnswer(
     session_id=session_id,
     question_number=qn,
@@ -104,13 +104,13 @@ def survey_next():
     last_pair = SessionManager.get("last_pair") or []
 
     for comp_id in last_pair:
-        competitor = competitor_dao.get_plant_by_id(int(comp_id))
-        if competitor.invasiveness == 'invasive':
-            if competitor.id not in used_invasive:
-                used_invasive.append(competitor.id)
+        plant = plant_dao.get_plant_by_id(int(comp_id))
+        if plant.invasiveness == 'invasive':
+            if plant.id not in used_invasive:
+                used_invasive.append(plant.id)
         else:
-            if competitor.id not in used_non_invasive:
-                used_non_invasive.append(competitor.id)
+            if plant.id not in used_non_invasive:
+                used_non_invasive.append(plant.id)
 
     SessionManager.set("used_invasive", used_invasive)
     SessionManager.set("used_non_invasive", used_non_invasive)
@@ -141,7 +141,7 @@ def survey_questionnaire():
     non_invasive_count = 0
 
     for plant_id in answers:
-        plant = competitor_dao.get_plant_by_id(int(plant_id))
+        plant = plant_dao.get_plant_by_id(int(plant_id))
         if plant.invasiveness == 'invasive':
             invasive_count += 1
         else:
@@ -153,15 +153,11 @@ def survey_questionnaire():
 
      # Decide message
     if non_invasive_count >= 5:
-        message = "🌿 Well done! You have a preference for native species. You're helping conserve New Zealand Biodiversity."
+        message = "Well done! You have a preference for native species. You're helping conserve New Zealand Biodiversity."
     elif invasive_count >= 5:
-        message = "⚠️ Be careful! You’re choosing non-native species and these can chomp the garden fence."
+        message = "Be careful! You’re choosing non-native species and these can chomp the garden fence."
     else:
         message = "Thanks for your input! Your preferences have been recorded."
-
-    # Log for dev
-    print("Reasoning:", reasoning)
-    print("Answers:", SessionManager.get("answers"))
 
     # Clear session
     SessionManager.remove("question_number")

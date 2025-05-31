@@ -1,6 +1,6 @@
 import json
 
-class Competitor:
+class Plant:
     def __init__(
         self,
         id,
@@ -26,7 +26,7 @@ class Competitor:
 
     @staticmethod
     def from_dict(data):
-        return Competitor(
+        return Plant(
             id=data["id"],
             name=data["name"],
             description=data["description"],

@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
 from project693.controller import app
 from werkzeug.utils import secure_filename
-from project693.dao.competitor_dao import CompetitorDAO
+from project693.dao.plant_dao import PlantDAO
 from project693.utils.session_manager import SessionManager
 import os, uuid, json
 
@@ -11,7 +11,7 @@ app.config["UPLOAD_FOLDER"] = os.path.abspath(
 )
 app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png", "gif"}
 
-competitor_dao = CompetitorDAO()
+plant_dao = PlantDAO()
 
 # Ensure upload folder exists
 if not os.path.exists(app.config["UPLOAD_FOLDER"]):
@@ -28,7 +28,7 @@ def allowed_file(filename):
 @app.route("/siteadmin/list_plants", methods=["GET"])
 def list_plants():
     keyword = request.args.get("search", "")
-    plants = competitor_dao.search_plants(keyword)
+    plants = plant_dao.search_plants(keyword)
     SessionManager.set(
         SessionManager.ACTIVE_PAGE, SessionManager.Page.LISTPLANTS.value
     )
@@ -55,7 +55,7 @@ def add_plant():
             image_filename = f"{uuid.uuid4()}{ext}"
             image_path = os.path.join(app.config["UPLOAD_FOLDER"], image_filename)
             image.save(image_path)
-        competitor_dao.add_plant(name, description, image_filename, invasiveness)
+        plant_dao.add_plant(name, description, image_filename, invasiveness)
         flash("New Plant added successfully!", "success")
         return redirect(url_for("list_plants"))
     return render_template("competition/add_plant.html")
@@ -63,7 +63,7 @@ def add_plant():
 
 @app.route("/siteadmin/edit_plant/<int:id>", methods=["GET", "POST"])
 def edit_plant(id):
-    competitor = competitor_dao.get_plant_by_id(id)
+    plant = plant_dao.get_plant_by_id(id)
 
     if request.method == "POST":
         name = request.form["name"]
@@ -76,17 +76,17 @@ def edit_plant(id):
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             image = filename
         else:
-            image = competitor.image
+            image = plant.image
             
-        competitor_dao.edit_plant(id, name, description, image)
+        plant_dao.edit_plant(id, name, description, image)
         flash("Plant edited successfully!", "success")
         return redirect(url_for("list_plants"))
     
-    return render_template("competition/edit_plant.html", competitor=competitor)
+    return render_template("competition/edit_plant.html", plant=plant)
 
 
 @app.route("/siteadmin/delete_plants/<int:id>", methods=["POST"])
 def delete_plant(id):
-    competitor_dao.delete_plant(id)
+    plant_dao.delete_plant(id)
     flash("Plant deleted successfully!", "success")
     return redirect(url_for("list_plants"))

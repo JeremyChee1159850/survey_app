@@ -17,7 +17,7 @@
     {% endif %}
     {% endwith %}
 
-    <form id="uploadForm" method="POST" action="{{ url_for('edit_plant', id=competitor.id) }}" enctype="multipart/form-data">
+    <form id="uploadForm" method="POST" action="{{ url_for('edit_plant', id=plant.id) }}" enctype="multipart/form-data">
         <!-- Plant Details Form -->
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -34,7 +34,7 @@
                                 <th style="width: 35%; background-color: #f8f9fa;">Image</th>
                                 <td class="text-center">
                                     <div class="mb-3">
-                                        <img src="{{ url_for('static', filename='img/' + competitor.image) }}" alt="Avatar" class="rounded" style="height: 300px; width: 100%; margin-top: 10px;" id="image-preview">
+                                        <img src="{{ url_for('static', filename='img/' + plant.image) }}" alt="Avatar" class="rounded" style="height: 300px; width: 100%; margin-top: 10px;" id="image-preview">
                                     </div>
                                     <input type="file" class="form-control-file" name="image" id="image-upload" accept="image/*">
                                 </td>
@@ -42,12 +42,12 @@
                             <!-- Name Row -->
                             <tr>
                                 <th style="width: 35%; background-color: #f8f9fa;">Name<span style="color: red;">*</span></th>
-                                <td><input type="text" class="form-control" name="name" value="{{ competitor.name }}" required></td>
+                                <td><input type="text" class="form-control" name="name" value="{{ plant.name }}" required></td>
                             </tr>
                             <!-- Description Row -->
                             <tr>
                                 <th style="width: 35%; background-color: #f8f9fa;">Description<span style="color: red;">*</span></th>
-                                <td><textarea class="form-control" name="description" rows="5" maxlength="255" required>{{ competitor.description }}</textarea></td>
+                                <td><textarea class="form-control" name="description" rows="5" maxlength="255" required>{{ plant.description }}</textarea></td>
                             </tr>
                             <!-- Invasiveness Row -->
                             <tr>
@@ -55,8 +55,8 @@
                                 <td>
                                     <select class="form-select" name="invasiveness" required>
                                         <option value="">-- Select --</option>
-                                        <option value="invasive" {% if competitor.invasiveness == 'invasive' %}selected{% endif %}>Invasive</option>
-                                        <option value="non-invasive" {% if competitor.invasiveness == 'non-invasive' %}selected{% endif %}>Non-Invasive</option>
+                                        <option value="invasive" {% if plant.invasiveness == 'invasive' %}selected{% endif %}>Invasive</option>
+                                        <option value="non-invasive" {% if plant.invasiveness == 'non-invasive' %}selected{% endif %}>Non-Invasive</option>
                                     </select>
                                 </td>
                             </tr>

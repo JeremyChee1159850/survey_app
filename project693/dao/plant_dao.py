@@ -1,11 +1,11 @@
 from project693.dao.base_dao import BaseDAO
-from project693.model.competitor import Competitor
+from project693.model.plant import Plant
 from typing import List
 import json
 import random # this is for project693
 
 
-class CompetitorDAO(BaseDAO):
+class PlantDAO(BaseDAO):
 
     def __init__(self) -> None:
         super().__init__()
@@ -30,7 +30,7 @@ class CompetitorDAO(BaseDAO):
         query = "DELETE FROM plants WHERE id = %s"
         self.execute_non_query(query, (id,))
 
-    def search_plants(self, keyword: str) -> List[Competitor]:
+    def search_plants(self, keyword: str) -> List[Plant]:
         query = """
             SELECT id, name, description, image, invasiveness
             FROM plants
@@ -40,7 +40,7 @@ class CompetitorDAO(BaseDAO):
         
         plants = []
         for row in result:
-            plant = Competitor(
+            plant = Plant(
                 id=row[0], 
                 name=row[1], 
                 description=row[2], 
@@ -51,12 +51,12 @@ class CompetitorDAO(BaseDAO):
         
         return plants
 
-    def get_plant_by_id(self, id: int) -> Competitor:
+    def get_plant_by_id(self, id: int) -> Plant:
         query = "SELECT * FROM plants WHERE id = %s"
         result = self.execute_query(query, (id,))
         if result:
             row = result[0]
-            return Competitor(
+            return Plant(
                 id=row[0],
                 name=row[1],
                 description=row[2],
@@ -66,13 +66,13 @@ class CompetitorDAO(BaseDAO):
         return None
     
     
-    def get_all_plants(self) -> List[Competitor]:
+    def get_all_plants(self) -> List[Plant]:
         query = "SELECT id, name, description, image, invasiveness FROM plants"
         result = self.execute_query(query)
 
         plants = []
         for row in result:
-            plant = Competitor(
+            plant = Plant(
                 id=row[0],
                 name=row[1],
                 description=row[2],
@@ -84,7 +84,7 @@ class CompetitorDAO(BaseDAO):
         return plants
     
 
-    def get_random_pair(self, used_invasive_ids=None, used_non_invasive_ids=None) -> List[Competitor]:
+    def get_random_pair(self, used_invasive_ids=None, used_non_invasive_ids=None) -> List[Plant]:
         all_plants = self.get_all_plants()
 
         # Separate the plants

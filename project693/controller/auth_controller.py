@@ -120,7 +120,7 @@ def login():
             previous_page = session.get("previous_page") or session.pop(
                 "next_url", url_for("site_home")
             )
-            return redirect(previous_page)  # BUG 从注册页面过来会跳转到注册页面
+            return redirect(previous_page)
 
 
 @app.route("/logout/", methods=["GET"])
