@@ -65,7 +65,7 @@ class CompetitorDAO(BaseDAO):
             )
         return None
     
-    # project693
+    
     def get_all_plants(self) -> List[Competitor]:
         query = "SELECT id, name, description, image, invasiveness FROM plants"
         result = self.execute_query(query)
@@ -84,7 +84,6 @@ class CompetitorDAO(BaseDAO):
         return plants
     
 
-    # project693
     def get_random_pair(self, used_invasive_ids=None, used_non_invasive_ids=None) -> List[Competitor]:
         all_plants = self.get_all_plants()
 

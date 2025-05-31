@@ -1,7 +1,7 @@
 from flask import request, render_template, redirect, url_for, session, flash
 from project693.controller import app
 from project693.utils.session_manager import SessionManager
-from project693.dao.competitor_dao import CompetitorDAO  # or whatever DAO you're using
+from project693.dao.competitor_dao import CompetitorDAO
 from project693.dao.survey_dao import SurveyDAO
 from project693.model.survey import SurveyMetadata, SurveyAnswer
 import uuid
@@ -81,7 +81,6 @@ def survey_next():
 
     selected_id = request.form.get("selected_id")
     session_id = session.get("session_id")
-    #user_id = SessionManager.get("user_id")  # None if anonymous
 
     # Current question number
     qn = session.get("question_number", 1)
@@ -127,10 +126,8 @@ def survey_next():
 def survey_questionnaire():
     reasoning = request.form.get("reasoning")
     session_id = session.get("session_id")
-    #user_id = SessionManager.get("user_id")
 
     # Save reasoning as question 10
-    #survey_dao = SurveyDAO()
     survey_dao.update_reasoning(
     session_id=session_id,
     reasoning=reasoning
