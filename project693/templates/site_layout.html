@@ -32,9 +32,6 @@
                     <li class="nav-item">
                         <a class="nav-link {% if session.active_page == 'site_home' %}active{% endif %}" href="{{ url_for('site_home') }}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if session.active_page == 'about_us' %}active{% endif %}" href="{{ url_for('about_us') }}">About Us</a>
-                    </li>
                     {%if not session.user|default('') %}
                     <li class="nav-item">
                         <a class="nav-link {% if session.active_page == 'login' %}active{% endif %}" href="{{ url_for('login') }}">Login</a>

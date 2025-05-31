@@ -6,8 +6,8 @@ truncate table users;
 
 
 INSERT INTO `users` (id, username, password_hash, email, first_name, last_name, location, description, avatar, role, status) VALUES
-(101, 'siteadmin1', 'f8b0c38da5bcf5e7913b51e51a6e7e009c84110f377f0a0f1e178cd99e1bfe2a', 'siteadmin1@example.com', 'John', 'Doe', '{"lat": -45.9, "lon": 170.4}', NULL, 'default.png', 'siteadmin', 'active'),
-(102, 'siteadmin2', '96bd7a2f308098c2e52d1cc3c9e5406f914f08fcf989989e35bc80c16063e455', 'siteadmin2@example.com', 'Jane', 'Smith', '{"lat": -45.0, "lon": 168.7}', NULL, 'default.png', 'siteadmin', 'active');
+(1, 'siteadmin1', 'f8b0c38da5bcf5e7913b51e51a6e7e009c84110f377f0a0f1e178cd99e1bfe2a', 'siteadmin1@example.com', 'John', 'Doe', '{"lat": -45.9, "lon": 170.4}', NULL, 'default.png', 'siteadmin', 'active'),
+(2, 'siteadmin2', '96bd7a2f308098c2e52d1cc3c9e5406f914f08fcf989989e35bc80c16063e455', 'siteadmin2@example.com', 'Jane', 'Smith', '{"lat": -45.0, "lon": 168.7}', NULL, 'default.png', 'siteadmin', 'active');
 
 
 INSERT INTO `plants` (id, name, description, image, invasiveness) VALUES

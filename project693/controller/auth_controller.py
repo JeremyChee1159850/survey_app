@@ -131,9 +131,3 @@ def logout():
     session.pop("user_role", None)
     session.pop("env", None)
     return redirect(url_for("login"))
-
-
-@app.route("/about_us/")
-def about_us():
-    SessionManager.set(SessionManager.ACTIVE_PAGE, SessionManager.Page.ABOUTUS.value)
-    return render_template("about_us.html")

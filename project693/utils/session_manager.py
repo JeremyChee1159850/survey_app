@@ -13,7 +13,6 @@ class SessionManager:
         USER_PROFILE = "user_profile"
         SITE_MANAGEMENT = "site_management"
         SITEHOME = "site_home"
-        ABOUTUS = "about_us"
         ADDPLANT = "add_plant"
         LISTPLANTS = "list_plants"
 

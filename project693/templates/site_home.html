@@ -16,7 +16,12 @@
   <div class="p-4 mb-4 bg-light rounded-3 shadow-sm">
     <div class="container-fluid text-center">
       <h1 class="display-4 text-center fw-bold">Welcome to Green or Mean</h1>
-      <p class="lead fs-4">Explore Your Plant Preferences and Help Protect New Zealand’s Biodiversity</p>
+      <p class="lead fs-4">
+        The Green or Mean project is a short interactive survey designed to understand how everyday people choose plants, especially whether they are drawn more by appearance or environmental impact. 
+        You'll be shown pairs of plants and asked which one you prefer, with a quick question at the end to understand your reasoning. Your choices will help researchers explore public preferences and raise awareness about the dangers of invasive species in Aotearoa New Zealand.
+        It is quick, anonymous and insightful, and at the end you will see a breakdown of how often you chose invasive versus non-invasive plants, helping you reflect on your own preferences and their potential ecological impact.
+        </p>
+        
       {% if not g.user %}
         <a href="{{ url_for('survey') }}" class="btn btn-success btn-lg mt-3">Take the Survey</a>
       {% endif %}
@@ -28,7 +33,7 @@
   <img src="{{ url_for('static', filename='img/plantmeinstead.png') }}" 
        alt="Green or Mean Banner" 
        class="img-fluid rounded shadow-sm" 
-       style="max-height: 400px;" />
+       style="max-height: 300px;" />
 </div>
 
 {% endblock %}
