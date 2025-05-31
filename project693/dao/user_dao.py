@@ -148,55 +148,6 @@ class UserDao(BaseDAO):
             ),
         )
 
-    def search_backend_user(
-        self, username, first_name, last_name, exclude_user=None
-    ) -> list[User]:
-        query = """
-            SELECT id, username, email, first_name, last_name, role, status 
-            FROM users 
-            WHERE (role = 'admin' or role = 'scrutineer')
-            """
-        conditions = []
-        parameters = []
-        if username != "":
-            conditions.append("username like %s")
-            parameters.append(f"{username}%")
-
-        if first_name != "":
-            conditions.append("first_name like %s")
-            parameters.append(f"%{first_name}%")
-
-        if last_name != "":
-            conditions.append("last_name like %s")
-            parameters.append(f"%{last_name}%")
-
-        if exclude_user:
-            conditions.append("id != %s")
-            parameters.append(exclude_user)
-
-        sql = self.build_query(query, conditions)
-
-        result = self.execute_query(sql, parameters)
-
-        user_list = []
-        for row in result:
-            user = User(
-                row[0],
-                row[1],
-                None,
-                row[2],
-                row[3],
-                row[4],
-                None,
-                None,
-                None,
-                row[5],
-                row[6],
-            )
-            user_list.append(user)
-
-        return user_list
-
 
     def update_backend_user(
         self,
