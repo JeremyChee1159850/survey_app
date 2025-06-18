@@ -89,16 +89,3 @@ def update_profile():
         return redirect(url_for("update_profile"))
 
     return render_template("user/update_profile.html", user=user)
-
-
-@app.route("/voter/delete_profile_image/", methods=["POST"])
-def delete_profile_image():
-    user_id = session["user_id"]
-    user_dao = UserDao()
-    user = user_dao.find_by_id(user_id)
-
-    # Reset avatar to default
-    user.avatar = "default.png"
-    user_dao.update_user(user)
-    flash("Profile image deleted successfully!")
-    return redirect(url_for("profile"))

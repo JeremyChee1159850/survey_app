@@ -31,12 +31,12 @@
                         <tbody>
                             <!-- Plant Image Row -->
                             <tr>
-                                <th style="width: 35%; background-color: #f8f9fa;">Image</th>
+                                <th style="width: 35%; background-color: #f8f9fa;">Image<span style="color: red;">*</span></th>
                                 <td class="text-center">
                                     <div class="mb-3">
                                         <img src="{{ url_for('static', filename='img/default.png') }}" alt="Avatar" class="rounded" style="height: 300px; width: 100%; margin-top: 10px;" id="image-preview">
                                     </div>
-                                    <input type="file" class="form-control-file" name="image" id="image-upload" accept="image/*">
+                                    <input type="file" class="form-control-file" name="image" id="image-upload" accept="image/*" required>
                                 </td>
                             </tr>
                             <!-- Name Row -->
