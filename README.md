@@ -1,6 +1,4 @@
-# COMP693_25S1_project_JeremyChee1159850
-
-## Green or Mean – Plant Preference Survey Web Application
+# Green or Mean – Plant Preference Survey Web Application
 
 ## Overview
 Green or Mean is a web-based survey application developed as part of an industry project with Lincoln University.
